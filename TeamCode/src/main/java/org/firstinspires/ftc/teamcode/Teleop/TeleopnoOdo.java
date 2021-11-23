@@ -9,6 +9,7 @@ import java.util.Arrays;
 
 @TeleOp(name ="Simple Teleop No ODO")
 public class TeleopnoOdo extends OpMode {
+
     // makes and instance of the Hardware class
     Hardware robot = new Hardware();
 
@@ -23,7 +24,7 @@ public class TeleopnoOdo extends OpMode {
          * GamePad 1
          * Left Joystick: moving around
          * Right Joystick: turning in place
-         *
+         * Right Trigger: intake
          */
         //inputs from joysticks
         double y = -gamepad1.left_stick_y;
@@ -31,26 +32,30 @@ public class TeleopnoOdo extends OpMode {
         double turn = gamepad1.right_stick_x;
 
         //total joystick displacement
-        double q = Math.hypot(x,y);
+        double r = Math.hypot(x,y);
 
 
-        // y and z represent components of the vectors of the mecanum wheels
-        double FLVal = q * (y + x) + turn;
-        double FRVal = q * (y - x) - turn;
-        double BLVal = q * (y - x) + turn;
-        double BRVal = q * (y + x) - turn;
+        // y and x represent components of the vectors of the mecanum wheels
+        double FrontLeftVal = r * (y + x) + turn;
+        double FrontRightVal = r * (y - x) - turn;
+        double BackLeftVal = r * (y - x) + turn;
+        double BackRightVal = r * (y + x) - turn;
 
 
         // if wheel power is greater than 1, divides each wheel power by highest
-
-        double[] wheelPowers = {FLVal, FRVal, BLVal, BRVal};
+        double[] wheelPowers = {FrontLeftVal, FrontRightVal, BackLeftVal, BackRightVal};
         Arrays.sort(wheelPowers);
         if (wheelPowers[3] > 1){
-            FLVal /= wheelPowers[3];
-            FRVal /= wheelPowers[3];
-            BLVal /= wheelPowers[3];
-            BRVal /= wheelPowers[3];
+            FrontLeftVal /= wheelPowers[3];
+            FrontRightVal /= wheelPowers[3];
+            BackLeftVal /= wheelPowers[3];
+            BackRightVal /= wheelPowers[3];
         }
+        if(gamepad1.left_bumper) {
+            robot.dt.setMotorPower(FrontLeftVal / 4, FrontRightVal / 4, BackLeftVal / 4, BackRightVal / 4);
+        }
+        else robot.dt.setMotorPower(FrontLeftVal * 1 , FrontRightVal * 1 , BackLeftVal * 1, BackRightVal * 1);
+
 
 
 

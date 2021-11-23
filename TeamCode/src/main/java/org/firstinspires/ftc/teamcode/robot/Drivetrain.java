@@ -11,6 +11,7 @@ public class Drivetrain {
     public DcMotor FR;
     public DcMotor BL;
     public DcMotor BR;
+
     // initializes motors
     public Drivetrain(HardwareMap ahwMap){
         FL = ahwMap.get(DcMotor.class, "FL");
@@ -24,6 +25,7 @@ public class Drivetrain {
         FR.setDirection(DcMotor.Direction.FORWARD);
         BL.setDirection(DcMotor.Direction.REVERSE);
         BR.setDirection(DcMotor.Direction.FORWARD);
+
 
         FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
