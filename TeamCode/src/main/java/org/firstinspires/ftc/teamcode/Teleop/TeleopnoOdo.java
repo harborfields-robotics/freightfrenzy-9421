@@ -55,7 +55,12 @@ public class TeleopnoOdo extends OpMode {
             robot.dt.setMotorPower(FrontLeftVal / 4, FrontRightVal / 4, BackLeftVal / 4, BackRightVal / 4);
         }
         else robot.dt.setMotorPower(FrontLeftVal * 1 , FrontRightVal * 1 , BackLeftVal * 1, BackRightVal * 1);
+        //intake controls
+        //may change them to gamepad2 when we use 2 gamepads
 
+        if(gamepad1.right_trigger > 0.5) robot.intake.on();
+        else if(gamepad1.left_trigger > 0.5) robot.intake.reverse();
+        else robot.intake.off();
 
 
 
