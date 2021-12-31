@@ -16,13 +16,15 @@ import org.firstinspires.ftc.teamcode.robot.controllers.ControllerState;
 public class TeleopODO extends LinearOpMode {
     private FtcDashboard dashboard;
 
-    Hardware Oscar = new Hardware();
 
 
-
+    @Override
     public void runOpMode(){
 
-        Oscar.drive.setPoseEstimate(new Pose2d(0,0,Math.toRadians(0)));
+        Hardware Oscar = new Hardware(hardwareMap);
+
+        Oscar.drive.setPoseEstimate(new Pose2d(0,0,0));
+
         ControllerState controller1 = new ControllerState(gamepad1);
         ControllerState controller2 = new ControllerState(gamepad2);
 
@@ -81,7 +83,9 @@ public class TeleopODO extends LinearOpMode {
 
             telemetry.update();
 
-            //Pose2d myPose = Oscar.odoDT.getPoseEstimate();
+            Pose2d myPose = Oscar.drive.getPoseEstimate();
+
+
 
         }
 

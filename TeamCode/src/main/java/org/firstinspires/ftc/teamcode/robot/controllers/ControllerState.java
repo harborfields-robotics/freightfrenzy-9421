@@ -185,8 +185,9 @@ class ButtonEvent {
 // Model of controller sticks and triggers
 class Analog {
     private double value;
+
     public Analog() {
-        value = 0;
+        value = 0.0;
     }
     public double getValue() {
         return value;

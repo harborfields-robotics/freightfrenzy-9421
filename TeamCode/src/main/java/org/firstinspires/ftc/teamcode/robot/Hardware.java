@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
@@ -14,7 +15,23 @@ public class Hardware {
 
     public SampleMecanumDrive drive;
 
-    public Hardware(){
+    public Hardware(HardwareMap hardwareMap){
+        hwMap = hardwareMap;
+        dt = new Drivetrain(hwMap);
+        intake = new Intake(hwMap);
+        grabber = new Grabber(hwMap);
+        elbow = new Elbow(hwMap);
+
+        drive = new SampleMecanumDrive(hwMap);
+        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        vel = new Pose2d(0,0,0);
+
+    }
+
+
+    public Hardware() {
+
     }
 
     //Inits hardware for opmode
@@ -22,7 +39,6 @@ public class Hardware {
         //ahwMap is hwMap
         hwMap = ahwMap;
         dt = new Drivetrain(hwMap);
-        drive = new SampleMecanumDrive(hwMap);
         intake = new Intake(hwMap);
         grabber = new Grabber(hwMap);
         elbow = new Elbow(hwMap);
