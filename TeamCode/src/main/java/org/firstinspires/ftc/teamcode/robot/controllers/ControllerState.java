@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 //gets state of controllers and makes the teleop code look nicer
 // has multiple different states
@@ -110,12 +111,12 @@ public class ControllerState {
 
     // Checks events, runs execute()
     public void handleEvents() {
-        for (Map.Entry<ButtonEvent, EventHandler> entry: buttonEventListeners.entrySet()) {
+        for (Entry<ButtonEvent, EventHandler> entry: buttonEventListeners.entrySet()) {
             if (entry.getKey().checkEvent()) {
                 entry.getValue().execute();
             }
         }
-        for (Map.Entry<AnalogEvent, EventHandler> entry: analogEventListeners.entrySet()) {
+        for (Entry<AnalogEvent, EventHandler> entry: analogEventListeners.entrySet()) {
             if (entry.getKey().checkEvent()) {
                 entry.getValue().execute();
             }
@@ -204,7 +205,7 @@ class AnalogEvent {
     private double bound;
 
     public AnalogEvent(Analog a, AnalogCheck c, double b) {
-        analog  = a;
+        analog = a;
         condition = c;
         bound = b;
     }
