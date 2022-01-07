@@ -9,14 +9,14 @@ public class Elbow {
     public Servo e2;
     public Servo e3;
 
-    private double curE2 = .62;
-    private double curE3 = .72;
+    private double curE2 = 0;
+    private double curE3 = 1;
 
-    private double startOffset = -.2;
-    private double topOffset = .33;
-    private double midOffset = .45;
-    private double bottomOffset = .7;
-    private double grabPosOffset = RobotConstants.GRAB_POS_OFFSET;
+    private double startOffset = .25;
+    private double topOffset = .7;
+    private double midOffset = .8;
+    private double bottomOffset = .9;
+    private double grabPosOffset = .18;
 
 
     private final double startE2 = curE2 + startOffset;
@@ -73,7 +73,7 @@ public class Elbow {
     }
 
     public double getElbowPosition(){
-        return curE3;
+        return curE2;
     }
 
 }

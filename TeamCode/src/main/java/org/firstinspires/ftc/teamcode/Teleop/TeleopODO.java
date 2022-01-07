@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
+import android.widget.Button;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -48,20 +50,30 @@ public class TeleopODO extends LinearOpMode {
          */
         // toggle intake on if the grabber is open and the elbow is at its home position
         controller2.addEventListener("right_trigger",AnalogCheck.GREATER_THAN, 0.1,() ->{
-            if(Oscar.elbow.getElbowPosition() == .72 && !Oscar.intake.getIntakeMode()){Oscar.intake.setIntakeMode(true);}
+            if(Oscar.elbow.getElbowPosition() == .25 && !Oscar.intake.getIntakeMode()){Oscar.intake.setIntakeMode(true);}
             else {Oscar.intake.setIntakeMode(false);}
         } );
         //IDK how this will work will test to see but may change
         //It all keeps heading up
         // When button y is pressed it will go through the entire top cycle
-        controller2.addEventListener("y", ButtonState.PRESSED, () ->{
+        controller2.addEventListener("a", ButtonState.PRESSED, () ->{
             Oscar.elbow.goToGrabPos();
-            Oscar.grabber.grab();
-            Oscar.elbow.moveTop();
-            Oscar.grabber.goTop();
-            Oscar.grabber.stopGrab();
-            Oscar.grabber.goStart();
+            //Oscar.grabber.grab();
+            //Oscar.elbow.moveStart();
+            //Oscar.slides.slidesTop();
+            //Oscar.elbow.moveTop();
+            //Oscar.grabber.goTop();
+            //Oscar.grabber.stopGrab();
+            //Oscar.grabber.goStart();
         });
+        controller2.addEventListener("b", ButtonState.PRESSED,() -> {Oscar.elbow.moveTop();});
+        controller2.addEventListener("y", ButtonState.PRESSED, () -> {Oscar.elbow.moveStart();});
+        controller2.addEventListener("x", ButtonState.PRESSED, () -> {Oscar.grabber.grab();});
+        controller2.addEventListener("dpad_up", ButtonState.PRESSED, () -> {Oscar.slides.slidesTop();});
+        controller2.addEventListener("dpad_down", ButtonState.PRESSED, () -> {Oscar.slides.slidesHone();});
+
+
+
 
         waitForStart();
 
@@ -84,6 +96,9 @@ public class TeleopODO extends LinearOpMode {
             Oscar.drive.update();
 
             telemetry.update();
+            telemetry.addData("Wheel location", Oscar.drive.getWheelPositions());
+            telemetry.addData("Slide Position", Oscar.slides.getMotorPosition());
+            telemetry.addData("Slide Position", Oscar.slides.getCurrentTargetPosition());
 
             Pose2d myPose = Oscar.drive.getPoseEstimate();
 
