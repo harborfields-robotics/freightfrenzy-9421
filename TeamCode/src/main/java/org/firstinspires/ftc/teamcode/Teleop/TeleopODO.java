@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
-import android.widget.Button;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -66,11 +64,11 @@ public class TeleopODO extends LinearOpMode {
             //Oscar.grabber.stopGrab();
             //Oscar.grabber.goStart();
         });
-        controller2.addEventListener("b", ButtonState.PRESSED,() -> {Oscar.elbow.moveTop();});
-        controller2.addEventListener("y", ButtonState.PRESSED, () -> {Oscar.elbow.moveStart();});
+        controller2.addEventListener("y", ButtonState.PRESSED,() -> {Oscar.elbow.moveTop(); Oscar.grabber.goTop();});
+        controller2.addEventListener("b", ButtonState.PRESSED, () -> {Oscar.elbow.moveStart(); Oscar.grabber.goStart();});
         controller2.addEventListener("x", ButtonState.PRESSED, () -> {Oscar.grabber.grab();});
         controller2.addEventListener("dpad_up", ButtonState.PRESSED, () -> {Oscar.slides.slidesTop();});
-        controller2.addEventListener("dpad_down", ButtonState.PRESSED, () -> {Oscar.slides.slidesHone();});
+        controller2.addEventListener("dpad_down", ButtonState.PRESSED, () -> {Oscar.slides.slidesGrab();});
 
 
 

@@ -8,8 +8,8 @@ public class Grabber {
     public Servo g1;
 
     //start positions, duh
-    private final double initPos0 = .98;
-    private final double initPos1 = .07;
+    private final double initPos0 = .92;
+    private final double initPos1 = .13;
 
     //how much each servo has to move in order to grab
     private final double grabOffset0 = -.15;
@@ -25,10 +25,10 @@ public class Grabber {
     private String position;
 
     //ABSOLUTE!!!
-    private double topAng = -220;
-    private double midAng = -230;
-    private double bottomAng = -240;
-    private double startAng = -90;
+    private final double TOP_ANG = -220;
+    private final double MID_ANG = -230;
+    private final double BOTTOM_ANG = -240;
+    private final double START_ANG = -90;
 
     public Grabber(HardwareMap ahwMap){
         g0 = ahwMap.get(Servo.class, "grabber1");
@@ -49,18 +49,25 @@ public class Grabber {
 
     //DO NOT CHANGE THESE SIGNS!!!!!!!!!!!
     public void grab() {
-        if(isGrab == false) {
+        if(!isGrab) {
             isGrab = true;
             cur0 += grabOffset0;
             cur1 -= grabOffset1;
             //dont change position because its just grabbing
-            updatePositions(position);
             //curMid does not change
         }
+        else {
+            isGrab = false;
+            cur0 -= grabOffset0;
+            cur1 += grabOffset1;
+            //curMid does not change
+        }
+        updatePositions(position);
     }
+
     //Same comment
     public void stopGrab() {
-        if(isGrab == true) {
+        if(isGrab) {
             isGrab = false;
             cur0 -= grabOffset0;
             cur1 += grabOffset1;
@@ -82,47 +89,47 @@ public class Grabber {
 
     public void goTop() {
         if(position.equals("start")) {
-            moveByAngle(topAng, "top");
+            moveByAngle(TOP_ANG, "top");
         }
         if(position.equals("middle")) {
-            moveByAngle(topAng - midAng, "top");
+            moveByAngle(TOP_ANG - MID_ANG, "top");
         }
         if(position.equals("bottom")) {
-            moveByAngle(topAng - bottomAng, "top");
+            moveByAngle(TOP_ANG - BOTTOM_ANG, "top");
         }
     }
 
     public void goBottom() {
         if(position.equals("start")) {
-            moveByAngle(bottomAng, "bottom");
+            moveByAngle(BOTTOM_ANG, "bottom");
         }
         if(position.equals("top")) {
-            moveByAngle(bottomAng - topAng, "bottom");
+            moveByAngle(BOTTOM_ANG - TOP_ANG, "bottom");
         }
         if(position.equals("middle")) {
-            moveByAngle(bottomAng - midAng, "bottom");
+            moveByAngle(BOTTOM_ANG - MID_ANG, "bottom");
         }
     }
     public void goMiddle() {
         if(position.equals("start")) {
-            moveByAngle(midAng, "middle");
+            moveByAngle(MID_ANG, "middle");
         }
         if(position.equals("top")) {
-            moveByAngle(midAng - topAng, "middle");
+            moveByAngle(MID_ANG - TOP_ANG, "middle");
         }
         if(position.equals("bottom")) {
-            moveByAngle(midAng - bottomAng, "middle");
+            moveByAngle(MID_ANG - BOTTOM_ANG, "middle");
         }
     }
     public void goStart() {
         if(position.equals("top")) {
-            moveByAngle(-topAng, "start");
+            moveByAngle(-TOP_ANG, "start");
         }
         if(position.equals("middle")) {
-            moveByAngle(-midAng, "start");
+            moveByAngle(-MID_ANG, "start");
         }
         if(position.equals("bottom")) {
-            moveByAngle(-bottomAng, "start");
+            moveByAngle(-BOTTOM_ANG, "start");
         }
     }
     public double returnAngle(){

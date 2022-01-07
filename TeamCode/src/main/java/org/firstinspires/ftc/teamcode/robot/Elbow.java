@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode.robot;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import dashboard.RobotConstants;
-
 public class Elbow {
     public Servo e2;
     public Servo e3;
@@ -12,27 +10,27 @@ public class Elbow {
     private double curE2 = 0;
     private double curE3 = 1;
 
-    private double startOffset = .25;
-    private double topOffset = .7;
-    private double midOffset = .8;
-    private double bottomOffset = .9;
-    private double grabPosOffset = .18;
+    private final double START_OFFSET = .3;
+    private final double TOP_OFFSET = .7;
+    private final double MID_OFFSET = .8;
+    private final double BOTTOM_OFFSET = .9;
+    private final double GRAB_POS_OFFSET = .12;
 
 
-    private final double startE2 = curE2 + startOffset;
-    private final double startE3 = curE3 - startOffset;
+    private final double startE2 = curE2 + START_OFFSET;
+    private final double startE3 = curE3 - START_OFFSET;
 
-    private final double topE2 = curE2 + topOffset;
-    private final double topE3 = curE3 - topOffset;
+    private final double topE2 = curE2 + TOP_OFFSET;
+    private final double topE3 = curE3 - TOP_OFFSET;
 
-    private final double midE2 = curE2 + midOffset;
-    private final double midE3 = curE3 - midOffset;
+    private final double midE2 = curE2 + MID_OFFSET;
+    private final double midE3 = curE3 - MID_OFFSET;
 
-    private final double bottomE2 = curE2 + bottomOffset;
-    private final double bottomE3 = curE3 - bottomOffset;
+    private final double bottomE2 = curE2 + BOTTOM_OFFSET;
+    private final double bottomE3 = curE3 - BOTTOM_OFFSET;
 
-    private final double grabPosE2 = curE2 + grabPosOffset;
-    private final double grabPosE3 = curE3 - grabPosOffset;
+    private final double grabPosE2 = curE2 + GRAB_POS_OFFSET;
+    private final double grabPosE3 = curE3 - GRAB_POS_OFFSET;
 
 
     public Elbow(HardwareMap ahwMap) {
@@ -47,6 +45,7 @@ public class Elbow {
     }
 
     public void moveStart() {
+        goToGrabPos();
         curE2 = startE2;
         curE3 = startE3;
         updatePositions();
