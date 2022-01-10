@@ -62,6 +62,16 @@ public class TeleopnoOdo extends OpMode {
         else if(gamepad1.left_trigger > 0.5) robot.intake.reverse();
         else robot.intake.off();
 
+        if(gamepad2.left_bumper){
+            robot.slides.out();
+        }
+        else if(gamepad2.right_bumper){
+            robot.slides.in();
+        }
+        else{
+            robot.slides.stop();
+        }
+
 
 
 
