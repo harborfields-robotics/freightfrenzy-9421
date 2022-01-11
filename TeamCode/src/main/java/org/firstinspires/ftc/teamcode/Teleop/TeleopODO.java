@@ -33,8 +33,7 @@ public class TeleopODO extends LinearOpMode {
 
         /*
         controller 1- For max most likely
-        any small changes in robot position with d pad, will overide the joysticks
-
+        any small changes in robot position with d pad, will override the joysticks
          */
         //TODO:tune these
         controller1.addEventListener("dpad_up", ButtonState.HELD, () -> Oscar.setVel(new Pose2d(0.25,0,0)));
@@ -49,30 +48,18 @@ public class TeleopODO extends LinearOpMode {
         runs cycle for placing and releasing
          */
         // toggle intake on if the grabber is open and the elbow is at its home position
-        controller2.addEventListener("right_trigger",AnalogCheck.GREATER_THAN, 0.1,() ->{
-            if(Oscar.elbow.getElbowPosition() == .25 && !Oscar.intake.getIntakeMode()){Oscar.intake.setIntakeMode(true);}
-            else {Oscar.intake.setIntakeMode(false);}
-        } );
+        controller2.addEventListener("right_trigger",AnalogCheck.GREATER_THAN, 0.1,() ->{Oscar.intake.setIntakeDirection(false); Oscar.intake.setIntakeMode(true);});
+        controller2.addEventListener("right_trigger",AnalogCheck.LESS_THAN_EQUALS, 0.1,() ->{Oscar.intake.setIntakeMode(false);});
         //IDK how this will work will test to see but may change
         //It all keeps heading up
         // When button y is pressed it will go through the entire top cycle
-        controller2.addEventListener("a", ButtonState.PRESSED, () ->{
-            Oscar.elbow.goToGrabPos();
-            //Oscar.grabber.grab();
-            //Oscar.elbow.moveStart();
-            //Oscar.slides.slidesTop();
-            //Oscar.elbow.moveTop();
-            //Oscar.grabber.goTop();
-            //Oscar.grabber.stopGrab();
-            //Oscar.grabber.goStart();
-        });
+        controller2.addEventListener("a", ButtonState.PRESSED, () ->{Oscar.elbow.goToGrabPos();});
         controller2.addEventListener("b", ButtonState.PRESSED,() -> {Oscar.elbow.moveTop();});
         controller2.addEventListener("y", ButtonState.PRESSED, () -> {Oscar.elbow.moveStart();});
         controller2.addEventListener("x", ButtonState.PRESSED, () -> {Oscar.grabber.grab();});
         controller2.addEventListener("dpad_up", ButtonState.PRESSED, () -> {Oscar.slides.slidesTop();});
-        controller2.addEventListener("dpad_down", ButtonState.PRESSED, () -> {Oscar.slides.slidesHone();});
-
-
+        controller2.addEventListener("left_bumper", ButtonState.PRESSED, () -> {Oscar.slides.slidesHome();});
+        controller2.addEventListener("dpad_down", ButtonState.PRESSED, () -> { Oscar.slides.slidesGrab(); });
 
 
         waitForStart();

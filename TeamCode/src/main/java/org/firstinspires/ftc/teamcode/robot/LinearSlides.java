@@ -3,12 +3,14 @@ package org.firstinspires.ftc.teamcode.robot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 import dashboard.RobotConstants;
 
 public class LinearSlides {
 
     public DcMotor slideMotor;
+    public DigitalChannel endstop;
 
 
 
@@ -21,6 +23,7 @@ public class LinearSlides {
     private double TOP_SLIDE_TICKS = -3667;
     private double MID_SLIDE_TICKS = -3056;
     private double BOTTOM_SLIDE_TICKS = -2445;
+    private double GRAB_SLIDE_TICKS = -100;
 
 
     //Must tune to get more efficient
@@ -31,6 +34,7 @@ public class LinearSlides {
 
     public LinearSlides(HardwareMap ahwMap){
         slideMotor = ahwMap.get(DcMotor.class, "slideMotor");
+        endstop = ahwMap.get(DigitalChannel.class, "lift_limit_switch");
         slideMotor.setDirection(DcMotor.Direction.FORWARD);
         slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -74,9 +78,23 @@ public class LinearSlides {
     }
     public void slidesBottom(){currentPosition = BOTTOM_SLIDE_TICKS; arrayPos = 3;slideMotor.setTargetPosition((int)currentPosition);
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);}
-    public void slidesHone(){currentPosition = ORIGINAL_POSITION; arrayPos = 0;
-    slideMotor.setTargetPosition((int)currentPosition);
+
+    public void slidesGrab(){currentPosition = GRAB_SLIDE_TICKS; arrayPos = 0;slideMotor.setTargetPosition((int)currentPosition);
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);}
+
+
+    public void slidesHome() {
+        boolean run = true;
+        while (run) {
+            slideMotor.setPower(-.1);
+            if (endstop.getState()) {
+                slideMotor.setPower(0);
+                currentPosition = 0;
+                resetEncoder();
+                run = false;
+            }
+        }
+    }
 
 
     public double getCurrentTargetPosition(){

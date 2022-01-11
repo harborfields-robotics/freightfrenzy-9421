@@ -21,6 +21,7 @@ public class ControllerState {
     private Button dpad_down;
     private Button dpad_left;
     private Button dpad_right;
+    private Button guide;
     private Button x;
     private Button y;
     private Button a;
@@ -48,6 +49,9 @@ public class ControllerState {
         dpad_down = new Button();
         dpad_left = new Button();
         dpad_right = new Button();
+
+        guide = new Button();
+
         x = new Button();
         y = new Button();
         a = new Button();
@@ -67,6 +71,9 @@ public class ControllerState {
         buttonMap.put("dpad_down", dpad_down);
         buttonMap.put("dpad_left", dpad_left);
         buttonMap.put("dpad_right", dpad_right);
+
+        buttonMap.put("guide", guide);
+
         buttonMap.put("x", x);
         buttonMap.put("y", y);
         buttonMap.put("a", a);
@@ -93,6 +100,9 @@ public class ControllerState {
         dpad_down.update(gamepad.dpad_down);
         dpad_left.update(gamepad.dpad_left);
         dpad_right.update(gamepad.dpad_right);
+
+        guide.update(gamepad.guide);
+
         x.update(gamepad.x);
         y.update(gamepad.y);
         a.update(gamepad.a);
