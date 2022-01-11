@@ -21,7 +21,7 @@ public class TeleopODO extends LinearOpMode {
 
 
     @Override
-    public void runOpMode(){
+    public void runOpMode() throws InterruptedException {
 
         Hardware Oscar = new Hardware(hardwareMap);
 
@@ -54,13 +54,13 @@ public class TeleopODO extends LinearOpMode {
         //It all keeps heading up
         // When button y is pressed it will go through the entire top cycle
         controller2.addEventListener("a", ButtonState.PRESSED, () ->{Oscar.elbow.goToGrabPos();});
-        controller2.addEventListener("b", ButtonState.PRESSED,() -> {Oscar.elbow.moveTop();});
-        controller2.addEventListener("y", ButtonState.PRESSED, () -> {Oscar.elbow.moveStart();});
+        controller2.addEventListener("y", ButtonState.PRESSED,() -> {Oscar.elbow.moveTop(); Oscar.grabber.goTop();});
+        controller2.addEventListener("b", ButtonState.PRESSED, () -> {Oscar.elbow.moveStart(); Oscar.grabber.goStart();});
         controller2.addEventListener("x", ButtonState.PRESSED, () -> {Oscar.grabber.grab();});
-        controller2.addEventListener("dpad_up", ButtonState.PRESSED, () -> {Oscar.slides.slidesTop();});
-        controller2.addEventListener("left_bumper", ButtonState.PRESSED, () -> {Oscar.slides.slidesHome();});
-        controller2.addEventListener("dpad_down", ButtonState.PRESSED, () -> { Oscar.slides.slidesGrab(); });
-//?
+        controller2.addEventListener("dpad_up", ButtonState.PRESSED, () -> {Oscar.elbow.moveStart(); Thread.sleep(250); Oscar.slides.slidesTop(); Thread.sleep(1500); Oscar.elbow.moveTop(); Oscar.grabber.goTop();});
+        controller2.addEventListener("left_bumper", ButtonState.PRESSED, () -> {Oscar.slides.slidesHome(); Oscar.slides.slidesGrab();});
+        controller2.addEventListener("dpad_left", ButtonState.PRESSED, () -> {Oscar.slides.slidesGrab();});
+        controller2.addEventListener("dpad_down", ButtonState.PRESSED, () -> { Oscar.slides.slidesGrab(); Thread.sleep(350); Oscar.elbow.moveStart(); Oscar.grabber.goStart();});
 
         waitForStart();
 

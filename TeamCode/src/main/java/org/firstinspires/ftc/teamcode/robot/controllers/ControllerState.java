@@ -120,7 +120,7 @@ public class ControllerState {
     }
 
     // Checks events, runs execute()
-    public void handleEvents() {
+    public void handleEvents() throws InterruptedException {
         for (Entry<ButtonEvent, EventHandler> entry: buttonEventListeners.entrySet()) {
             if (entry.getKey().checkEvent()) {
                 entry.getValue().execute();

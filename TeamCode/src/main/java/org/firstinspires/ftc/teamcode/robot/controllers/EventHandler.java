@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode.robot.controllers;
 
 public interface EventHandler {
-    void execute();
+    void execute() throws InterruptedException;
 }

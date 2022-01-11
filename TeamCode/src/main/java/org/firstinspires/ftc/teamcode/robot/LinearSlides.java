@@ -17,7 +17,7 @@ public class LinearSlides {
     //position when the slides start
     public double ORIGINAL_POSITION = 0;
     //power motor uses for slides
-    public static double SLIDE_POWER = .5;
+    public static double SLIDE_POWER = .8;
     //Max length
     public static double MAX_LENGTH = RobotConstants.SLIDE_MAX_LENGTH;
     private double TOP_SLIDE_TICKS = -3667;
@@ -86,12 +86,14 @@ public class LinearSlides {
     public void slidesHome() {
         boolean run = true;
         while (run) {
-            slideMotor.setPower(-.1);
-            if (endstop.getState()) {
+            slideMotor.setPower(.2132);
+            if (!endstop.getState()) {
                 slideMotor.setPower(0);
                 currentPosition = 0;
                 resetEncoder();
+                slidesGrab();
                 run = false;
+
             }
         }
     }

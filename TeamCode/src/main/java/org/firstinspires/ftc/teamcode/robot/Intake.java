@@ -39,11 +39,11 @@ public class Intake {
         if (intakeMode) {
             if(intakeDirection){
                 intakeFront.setPower(INTAKE_POWER);
-                intakeBack.setPower(-INTAKE_POWER);
+                intakeBack.setPower(INTAKE_POWER);
             }
             else{
                 intakeFront.setPower(-INTAKE_POWER);
-                intakeBack.setPower(INTAKE_POWER);
+                intakeBack.setPower(-INTAKE_POWER);
 
 
             }
