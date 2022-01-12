@@ -61,7 +61,7 @@ public class TeleopODO extends LinearOpMode {
         controller2.addEventListener("left_bumper", ButtonState.PRESSED, () -> {Oscar.slides.slidesHome(); Oscar.slides.slidesGrab();});
         controller2.addEventListener("dpad_left", ButtonState.PRESSED, () -> {Oscar.slides.slidesGrab();});
         controller2.addEventListener("dpad_down", ButtonState.PRESSED, () -> { Oscar.slides.slidesGrab(); Thread.sleep(350); Oscar.elbow.moveStart(); Oscar.grabber.goStart();});
-
+//
         waitForStart();
 
         while(opModeIsActive()){
