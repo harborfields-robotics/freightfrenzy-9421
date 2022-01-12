@@ -39,6 +39,8 @@ public class Elbow {
 
     }
 
+
+
     private void updatePositions() {
         e2.setPosition(curE2);
         e3.setPosition(curE3);

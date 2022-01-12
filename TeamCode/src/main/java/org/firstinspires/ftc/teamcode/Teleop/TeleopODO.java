@@ -1,12 +1,11 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
-import android.widget.Button;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 //hardware
 import org.firstinspires.ftc.teamcode.robot.Hardware;
 import org.firstinspires.ftc.teamcode.robot.controllers.AnalogCheck;
@@ -18,10 +17,25 @@ import org.firstinspires.ftc.teamcode.robot.controllers.ControllerState;
 public class TeleopODO extends LinearOpMode {
     private FtcDashboard dashboard;
 
+    public enum CycleState {
+        START,
+        EXTEND,
+        ELBOW_GRABBER,
+        RETRACT
+    };
+
+    CycleState cycleState = CycleState.START;
+
+    ElapsedTime cycleTimer = new ElapsedTime();
+
+    final double SLIDE_TIME = 1500;// time it takes for the slides to get to their optimal position
+
+
 
 
     @Override
     public void runOpMode() throws InterruptedException {
+        cycleTimer.reset();
 
         Hardware Oscar = new Hardware(hardwareMap);
 
@@ -29,6 +43,61 @@ public class TeleopODO extends LinearOpMode {
 
         ControllerState controller1 = new ControllerState(gamepad1);
         ControllerState controller2 = new ControllerState(gamepad2);
+
+
+
+        switch (cycleState){
+            case START:
+               if(gamepad2.a){
+                   Oscar.slides.slidesGrab();
+                   Oscar.elbow.moveStart();
+                   Oscar.grabber.goStart();
+                   Oscar.elbow.goToGrabPos();
+
+                   //Oscar.grabber.grab();
+                   Oscar.elbow.moveStart();
+
+                   cycleState = CycleState.EXTEND;
+               }
+               break;
+
+            case EXTEND:
+                if(Oscar.elbow.getElbowPosition() == .12){
+                    //only goes if the elbow position is at grab position
+                    Oscar.slides.slidesTop();
+
+                }
+                break;
+
+            case ELBOW_GRABBER:
+                if(cycleTimer.seconds() >= SLIDE_TIME){
+                    Oscar.elbow.moveTop();
+                    Oscar.grabber.goTop();
+
+                }
+                break;
+
+            case RETRACT:
+                if (Oscar.elbow.getElbowPosition() == .7){
+                    Oscar.grabber.stopGrab();
+                    Oscar.elbow.moveStart();
+                    Oscar.slides.slidesGrab();
+                    
+                    Oscar.grabber.goStart();
+
+                }
+                break;
+            default:
+                cycleState = CycleState.START;
+
+                //Thread.sleep(350); Oscar.elbow.moveStart(); Oscar.grabber.goStart();});
+
+
+
+
+
+        }
+
 
 
         /*
@@ -53,7 +122,7 @@ public class TeleopODO extends LinearOpMode {
         //IDK how this will work will test to see but may change
         //It all keeps heading up
         // When button y is pressed it will go through the entire top cycle
-        controller2.addEventListener("a", ButtonState.PRESSED, () ->{Oscar.elbow.goToGrabPos();});
+        //controller2.addEventListener("a", ButtonState.PRESSED, () ->{Oscar.elbow.goToGrabPos();});
         controller2.addEventListener("y", ButtonState.PRESSED,() -> {Oscar.elbow.moveTop(); Oscar.grabber.goTop();});
         controller2.addEventListener("b", ButtonState.PRESSED, () -> {Oscar.elbow.moveStart(); Oscar.grabber.goStart();});
         controller2.addEventListener("x", ButtonState.PRESSED, () -> {Oscar.grabber.grab();});
