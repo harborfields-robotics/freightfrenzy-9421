@@ -29,7 +29,7 @@ public class AutoRed extends LinearOpMode {
         Pose2d startPose = new Pose2d(RobotConstants.STARTPOSEX, RobotConstants.STARTPOSEY, RobotConstants.STARTPOSEANG);
         Oscar.init(hardwareMap);
         Trajectory straitPark = Oscar.drive.trajectoryBuilder(new Pose2d())
-                .back(30)
+                .back(30)//
                 .build();
 
         waitForStart();
