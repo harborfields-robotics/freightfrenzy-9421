@@ -23,7 +23,7 @@ public class LinearSlides {
     private double TOP_SLIDE_TICKS = -2900;
     private double MID_SLIDE_TICKS = -3056;
     private double BOTTOM_SLIDE_TICKS = -2445;
-    private double GRAB_SLIDE_TICKS = 0;
+    private double GRAB_SLIDE_TICKS = -110;
 
 
     //Must tune to get more efficient
@@ -80,11 +80,7 @@ public class LinearSlides {
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);}
 
     public void slidesGrab(){currentPosition = GRAB_SLIDE_TICKS; arrayPos = 0;slideMotor.setTargetPosition((int)currentPosition);
-        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        SLIDE_POWER = -SLIDE_POWER;
-        currentPosition = GRAB_SLIDE_TICKS; arrayPos = 0;slideMotor.setTargetPosition((int)currentPosition);
-        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        SLIDE_POWER = -SLIDE_POWER;}
+        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);}
 
 
     public void slidesHome() {
@@ -96,10 +92,11 @@ public class LinearSlides {
                 currentPosition = 0;
                 resetEncoder();
                 slidesGrab();
+                slidesGrab();
                 run = false;
-
             }
         }
+
     }
 
 

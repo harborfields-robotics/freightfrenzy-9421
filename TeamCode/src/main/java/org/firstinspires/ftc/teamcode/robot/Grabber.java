@@ -9,8 +9,10 @@ public class Grabber {
 
     private final double GRAB_POSITION_OFFSET = .1;
 
+    private boolean isGrabCurrentlyExtra = false;
+
     //start positions, duh
-    private final double initPos0 = 1;
+    private final double initPos0 = .96;
     private final double initPos1 = .07;
 
     //how much each servo has to move in order to grab
@@ -27,7 +29,7 @@ public class Grabber {
     private String position;
 
     //ABSOLUTE!!!
-    private final double TOP_ANG = -220;
+    private final double TOP_ANG = -200;
     private final double MID_ANG = -230;
     private final double BOTTOM_ANG = -240;
     private final double GRAB_ANG = -90;
@@ -42,38 +44,49 @@ public class Grabber {
         position = "start";
     }
     //call this after changing tracking variables
-    private void updatePositions(String newPosition) {
+    private void grabberUpdatePositions(String newPosition) {
         g0.setPosition(cur0);
         g1.setPosition(cur1);
         position = newPosition;
     }
 
+    public void grabberGrabExtra() {
+        if(!isGrabCurrentlyExtra) {
+            cur0 += .1;
+            isGrabCurrentlyExtra = true;
+        }
+        else {
+            cur0 -= .1;
+            isGrabCurrentlyExtra = false;
+        }
+        grabberUpdatePositions(position);
+    }
 
     //DO NOT CHANGE THESE SIGNS!!!!!!!!!!!
     public void grab() {
-        if(!isGrab) {
-            isGrab = true;
-            cur0 += grabOffset0;
-            cur1 -= grabOffset1;
-            //dont change position because its just grabbing
-            //curMid does not change
-        }
-        else {
-            isGrab = false;
-            cur0 -= grabOffset0;
-            cur1 += grabOffset1;
-            //curMid does not change
-        }
-        updatePositions(position);
+            if (!isGrab) {
+                isGrab = true;
+                cur0 += grabOffset0;
+                cur1 -= grabOffset1;
+                //dont change position because its just grabbing
+                //curMid does not change
+            }
+            else {
+                isGrab = false;
+                cur0 -= grabOffset0;
+                cur1 += grabOffset1;
+                //curMid does not change
+            }
+            grabberUpdatePositions(position);
     }
 
     //Same comment
     public void stopGrab() {
         if(isGrab) {
             isGrab = false;
-            cur0 -= grabOffset0;
-            cur1 += grabOffset1;
-            updatePositions(position);
+            cur0 -= grabOffset0 - .15;
+            cur1 += grabOffset1 + .15;
+            grabberUpdatePositions(position);
             //curMid does not change
         }
     }
@@ -85,9 +98,9 @@ public class Grabber {
     public void moveByAngle(double ang, String newPosition) {
         ang /= 270;
         cur0 += ang;
-        updatePositions(newPosition);
+        grabberUpdatePositions(newPosition);
         cur1 -= ang;
-        updatePositions(newPosition);
+        grabberUpdatePositions(newPosition);
     }
 
     public void goTop() {
@@ -135,6 +148,7 @@ public class Grabber {
             moveByAngle(-BOTTOM_ANG, "start");
         }
     }
+
     public double returnAngle(){
         return curMid;
     }

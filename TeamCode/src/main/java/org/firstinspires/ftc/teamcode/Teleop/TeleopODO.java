@@ -36,14 +36,14 @@ public class TeleopODO extends LinearOpMode {
         any small changes in robot position with d pad, will override the joysticks
          */
         //TODO:tune these
-        controller1.addEventListener("dpad_up", ButtonState.HELD, () -> Oscar.setVel(new Pose2d(10,0,0)));
-        controller1.addEventListener("dpad_down", ButtonState.HELD, () -> Oscar.setVel(new Pose2d(-10,0,0)));
-        controller1.addEventListener("dpad_left", ButtonState.HELD, () -> Oscar.setVel(new Pose2d(0,0.25,0)));
-        controller1.addEventListener("dpad_right",ButtonState.HELD, () -> Oscar.setVel(new Pose2d(0,-0.25,0)));
+        controller1.addEventListener("dpad_left", ButtonState.HELD, () -> Oscar.setVel(new Pose2d(1,0,0)));
+        controller1.addEventListener("dpad_right", ButtonState.HELD, () -> Oscar.setVel(new Pose2d(-1,0,0)));
+        controller1.addEventListener("dpad_down", ButtonState.HELD, () -> Oscar.setVel(new Pose2d(0,0.4,0)));
+        controller1.addEventListener("dpad_up",ButtonState.HELD, () -> Oscar.setVel(new Pose2d(0,-0.4,0)));
         controller1.addEventListener("left_trigger", AnalogCheck.GREATER_THAN, 0.1, () -> Oscar.setVel(new Pose2d(0,0,0.2)));
         controller1.addEventListener("right_trigger", AnalogCheck.GREATER_THAN, 0.1, () -> Oscar.setVel(new Pose2d(0,0,-0.2)));
-        controller1.addEventListener("right_bumper",ButtonState.HELD,() ->{Oscar.intake.setIntakeDirection(false); Oscar.intake.setIntakeMode(true);});
-        controller1.addEventListener("right_bumper",ButtonState.OFF,() ->{Oscar.intake.setIntakeMode(false);});
+//        controller1.addEventListener("right_bumper",ButtonState.HELD,() ->{Oscar.intake.setIntakeDirection(false); Oscar.intake.setIntakeMode(true);});
+//        controller1.addEventListener("right_bumper",ButtonState.OFF,() ->{Oscar.intake.setIntakeMode(false);});
         /*controller 2
         sets intake on or off
         runs cycle for placing and releasing
@@ -58,11 +58,11 @@ public class TeleopODO extends LinearOpMode {
         controller2.addEventListener("y", ButtonState.PRESSED,() -> {Oscar.elbow.moveTop(); Oscar.grabber.goTop();});
         controller2.addEventListener("b", ButtonState.PRESSED, () -> {Oscar.elbow.moveStart(); Oscar.grabber.goStart();});
         controller2.addEventListener("x", ButtonState.PRESSED, () -> {Oscar.grabber.grab();});
-        controller2.addEventListener("dpad_up", ButtonState.PRESSED, () -> {Oscar.elbow.moveStart(); Thread.sleep(250); Oscar.slides.slidesTop(); Thread.sleep(1500); Oscar.elbow.moveTop(); Oscar.grabber.goTop();});
+        controller2.addEventListener("dpad_up", ButtonState.PRESSED, () -> {Oscar.elbow.moveStart(); Thread.sleep(250); Oscar.slides.slidesTop(); Thread.sleep(1500); Oscar.elbow.moveTop(); Oscar.grabber.goTop(); Oscar.grabber.grabberGrabExtra();});
         controller2.addEventListener("left_bumper", ButtonState.PRESSED, () -> {Oscar.slides.slidesHome(); Oscar.slides.slidesGrab();});
         controller2.addEventListener("dpad_left", ButtonState.PRESSED, () -> {Oscar.slides.slidesGrab();});
-        controller2.addEventListener("dpad_down", ButtonState.PRESSED, () -> { Oscar.slides.slidesGrab(); Thread.sleep(350); Oscar.elbow.moveStart(); Oscar.grabber.goStart();});
-//
+        controller2.addEventListener("dpad_down", ButtonState.PRESSED, () -> {Oscar.grabber.grabberGrabExtra(); Oscar.slides.slidesGrab(); Thread.sleep(350); Oscar.elbow.moveStart(); Oscar.grabber.goStart();});
+
         waitForStart();//
 
         while(opModeIsActive()){
@@ -71,9 +71,9 @@ public class TeleopODO extends LinearOpMode {
             //
 
             Oscar.setVel(new Pose2d(
-                    -Math.pow(controller1.getAnalogValue("left_stick_y"),4),
-                    -Math.pow(controller1.getAnalogValue("left_stick_x"),4),
-                    -Math.pow(controller1.getAnalogValue("right_stick_x"),4)
+                    -Math.pow(controller1.getAnalogValue("left_stick_y"),3),
+                    -Math.pow(controller1.getAnalogValue("left_stick_x"),3),
+                    -Math.pow(controller1.getAnalogValue("right_stick_x"),3)
 
             ));
             controller1.handleEvents();

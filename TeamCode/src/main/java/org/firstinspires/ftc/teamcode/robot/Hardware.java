@@ -48,7 +48,16 @@ public class Hardware {
         intake = new Intake(hwMap);
         grabber = new Grabber(hwMap);
         elbow = new Elbow(hwMap);
+        slides = new LinearSlides(hwMap);
+
+
+        drive = new SampleMecanumDrive(hwMap);
+        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         vel = new Pose2d(0,0,0);
+        elbow.moveStart();
+        grabber.goStart();
+        grabber.stopGrab();
 
     }
     //too lazy to make a new class( vel method will be here)
