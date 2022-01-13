@@ -7,9 +7,11 @@ public class Grabber {
     public Servo g0;
     public Servo g1;
 
+    private final double GRAB_POSITION_OFFSET = .1;
+
     //start positions, duh
-    private final double initPos0 = .92;
-    private final double initPos1 = .15;
+    private final double initPos0 = 1;
+    private final double initPos1 = .07;
 
     //how much each servo has to move in order to grab
     private final double grabOffset0 = -.15;
@@ -28,7 +30,7 @@ public class Grabber {
     private final double TOP_ANG = -220;
     private final double MID_ANG = -230;
     private final double BOTTOM_ANG = -240;
-    private final double START_ANG = -90;
+    private final double GRAB_ANG = -90;
 
     public Grabber(HardwareMap ahwMap){
         g0 = ahwMap.get(Servo.class, "grabber1");
@@ -79,7 +81,8 @@ public class Grabber {
 
 
     //Accepts RELATIVE!!!!! angle in degrees RELATIVE!!!!!!! (refer to diagram)
-    private void moveByAngle(double ang, String newPosition) {
+    //IF YOU CALL THIS IN OTHER CLASS, BE SURE TO RESET TO ORIGINAL POSITION AFTER!!!!!!!!!
+    public void moveByAngle(double ang, String newPosition) {
         ang /= 270;
         cur0 += ang;
         updatePositions(newPosition);

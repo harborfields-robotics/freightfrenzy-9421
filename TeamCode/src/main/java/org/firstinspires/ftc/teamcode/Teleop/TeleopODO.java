@@ -36,13 +36,14 @@ public class TeleopODO extends LinearOpMode {
         any small changes in robot position with d pad, will override the joysticks
          */
         //TODO:tune these
-        controller1.addEventListener("dpad_up", ButtonState.HELD, () -> Oscar.setVel(new Pose2d(0.25,0,0)));
-        controller1.addEventListener("dpad_down", ButtonState.HELD, () -> Oscar.setVel(new Pose2d(-0.25,0,0)));
+        controller1.addEventListener("dpad_up", ButtonState.HELD, () -> Oscar.setVel(new Pose2d(10,0,0)));
+        controller1.addEventListener("dpad_down", ButtonState.HELD, () -> Oscar.setVel(new Pose2d(-10,0,0)));
         controller1.addEventListener("dpad_left", ButtonState.HELD, () -> Oscar.setVel(new Pose2d(0,0.25,0)));
         controller1.addEventListener("dpad_right",ButtonState.HELD, () -> Oscar.setVel(new Pose2d(0,-0.25,0)));
         controller1.addEventListener("left_trigger", AnalogCheck.GREATER_THAN, 0.1, () -> Oscar.setVel(new Pose2d(0,0,0.2)));
         controller1.addEventListener("right_trigger", AnalogCheck.GREATER_THAN, 0.1, () -> Oscar.setVel(new Pose2d(0,0,-0.2)));
-
+        controller1.addEventListener("right_bumper",ButtonState.HELD,() ->{Oscar.intake.setIntakeDirection(false); Oscar.intake.setIntakeMode(true);});
+        controller1.addEventListener("right_bumper",ButtonState.OFF,() ->{Oscar.intake.setIntakeMode(false);});
         /*controller 2
         sets intake on or off
         runs cycle for placing and releasing
@@ -53,7 +54,7 @@ public class TeleopODO extends LinearOpMode {
         //IDK how this will work will test to see but may change
         //It all keeps heading up
         // When button y is pressed it will go through the entire top cycle
-        controller2.addEventListener("a", ButtonState.PRESSED, () ->{Oscar.elbow.goToGrabPos();});
+        controller2.addEventListener("a", ButtonState.PRESSED, () ->{Oscar.grabber.moveByAngle(-.1, "start"); Thread.sleep(200); Oscar.elbow.goToGrabPos(); Oscar.grabber.moveByAngle(.1, "start");});
         controller2.addEventListener("y", ButtonState.PRESSED,() -> {Oscar.elbow.moveTop(); Oscar.grabber.goTop();});
         controller2.addEventListener("b", ButtonState.PRESSED, () -> {Oscar.elbow.moveStart(); Oscar.grabber.goStart();});
         controller2.addEventListener("x", ButtonState.PRESSED, () -> {Oscar.grabber.grab();});
@@ -70,9 +71,9 @@ public class TeleopODO extends LinearOpMode {
             //
 
             Oscar.setVel(new Pose2d(
-                    -Math.pow(controller1.getAnalogValue("left_stick_y"),3),
-                    -Math.pow(controller1.getAnalogValue("left_stick_x"),3),
-                    -Math.pow(controller1.getAnalogValue("right_stick_x"),3)
+                    -Math.pow(controller1.getAnalogValue("left_stick_y"),4),
+                    -Math.pow(controller1.getAnalogValue("left_stick_x"),4),
+                    -Math.pow(controller1.getAnalogValue("right_stick_x"),4)
 
             ));
             controller1.handleEvents();

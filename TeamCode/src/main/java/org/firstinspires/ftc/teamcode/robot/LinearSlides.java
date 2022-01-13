@@ -20,10 +20,10 @@ public class LinearSlides {
     public static double SLIDE_POWER = .8;
     //Max length
     public static double MAX_LENGTH = RobotConstants.SLIDE_MAX_LENGTH;
-    private double TOP_SLIDE_TICKS = -3667;
+    private double TOP_SLIDE_TICKS = -2900;
     private double MID_SLIDE_TICKS = -3056;
     private double BOTTOM_SLIDE_TICKS = -2445;
-    private double GRAB_SLIDE_TICKS = -100;
+    private double GRAB_SLIDE_TICKS = 0;
 
 
     //Must tune to get more efficient
@@ -80,7 +80,11 @@ public class LinearSlides {
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);}
 
     public void slidesGrab(){currentPosition = GRAB_SLIDE_TICKS; arrayPos = 0;slideMotor.setTargetPosition((int)currentPosition);
-        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);}
+        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        SLIDE_POWER = -SLIDE_POWER;
+        currentPosition = GRAB_SLIDE_TICKS; arrayPos = 0;slideMotor.setTargetPosition((int)currentPosition);
+        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        SLIDE_POWER = -SLIDE_POWER;}
 
 
     public void slidesHome() {
