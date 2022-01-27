@@ -9,7 +9,8 @@ import dashboard.RobotConstants;
 
 public class LinearSlides {
 
-    public DcMotor slideMotor;
+    public DcMotor slideMotor1;
+    public DcMotor slideMotor2;
     public DigitalChannel endstop;
 
 
@@ -17,13 +18,13 @@ public class LinearSlides {
     //position when the slides start
     public double ORIGINAL_POSITION = 0;
     //power motor uses for slides
-    public static double SLIDE_POWER = .8;
+    public static double SLIDE_POWER = -.5;
     //Max length
     public static double MAX_LENGTH = RobotConstants.SLIDE_MAX_LENGTH;
-    private double TOP_SLIDE_TICKS = -2900;
-    private double MID_SLIDE_TICKS = -3056;
-    private double BOTTOM_SLIDE_TICKS = -2445;
-    private double GRAB_SLIDE_TICKS = -110;
+    private double TOP_SLIDE_TICKS = 1800;
+    private double MID_SLIDE_TICKS = 1000;
+    private double BOTTOM_SLIDE_TICKS = 500;
+    private double GRAB_SLIDE_TICKS = 100;
 
 
     //Must tune to get more efficient
@@ -33,76 +34,106 @@ public class LinearSlides {
     private int arrayPos = 0;
 
     public LinearSlides(HardwareMap ahwMap){
-        slideMotor = ahwMap.get(DcMotor.class, "slideMotor");
+        slideMotor1 = ahwMap.get(DcMotor.class, "slideMotor1");
+       // slideMotor2 = ahwMap.get(DcMotor.class, "slideMotor2");
         endstop = ahwMap.get(DigitalChannel.class, "lift_limit_switch");
-        slideMotor.setDirection(DcMotor.Direction.FORWARD);
-        slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        slideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slideMotor1.setDirection(DcMotor.Direction.FORWARD);
+        slideMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slideMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+       // slideMotor2.setDirection(DcMotor.Direction.FORWARD);
+       // slideMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+      //  slideMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         resetEncoder();
 
 
 
     }
     public void out(){
-        slideMotor.setPower(SLIDE_POWER);
+
+        slideMotor1.setPower(SLIDE_POWER);
+        //slideMotor2.setPower(SLIDE_POWER);
     }
     public void in(){
-        slideMotor.setPower(-SLIDE_POWER);
+        slideMotor1.setPower(SLIDE_POWER);
+        //slideMotor2.setPower(-SLIDE_POWER);
     }
     public void stop(){
-        slideMotor.setPower(0);
+        slideMotor1.setPower(0);
+       // slideMotor2.setPower(0);
     }
 
     public double getMotorPosition(){
-        return slideMotor.getCurrentPosition();
+        return slideMotor1.getCurrentPosition();
     }
 
     public void positionCorrection(){
         double error = positions[arrayPos] - getMotorPosition();
 
-        slideMotor.setPower(error * 0.001);
+        slideMotor1.setPower(error * 0.001);
     }
 
+    public void setEncoderPosition(int val) {
+        slideMotor1.setTargetPosition(val);
+    }
 
-
-    public void resetEncoder(){ slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slideMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    public void resetEncoder(){
+        slideMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //slideMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //slideMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
     //lets see if this works
-    public void slidesTop(){ currentPosition = TOP_SLIDE_TICKS; arrayPos = 1; slideMotor.setTargetPosition((int)currentPosition);
-        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    out();}
-    public void slidesMid(){ currentPosition = MID_SLIDE_TICKS; arrayPos = 2; slideMotor.setTargetPosition((int)currentPosition);
-        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    public void slidesTop(){
+        currentPosition = TOP_SLIDE_TICKS; arrayPos = 1;
+        slideMotor1.setTargetPosition((int)currentPosition);
+
+        //slideMotor2.setTargetPosition((int)-currentPosition);
+
+        //slideMotor2.setMode((DcMotor.RunMode.RUN_TO_POSITION));
+        slideMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         out();
     }
-    public void slidesBottom(){currentPosition = BOTTOM_SLIDE_TICKS; arrayPos = 3;slideMotor.setTargetPosition((int)currentPosition);
-        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);}
+    public void slidesMid(){ currentPosition = MID_SLIDE_TICKS; arrayPos = 2; slideMotor1.setTargetPosition((int)currentPosition);
+        slideMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        out();
+    }
+    public void slidesBottom(){currentPosition = BOTTOM_SLIDE_TICKS; arrayPos = 3;slideMotor1.setTargetPosition((int)currentPosition);
+        slideMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);}
 
-    public void slidesGrab(){currentPosition = GRAB_SLIDE_TICKS; arrayPos = 0;slideMotor.setTargetPosition((int)currentPosition);
-        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);}
+    public void slidesGrab(){
+        currentPosition = GRAB_SLIDE_TICKS;
+        arrayPos = 0;
+        slideMotor1.setTargetPosition((int)currentPosition);
+        slideMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        out();
+    }
 
 
     public void slidesHome() {
         boolean run = true;
         while (run) {
-            slideMotor.setPower(.2132);
+            slideMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            slideMotor1.setPower(-.3);
+            //slideMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            //slideMotor2.setPower(-.3);
+
             if (!endstop.getState()) {
-                slideMotor.setPower(0);
+                slideMotor1.setPower(0);
+                //slideMotor2.setPower(0);
                 currentPosition = 0;
                 resetEncoder();
-                slidesGrab();
-                slidesGrab();
                 run = false;
             }
         }
-
+        slidesGrab();
     }
 
 
     public double getCurrentTargetPosition(){
         return positions[arrayPos];
     }
+
+    public boolean getEndstop(){ return endstop.getState();}
 
 
 

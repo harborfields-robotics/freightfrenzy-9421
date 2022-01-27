@@ -14,8 +14,8 @@ public class Intake {
 
 
     //intake powers are kinda self explanatory
-    public static final double INTAKE_POWER = .5;
-    public static final double INTAKE_POWER_SLOW = 0.25;
+    public static final double INTAKE_POWER = 1;
+    public static final double INTAKE_POWER_SLOW = 1;
 
 
     public Intake(HardwareMap ahwMap){

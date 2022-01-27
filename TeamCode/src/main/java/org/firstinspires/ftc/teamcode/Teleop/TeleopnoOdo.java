@@ -4,6 +4,7 @@ import org.firstinspires.ftc.teamcode.robot.Hardware;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.Arrays;
 
@@ -12,6 +13,17 @@ public class TeleopnoOdo extends OpMode {
 
     // makes and instance of the Hardware class
     Hardware robot = new Hardware();
+
+    CycleState cycleState = CycleState.CYCLE_START;
+    ElapsedTime timer = new ElapsedTime();
+
+    public enum CycleState {
+        CYCLE_START,
+        CYCLE_EXTEND,
+        CYCLE_DUMP,
+        CYCLE_RETRACT
+    };
+
 
     public void init(){robot.init(hardwareMap);}
 
@@ -71,6 +83,21 @@ public class TeleopnoOdo extends OpMode {
         else{
             robot.slides.stop();
         }
+
+        if(gamepad2.left_trigger > .5){
+            robot.intake.reverse();
+
+
+        }
+        if(gamepad2.right_trigger > .5){
+            robot.intake.on();
+        }
+
+
+
+
+
+
 
 
 

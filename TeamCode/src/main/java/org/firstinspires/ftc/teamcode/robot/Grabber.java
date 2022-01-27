@@ -1,23 +1,27 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Grabber {
     public Servo g0;
     public Servo g1;
+    public CRServo carosuell1;
+
+
 
     private final double GRAB_POSITION_OFFSET = .1;
 
     private boolean isGrabCurrentlyExtra = false;
 
     //start positions, duh
-    private final double initPos0 = .96;
-    private final double initPos1 = .07;
+    private final double initPos0 = 1;
+    private final double initPos1 = 0;
 
     //how much each servo has to move in order to grab
     private final double grabOffset0 = -.15;
-    private final double grabOffset1 = .15;
+    private final double grabOffset1 = .05;
 
     //tracking position variables
     private boolean isGrab;
@@ -29,19 +33,31 @@ public class Grabber {
     private String position;
 
     //ABSOLUTE!!!
-    private final double TOP_ANG = -200;
+    private final double TOP_ANG = -214;
     private final double MID_ANG = -230;
-    private final double BOTTOM_ANG = -240;
+    private final double BOTTOM_ANG = -188;
     private final double GRAB_ANG = -90;
+
 
     public Grabber(HardwareMap ahwMap){
         g0 = ahwMap.get(Servo.class, "grabber1");
         g1 = ahwMap.get(Servo.class, "grabber2");
+        carosuell1 = ahwMap.get(CRServo.class,"carousell1");
+
 
         g0.setPosition(initPos0);
         g1.setPosition(initPos1);
+        carosuell1.setPower(0);
 
         position = "start";
+    }
+
+    public void carousellOn(){
+        carosuell1.setPower(-1.0);
+    }
+
+    public void carousellOff(){
+        carosuell1.setPower(0);
     }
     //call this after changing tracking variables
     private void grabberUpdatePositions(String newPosition) {
@@ -52,11 +68,11 @@ public class Grabber {
 
     public void grabberGrabExtra() {
         if(!isGrabCurrentlyExtra) {
-            cur0 += .1;
+            cur0 += .2;
             isGrabCurrentlyExtra = true;
         }
         else {
-            cur0 -= .1;
+            cur0 -= .2;
             isGrabCurrentlyExtra = false;
         }
         grabberUpdatePositions(position);
@@ -78,6 +94,15 @@ public class Grabber {
                 //curMid does not change
             }
             grabberUpdatePositions(position);
+    }
+
+    //opens if closed, doesnt do anything if not
+    public void openGrab() {
+        if(isGrab) {
+            isGrab = false;
+            cur0 -= grabOffset0;
+            cur1 += grabOffset1;
+        }
     }
 
     //Same comment

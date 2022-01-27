@@ -29,8 +29,25 @@ public class AutoRed extends LinearOpMode {
         Pose2d startPose = new Pose2d(RobotConstants.STARTPOSEX, RobotConstants.STARTPOSEY, RobotConstants.STARTPOSEANG);
         Oscar.init(hardwareMap);
         Trajectory straitPark = Oscar.drive.trajectoryBuilder(new Pose2d())
-                .back(30)//
+                .back(10)
                 .build();
+
+        Trajectory hitWall = Oscar.drive.trajectoryBuilder(new Pose2d())
+                .strafeLeft(1)
+                .build();
+
+        Trajectory finishPark = Oscar.drive.trajectoryBuilder(new Pose2d())
+                .back(5)
+                .build();
+
+        Trajectory carousell2 = Oscar.drive.trajectoryBuilder(new Pose2d())
+                .forward(6.5)
+                .build();
+
+        Trajectory carousell1 = Oscar.drive.trajectoryBuilder(new Pose2d())
+                .strafeRight(.4)
+                .build();
+
 
         waitForStart();
 
@@ -58,19 +75,28 @@ public class AutoRed extends LinearOpMode {
 
         Thread.sleep(500);
 
-        Oscar.grabber.grabberGrabExtra();
-
-        Oscar.slides.slidesGrab();
-
-        Thread.sleep(350);
-
-        Oscar.grabber.goStart();
 
         Oscar.elbow.moveStart();
+        Thread.sleep(500);
+        Oscar.grabber.goStart();
+        Oscar.grabber.grabberGrabExtra();
 
-        Thread.sleep(1000);
+        Oscar.slides.slidesHome();
+
+        Oscar.drive.followTrajectory(carousell1);
+
+        Oscar.grabber.carousellOn();
+
+
+        Oscar.drive.followTrajectory(carousell2);
+        Thread.sleep(5000);
+
 
         Oscar.drive.followTrajectory(straitPark);
+
+        Oscar.drive.followTrajectory(hitWall);
+
+        Oscar.drive.followTrajectory(finishPark);
 
 
 
