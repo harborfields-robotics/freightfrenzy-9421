@@ -7,6 +7,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 //hardware
 import org.firstinspires.ftc.teamcode.robot.Hardware;
 import org.firstinspires.ftc.teamcode.robot.controllers.AnalogCheck;
@@ -19,9 +20,29 @@ public class TeleopODO extends LinearOpMode {
     private FtcDashboard dashboard;
 
 
+    public enum CycleState {
+        CYCLE_START,
+        CYCLE_EXTEND,
+        CYCLE_DUMP,
+        CYCLE_RETRACT
+    };
+
+    CycleState cycleState = CycleState.CYCLE_START;
+
+    ElapsedTime cycleTimer = new ElapsedTime();
+
+    private int topGrabTime = 250;
+
+    private int elbowTopTime = 1500;
+
+    private int retractTime = 500;
+
+
+
 
     @Override
     public void runOpMode() throws InterruptedException {
+        cycleTimer.reset();
 
         Hardware Oscar = new Hardware(hardwareMap);
 
@@ -83,6 +104,44 @@ public class TeleopODO extends LinearOpMode {
         waitForStart();//
 
         while(opModeIsActive()){
+
+
+            switch(cycleState){
+                case CYCLE_START:
+                    if(gamepad1.y){
+                        cycleTimer.reset();
+                        Oscar.elbow.moveStart();
+                        if(cycleTimer.milliseconds() >= topGrabTime) {
+                            Oscar.slides.slidesTop();
+                            cycleTimer.reset();
+                        }
+
+                        if(cycleTimer.milliseconds() >= elbowTopTime){
+                            Oscar.elbow.moveTop();
+                            Oscar.grabber.goTop();
+                            Oscar.grabber.grabberGrabExtra();
+                            cycleTimer.reset();
+                        }
+
+
+
+
+                    }
+                    break;
+                case CYCLE_RETRACT:
+                    Oscar.elbow.moveStart();
+                    if(cycleTimer.milliseconds() >= retractTime ){
+                        Oscar.grabber.goStart();
+                        Oscar.grabber.grabberGrabExtra();
+                        Oscar.slides.slidesGrab();
+                        cycleTimer.reset();
+                    }
+                    break;
+                default:
+                    cycleState = CycleState.CYCLE_START;
+
+
+            }
             controller1.updateControllerState();
             controller2.updateControllerState();
             //
@@ -119,6 +178,8 @@ public class TeleopODO extends LinearOpMode {
             telemetry.addData("Endstop", !Oscar.slides.getEndstop());
 
             Oscar.setVel(new Pose2d(Oscar.getPoseX(),Oscar.getPoseY(),Oscar.getPoseHeading()));
+
+
 
 
 
