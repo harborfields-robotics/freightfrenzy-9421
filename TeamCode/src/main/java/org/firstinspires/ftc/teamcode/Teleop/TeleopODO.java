@@ -31,6 +31,8 @@ public class TeleopODO extends LinearOpMode {
 
     ElapsedTime cycleTimer = new ElapsedTime();
 
+    private int startTime = 200;
+
     private int topGrabTime = 250;
 
     private int elbowTopTime = 1500;
@@ -110,24 +112,36 @@ public class TeleopODO extends LinearOpMode {
                 case CYCLE_START:
                     if(gamepad1.y){
                         cycleTimer.reset();
-                        Oscar.elbow.moveStart();
-                        if(cycleTimer.milliseconds() >= topGrabTime) {
-                            Oscar.slides.slidesTop();
-                            cycleTimer.reset();
+                        Oscar.grabber.goStart();
+                        Oscar.grabber.moveByAngle(-.1, "start");
+                        if(cycleTimer.milliseconds() >= startTime){
+                            Oscar.elbow.goToGrabPos();
+                            Oscar.grabber.moveByAngle(.1, "start");
+                            Oscar.grabber.openGrab();
                         }
-
-                        if(cycleTimer.milliseconds() >= elbowTopTime){
-                            Oscar.elbow.moveTop();
-                            Oscar.grabber.goTop();
-                            Oscar.grabber.grabberGrabExtra();
-                            cycleTimer.reset();
-                        }
+                        cycleState = cycleState.CYCLE_EXTEND;
 
 
 
 
                     }
                     break;
+                case CYCLE_EXTEND:
+                    Oscar.elbow.moveStart();
+                    if(cycleTimer.milliseconds() >= topGrabTime) {
+                        Oscar.slides.slidesTop();
+                        cycleTimer.reset();
+                    }
+
+                    if(cycleTimer.milliseconds() >= elbowTopTime){
+                        Oscar.elbow.moveTop();
+                        Oscar.grabber.goTop();
+                        Oscar.grabber.grabberGrabExtra();
+                        cycleTimer.reset();
+                    }
+                    cycleState = cycleState.CYCLE_RETRACT;
+                    break;
+
                 case CYCLE_RETRACT:
                     Oscar.elbow.moveStart();
                     if(cycleTimer.milliseconds() >= retractTime ){
@@ -142,6 +156,11 @@ public class TeleopODO extends LinearOpMode {
 
 
             }
+            if (gamepad1.a && cycleState != CycleState.CYCLE_START) {
+                cycleState = CycleState.CYCLE_START;
+            }
+
+
             controller1.updateControllerState();
             controller2.updateControllerState();
             //
