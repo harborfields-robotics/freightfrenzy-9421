@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Teleop;
+package org.firstinspires.ftc.teamcode.drive;
 
 import androidx.annotation.NonNull;
 
@@ -7,6 +7,8 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.internal.ftdi.eeprom.FT_EE_X_Ctrl;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
 import java.util.Arrays;
@@ -28,18 +30,23 @@ import java.util.List;
 @Config
 public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 8192;
-    public static double WHEEL_RADIUS = (35/24.5); // in
+    public static double WHEEL_RADIUS = 35/2.0/24.5; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
-    // TrackingWheelLateralDistanceTuner gives
-    //TrackWidthTuner
-    public static double LATERAL_DISTANCE = 6.875; // in; distance between the left and right wheels
-    public static double FORWARD_OFFSET = 1.5; // in; offset of the lateral wheel
+    public static double LATERAL_DISTANCE = -6.611978367937289; // in; distance between the left and right wheels
+    public static double FORWARD_OFFSET = 2; // in; offset of the lateral wheel
+
+    public static double X_MULTIPLIER = .9787646803; // Multiplier in the X direction
+    public static double Y_MULTIPLIER = .9860805673; // Multiplier in the Y direction
+
+    //X_MULTIPLIER TRIAL VALUES:
+    //.9775575658
+    //.9799717948
+
+    //Y_MULTIPLIER TRIAL VALUES:
+    //.9860805673
 
     private Encoder leftEncoder, rightEncoder, frontEncoder;
-
-    public static double X_MULTIPLIER = 1.0005655;// Multiplier in x direction
-    public static double Y_MULTIPLIER = 1.005131;// Multiplier in Y direction
 
     public StandardTrackingWheelLocalizer(HardwareMap hardwareMap) {
         super(Arrays.asList(
@@ -48,9 +55,9 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
                 new Pose2d(FORWARD_OFFSET, 0, Math.toRadians(90)) // front
         ));
 
-        leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "FL"));
-        rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "BL"));
-        frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "BR"));
+        leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "BR"));
+        rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "FL"));
+        frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "BL"));
 
         // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
     }
@@ -62,7 +69,6 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     @NonNull
     @Override
     public List<Double> getWheelPositions() {
-
         return Arrays.asList(
                 encoderTicksToInches(leftEncoder.getCurrentPosition()) * X_MULTIPLIER,
                 encoderTicksToInches(rightEncoder.getCurrentPosition()) * X_MULTIPLIER,
@@ -78,9 +84,9 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
         //  compensation method
 
         return Arrays.asList(
-                encoderTicksToInches(leftEncoder.getCorrectedVelocity()) * X_MULTIPLIER,
-                encoderTicksToInches(rightEncoder.getCorrectedVelocity()) * X_MULTIPLIER,
-                encoderTicksToInches(frontEncoder.getCorrectedVelocity()) * Y_MULTIPLIER
+                encoderTicksToInches(leftEncoder.getRawVelocity()) * X_MULTIPLIER,
+                encoderTicksToInches(rightEncoder.getRawVelocity()) * X_MULTIPLIER,
+                encoderTicksToInches(frontEncoder.getRawVelocity()) * Y_MULTIPLIER
         );
     }
 }

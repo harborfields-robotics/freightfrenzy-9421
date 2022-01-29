@@ -6,12 +6,8 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.robot.Robot;
 
-import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode.robot.Hardware;
-import org.firstinspires.ftc.teamcode.robot.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.robot.controllers.ButtonState;
 
 import dashboard.RobotConstants;
 
@@ -29,7 +25,7 @@ public class AutoRed extends LinearOpMode {
         Pose2d startPose = new Pose2d(RobotConstants.STARTPOSEX, RobotConstants.STARTPOSEY, RobotConstants.STARTPOSEANG);
         Oscar.init(hardwareMap);
         Trajectory straitPark = Oscar.drive.trajectoryBuilder(new Pose2d())
-                .back(10)
+                .back(17)
                 .build();
 
         Trajectory hitWall = Oscar.drive.trajectoryBuilder(new Pose2d())
@@ -41,11 +37,11 @@ public class AutoRed extends LinearOpMode {
                 .build();
 
         Trajectory carousell2 = Oscar.drive.trajectoryBuilder(new Pose2d())
-                .forward(6.5)
+                .forward(9.35)
                 .build();
 
         Trajectory carousell1 = Oscar.drive.trajectoryBuilder(new Pose2d())
-                .strafeRight(.4)
+                .strafeRight(1.5)
                 .build();
 
 

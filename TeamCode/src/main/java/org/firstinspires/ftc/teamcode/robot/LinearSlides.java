@@ -62,7 +62,7 @@ public class LinearSlides {
        // slideMotor2.setPower(0);
     }
 
-    public double getMotorPosition(){
+    public int getMotorPosition(){
         return slideMotor1.getCurrentPosition();
     }
 
@@ -113,7 +113,7 @@ public class LinearSlides {
         boolean run = true;
         while (run) {
             slideMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            slideMotor1.setPower(-.3);
+            slideMotor1.setPower(-.4);
             //slideMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             //slideMotor2.setPower(-.3);
 

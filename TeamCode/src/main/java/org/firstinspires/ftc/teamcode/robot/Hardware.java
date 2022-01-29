@@ -4,6 +4,8 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+
 
 public class Hardware {
     HardwareMap hwMap = null;
@@ -15,6 +17,10 @@ public class Hardware {
     public LinearSlides slides = null;
 
     public SampleMecanumDrive drive;
+
+    private double poseHeading = 0;
+    private double poseX = 0;
+    private double poseY = 0;
 
     public Hardware(HardwareMap hardwareMap){
         hwMap = hardwareMap;
@@ -64,5 +70,10 @@ public class Hardware {
 
     public Pose2d getVel(){return vel;}
     public void setVel(Pose2d v){vel = v;}
-
+    public void updateX(double X) {poseX = X;}
+    public void updateY(double Y) {poseY = Y;}
+    public void updateHeading(double heading) {poseHeading = heading;}
+    public double getPoseX() {return(poseX);}
+    public double getPoseY() {return(poseY);}
+    public double getPoseHeading() {return(poseHeading);}
 }

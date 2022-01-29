@@ -30,20 +30,31 @@ public class TeleopODO extends LinearOpMode {
         ControllerState controller1 = new ControllerState(gamepad1);
         ControllerState controller2 = new ControllerState(gamepad2);
 
-
         /*
         controller 1- For max most likely
         any small changes in robot position with d pad, will override the joysticks
          */
         //TODO:tune these
-        controller1.addEventListener("dpad_left", ButtonState.HELD, () -> Oscar.setVel(new Pose2d(1,0,0)));
-        controller1.addEventListener("dpad_right", ButtonState.HELD, () -> Oscar.setVel(new Pose2d(-1,0,0)));
-        controller1.addEventListener("dpad_down", ButtonState.HELD, () -> Oscar.setVel(new Pose2d(0,0.4,0)));
-        controller1.addEventListener("dpad_up",ButtonState.HELD, () -> Oscar.setVel(new Pose2d(0,-0.4,0)));
-        controller1.addEventListener("left_trigger", AnalogCheck.GREATER_THAN, 0.1, () -> Oscar.setVel(new Pose2d(0,0,0.2)));
-        controller1.addEventListener("right_trigger", AnalogCheck.GREATER_THAN, 0.1, () -> Oscar.setVel(new Pose2d(0,0,-0.2)));
-        controller1.addEventListener("right_bumper", ButtonState.HELD, () -> Oscar.grabber.carousellOn());
-        controller1.addEventListener("right_bumper", ButtonState.OFF, () -> Oscar.grabber.carousellOff());
+        controller1.addEventListener("dpad_left", ButtonState.HELD, () -> {Oscar.updateX(1); Oscar.setVel(new Pose2d(Oscar.getPoseX(),Oscar.getPoseY(),Oscar.getPoseHeading()));});
+        controller1.addEventListener("dpad_left", ButtonState.OFF, () -> {Oscar.updateX(0);});
+
+        controller1.addEventListener("dpad_down", ButtonState.HELD, () -> {Oscar.updateY(.7); Oscar.setVel(new Pose2d(Oscar.getPoseX(),Oscar.getPoseY(),Oscar.getPoseHeading()));});
+        controller1.addEventListener("dpad_down", ButtonState.OFF, () -> {Oscar.updateY(0);});
+
+        controller1.addEventListener("dpad_right", ButtonState.HELD, () -> {Oscar.updateX(-1); Oscar.setVel(new Pose2d(Oscar.getPoseX(),Oscar.getPoseY(),Oscar.getPoseHeading()));});
+        controller1.addEventListener("dpad_right", ButtonState.OFF, () -> {Oscar.updateX(0);});
+
+        controller1.addEventListener("dpad_up",ButtonState.HELD, () -> {Oscar.updateY(-.7); Oscar.setVel(new Pose2d(Oscar.getPoseX(),Oscar.getPoseY(),Oscar.getPoseHeading()));});
+        controller1.addEventListener("dpad_up", ButtonState.OFF, () -> {Oscar.updateY(0);});
+
+        controller1.addEventListener("left_trigger", AnalogCheck.GREATER_THAN, 0.1, () -> {Oscar.updateHeading(.3); Oscar.setVel(new Pose2d(Oscar.getPoseX(),Oscar.getPoseY(),Oscar.getPoseHeading()));});
+        controller1.addEventListener("left_trigger", AnalogCheck.LESS_THAN_EQUALS, 0.1, () -> {Oscar.updateHeading(0);});
+
+        controller1.addEventListener("right_trigger", AnalogCheck.GREATER_THAN, 0.1, () -> {Oscar.updateHeading(-.3); Oscar.setVel(new Pose2d(Oscar.getPoseX(),Oscar.getPoseY(),Oscar.getPoseHeading()));});
+        controller1.addEventListener("right_trigger", AnalogCheck.LESS_THAN_EQUALS, 0.1, () -> {Oscar.updateHeading(0);});
+
+        controller1.addEventListener("x", ButtonState.HELD, () -> Oscar.grabber.carousellOn());
+        controller1.addEventListener("x", ButtonState.OFF, () -> Oscar.grabber.carousellOff());
 //        controller1.addEventListener("right_bumper",ButtonState.HELD,() ->{Oscar.intake.setIntakeDirection(false); Oscar.intake.setIntakeMode(true);});
 //        controller1.addEventListener("right_bumper",ButtonState.OFF,() ->{Oscar.intake.setIntakeMode(false);});
         /*controller 2
@@ -77,8 +88,8 @@ public class TeleopODO extends LinearOpMode {
             //
 
             Oscar.setVel(new Pose2d(
-                    -Math.pow(controller1.getAnalogValue("left_stick_y"),3),
                     -Math.pow(controller1.getAnalogValue("left_stick_x"),3),
+                    Math.pow(controller1.getAnalogValue("left_stick_y"),3),
                     -Math.pow(controller1.getAnalogValue("right_stick_x"),3)
 
             ));
@@ -107,7 +118,7 @@ public class TeleopODO extends LinearOpMode {
             telemetry.addData("Slide Position", Oscar.slides.getCurrentTargetPosition());
             telemetry.addData("Endstop", !Oscar.slides.getEndstop());
 
-            Pose2d myPose = Oscar.drive.getPoseEstimate();
+            Oscar.setVel(new Pose2d(Oscar.getPoseX(),Oscar.getPoseY(),Oscar.getPoseHeading()));
 
 
 
