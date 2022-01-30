@@ -44,7 +44,7 @@ public class TeleopODO extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        cycleTimer.reset();
+
 
         Hardware Oscar = new Hardware(hardwareMap);
 
@@ -127,28 +127,32 @@ public class TeleopODO extends LinearOpMode {
                     }
                     break;
                 case CYCLE_EXTEND:
-                    Oscar.elbow.moveStart();
-                    if(cycleTimer.milliseconds() >= topGrabTime) {
-                        Oscar.slides.slidesTop();
-                        cycleTimer.reset();
-                    }
+                    if(gamepad1.y) {
+                        Oscar.elbow.moveStart();
+                        if (cycleTimer.milliseconds() >= topGrabTime) {
+                            Oscar.slides.slidesTop();
+                            cycleTimer.reset();
+                        }
 
-                    if(cycleTimer.milliseconds() >= elbowTopTime){
-                        Oscar.elbow.moveTop();
-                        Oscar.grabber.goTop();
-                        Oscar.grabber.grabberGrabExtra();
-                        cycleTimer.reset();
+                        if (cycleTimer.milliseconds() >= elbowTopTime) {
+                            Oscar.elbow.moveTop();
+                            Oscar.grabber.goTop();
+                            Oscar.grabber.grabberGrabExtra();
+                            cycleTimer.reset();
+                        }
+                        cycleState = cycleState.CYCLE_RETRACT;
                     }
-                    cycleState = cycleState.CYCLE_RETRACT;
                     break;
 
                 case CYCLE_RETRACT:
-                    Oscar.elbow.moveStart();
-                    if(cycleTimer.milliseconds() >= retractTime ){
-                        Oscar.grabber.goStart();
-                        Oscar.grabber.grabberGrabExtra();
-                        Oscar.slides.slidesGrab();
-                        cycleTimer.reset();
+                    if(gamepad1.y) {
+                        Oscar.elbow.moveStart();
+                        if (cycleTimer.milliseconds() >= retractTime) {
+                            Oscar.grabber.goStart();
+                            Oscar.grabber.grabberGrabExtra();
+                            Oscar.slides.slidesGrab();
+                            cycleTimer.reset();
+                        }
                     }
                     break;
                 default:
