@@ -42,6 +42,8 @@ public class TeleopODO extends LinearOpMode {
 
 
 
+
+
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -112,6 +114,8 @@ public class TeleopODO extends LinearOpMode {
                 case CYCLE_START:
                     if(gamepad1.y){
                         cycleTimer.reset();
+                        telemetry.addLine("in cycle start");
+
                         Oscar.grabber.goStart();
                         Oscar.grabber.moveByAngle(-.1, "start");
                         if(cycleTimer.milliseconds() >= startTime){
@@ -121,37 +125,44 @@ public class TeleopODO extends LinearOpMode {
 
                             Oscar.grabber.moveByAngle(.1, "start");
                             Oscar.grabber.openGrab();
+                            cycleState = cycleState.CYCLE_EXTEND;
+
 
                         }
-                        cycleState = cycleState.CYCLE_EXTEND;
+
 
 
 
 
                     }
 
+
                     break;
                 case CYCLE_EXTEND:
                     //if(gamepad1.y) {
                     cycleTimer.reset();
-                        telemetry.addLine("in cycle extend");
-                        telemetry.addData("timer2", cycleTimer.milliseconds());
-                        Oscar.elbow.moveStart();
-                        if (cycleTimer.milliseconds() >= topGrabTime) {
-                            Oscar.slides.slidesTop();
-                            cycleTimer.reset();
-                        }
+                    telemetry.addLine("in cycle extend");
+                    telemetry.addData("timer2", cycleTimer.milliseconds());
+                    Oscar.elbow.moveStart();
+                    if (cycleTimer.milliseconds() >= topGrabTime) {
+                        Oscar.slides.slidesTop();
+                        cycleState = cycleState.CYCLE_DUMP;
+                        cycleTimer.reset();
+                    }
 
-                        if (cycleTimer.milliseconds() >= elbowTopTime) {
-                            Oscar.elbow.moveTop();
-                            Oscar.grabber.goTop();
-                            Oscar.grabber.grabberGrabExtra();
-                            cycleTimer.reset();
-                            cycleState = cycleState.CYCLE_RETRACT;
-                        }
+
                         //cycleState = cycleState.CYCLE_RETRACT;
                     //}
                     break;
+                case CYCLE_DUMP:
+                    if ((cycleTimer.milliseconds() ) >= elbowTopTime) {
+                        Oscar.elbow.moveTop();
+                        Oscar.grabber.goTop();
+                        Oscar.grabber.grabberGrabExtra();
+                        cycleTimer.reset();
+                        cycleState = cycleState.CYCLE_RETRACT;
+                    }
+
 
                 case CYCLE_RETRACT:
                     //if(gamepad1.y) {
