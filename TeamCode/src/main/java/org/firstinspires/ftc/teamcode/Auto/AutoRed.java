@@ -25,15 +25,15 @@ public class AutoRed extends LinearOpMode {
         Pose2d startPose = new Pose2d(RobotConstants.STARTPOSEX, RobotConstants.STARTPOSEY, RobotConstants.STARTPOSEANG);
         Oscar.init(hardwareMap);
         Trajectory straitPark = Oscar.drive.trajectoryBuilder(new Pose2d())
-                .back(17)
+                .back(30)
                 .build();
 
         Trajectory hitWall = Oscar.drive.trajectoryBuilder(new Pose2d())
-                .strafeLeft(1)
+                .strafeLeft(2)
                 .build();
 
         Trajectory finishPark = Oscar.drive.trajectoryBuilder(new Pose2d())
-                .back(5)
+                .back(20)
                 .build();
 
         Trajectory carousell2 = Oscar.drive.trajectoryBuilder(new Pose2d())
