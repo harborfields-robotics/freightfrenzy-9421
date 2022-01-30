@@ -33,6 +33,8 @@ public class TeleopODO extends LinearOpMode {
 
     ElapsedTime cycleTimer = new ElapsedTime();
 
+    ElapsedTime stateTimer = new ElapsedTime();
+
     private int startTime = 300;
 
     private int topGrabTime = 250;
@@ -129,6 +131,7 @@ public class TeleopODO extends LinearOpMode {
                         Oscar.grabber.goStart();
                         Oscar.grabber.moveByAngle(-.1, "start");
                         cycleTimer.reset();
+                        stateTimer.reset();
                         cycleState = CycleState.CYCLE_UP;
 
 
@@ -142,16 +145,21 @@ public class TeleopODO extends LinearOpMode {
                 case CYCLE_UP:
 
                     telemetry.addLine("in cycle up");
-                    if(cycleTimer.milliseconds() >= startTime){
-                        Oscar.elbow.goToGrabPos();
+                    if(stateTimer.milliseconds() >= 1000) {
+                        if (cycleTimer.milliseconds() >= startTime) {
+                            Oscar.elbow.goToGrabPos();
 
-                        telemetry.addData("timer1", cycleTimer.milliseconds());
+                            telemetry.addData("timer1", cycleTimer.milliseconds());
 
-                        Oscar.grabber.moveByAngle(.1, "start");
-                        Oscar.grabber.openGrab();
-                        cycleTimer.reset();
-                        cycleState = CycleState.CYCLE_EXTEND;
+                            Oscar.grabber.moveByAngle(.1, "start");
+                            Oscar.grabber.openGrab();
+                            cycleTimer.reset();
 
+                            stateTimer.reset();
+
+                            cycleState = CycleState.CYCLE_EXTEND;
+
+                        }
                     }
 
 
@@ -162,12 +170,15 @@ public class TeleopODO extends LinearOpMode {
 
                     telemetry.addLine("in cycle extend");
                     telemetry.addData("timer2", cycleTimer.milliseconds());
-                    Oscar.elbow.moveStart();
-                    if (cycleTimer.milliseconds() >= topGrabTime) {
-                        Oscar.slides.slidesTop();
-                        cycleTimer.reset();
-                        cycleState = CycleState.CYCLE_DUMP;
+                    if(stateTimer.milliseconds() >= 1500) {
+                        Oscar.elbow.moveStart();
+                        if (cycleTimer.milliseconds() >= topGrabTime) {
+                            Oscar.slides.slidesTop();
+                            cycleTimer.reset();
+                            stateTimer.reset();
+                            cycleState = CycleState.CYCLE_DUMP;
 
+                        }
                     }
 
 
@@ -176,20 +187,26 @@ public class TeleopODO extends LinearOpMode {
                     break;
                 case CYCLE_DUMP:
                     telemetry.addLine("In cycle dump");
-                    if ((cycleTimer.milliseconds() ) >= elbowTopTime) {
-                        Oscar.elbow.moveTop();
-                        cycleTimer.reset();
-                        cycleState = CycleState.CYCLE_GRABBER_TOP;
+                    if(stateTimer.milliseconds() >= 1500) {
+                        if ((cycleTimer.milliseconds()) >= elbowTopTime) {
+                            Oscar.elbow.moveTop();
+                            cycleTimer.reset();
+                            stateTimer.reset();
+                            cycleState = CycleState.CYCLE_GRABBER_TOP;
+                        }
                     }
                     break;
                 case CYCLE_GRABBER_TOP:
                     telemetry.addLine("Grabber Top");
-                    if (cycleTimer.milliseconds() >= grabberTopTime){
-                        Oscar.grabber.goTop();
-                        Oscar.grabber.grabberGrabExtra();
-                        cycleTimer.reset();
-                        cycleState = CycleState.CYCLE_RETRACT;
+                    if(stateTimer.milliseconds() >= 1000) {
+                        if (cycleTimer.milliseconds() >= grabberTopTime) {
+                            Oscar.grabber.goTop();
+                            Oscar.grabber.grabberGrabExtra();
+                            cycleTimer.reset();
+                            stateTimer.reset();
+                            cycleState = CycleState.CYCLE_RETRACT;
 
+                        }
                     }
                     break;
 
@@ -198,6 +215,7 @@ public class TeleopODO extends LinearOpMode {
                     //if(gamepad1.y) {
                         telemetry.addLine("retracting slides");
                         telemetry.addData("in retract timer", cycleTimer.milliseconds());
+                        if(stateTimer.milliseconds() >= 1000){
                         Oscar.elbow.moveStart();
                         if (cycleTimer.milliseconds() >= retractTime) {
                             Oscar.grabber.goStart();
@@ -206,7 +224,7 @@ public class TeleopODO extends LinearOpMode {
                             cycleTimer.reset();
                             cycleState = CycleState.CYCLE_START;
                         }
-                   // }
+                    }
                     break;
                 default:
                     cycleState = CycleState.CYCLE_START;
