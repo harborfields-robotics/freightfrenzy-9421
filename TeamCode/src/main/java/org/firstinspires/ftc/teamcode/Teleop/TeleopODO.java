@@ -1,21 +1,17 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
-import android.widget.Button;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 //hardware
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.robotcore.internal.opengl.TextResourceReader;
 import org.firstinspires.ftc.teamcode.robot.Hardware;
 import org.firstinspires.ftc.teamcode.robot.controllers.AnalogCheck;
 import org.firstinspires.ftc.teamcode.robot.controllers.ButtonState;
 import org.firstinspires.ftc.teamcode.robot.controllers.ControllerState;
-import org.firstinspires.ftc.teamcode.robot.controllers.PositionTracker;
 
 @Config
 @TeleOp(group = "drive")
@@ -44,11 +40,11 @@ public class TeleopODO extends LinearOpMode {
 
     ElapsedTime slideTimer = new ElapsedTime();
 
-    private int startTime = 300;
+    private int startTime = 100;
 
     private int topGrabTime = 250;
 
-    private int elbowTopTime = 1500;
+    private int slideExtendTime = 1500;
 
     private int grabberTopTime = 300;
 
@@ -58,43 +54,20 @@ public class TeleopODO extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-
         Hardware Oscar = new Hardware(hardwareMap);
-
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-
-        Pose2d startPose = new Pose2d(0, 0, 0);
-
-        PositionTracker positionTracker = new PositionTracker(startPose);
 
         Oscar.drive.setPoseEstimate(new Pose2d(0, 0, 0));
 
         ControllerState controller1 = new ControllerState(gamepad1);
         ControllerState controller2 = new ControllerState(gamepad2);
 
-        controller1.addEventListener("dpad_left", ButtonState.HELD, () -> {
-            positionTracker.setYDirection(-1);
-        });
-
-        controller1.addEventListener("dpad_down", ButtonState.HELD, () -> {
-            positionTracker.setXDirection(-1);
-        });
-
-        controller1.addEventListener("dpad_right", ButtonState.HELD, () -> {
-            positionTracker.setYDirection(1);
-        });
-
-        controller1.addEventListener("dpad_up", ButtonState.HELD, () -> {
-            positionTracker.setXDirection(1);
-        });
-
-        controller1.addEventListener("left_trigger", AnalogCheck.GREATER_THAN, 0.1, () -> {
-            positionTracker.setAngDirection(-1);
-        });
-
-        controller1.addEventListener("right_trigger", AnalogCheck.GREATER_THAN, 0.1, () -> {
-            positionTracker.setAngDirection(1);
-        });
+//        controller1.addEventListener("left_trigger", AnalogCheck.GREATER_THAN, 0.1, () -> {
+//            positionTracker.setAngDirection(-1);
+//        });
+//
+//        controller1.addEventListener("right_trigger", AnalogCheck.GREATER_THAN, 0.1, () -> {
+//            positionTracker.setAngDirection(1);
+//        });
 
 //        controller1.addEventListener("dpad_left", ButtonState.HELD, () -> {Oscar.updateX(1); Oscar.setVel(new Pose2d(Oscar.getPoseX(),Oscar.getPoseY(),Oscar.getPoseHeading()));});
 //        controller1.addEventListener("dpad_left", ButtonState.OFF, () -> {Oscar.updateX(0);});
@@ -116,19 +89,20 @@ public class TeleopODO extends LinearOpMode {
 
         controller1.addEventListener("x", ButtonState.HELD, () -> Oscar.grabber.carousellOn());
         controller1.addEventListener("x", ButtonState.OFF, () -> Oscar.grabber.carousellOff());
-        //controller1.addEventListener("right_bumper",ButtonState.HELD,() ->{Oscar.intake.setIntakeDirection(false); Oscar.intake.setIntakeMode(true);});
-        //controller1.addEventListener("right_bumper",ButtonState.OFF,() ->{Oscar.intake.setIntakeMode(false);});
+
+//        controller1.addEventListener("right_bumper",ButtonState.HELD,() ->{Oscar.intake.reverse();});
+//        controller1.addEventListener("right_bumper",ButtonState.OFF,() ->{Oscar.intake.off();});
         /*controller 2
         sets intake on or off
         runs cycle for placing and releasing
          */
         // toggle intake on if the grabber is open and the elbow is at its home position
-        controller2.addEventListener("left_trigger", AnalogCheck.GREATER_THAN, 0.1, () -> {
-            Oscar.intake.on();
-        });
-        controller2.addEventListener("left_trigger", AnalogCheck.LESS_THAN, 0.1, () -> {
-            Oscar.intake.off();
-        });
+//        controller2.addEventListener("left_trigger", AnalogCheck.GREATER_THAN, 0.1, () -> {
+//            Oscar.intake.on();
+//        });
+//        controller2.addEventListener("left_trigger", AnalogCheck.LESS_THAN, 0.1, () -> {
+//            Oscar.intake.off();
+//        });
         // controller2.addEventListener("right_trigger", AnalogCheck.GREATER_THAN, 0.1,()-> {Oscar.intake.reverse();});
         //controller2.addEventListener("right_trigger",AnalogCheck.LESS_THAN, 0.1,() ->{Oscar.intake.off();});
         //IDK how this will work will test to see but may change
@@ -136,18 +110,10 @@ public class TeleopODO extends LinearOpMode {
         //It all keeps heading up
         // When button y is pressed it will go through the entire top cycle
         controller2.addEventListener("a", ButtonState.PRESSED, () -> {
-            Oscar.grabber.stopGrab();
-            Oscar.grabber.goStart();
-            Oscar.grabber.moveByAngle(-.1, "start");
-            Thread.sleep(200);
             Oscar.elbow.goToGrabPos();
-            Oscar.grabber.moveByAngle(.1, "start");
-            Oscar.grabber.openGrab();
+            Oscar.grabber.goStart();
         });
-        controller2.addEventListener("y", ButtonState.PRESSED, () -> {
-            Oscar.elbow.moveBottom();
-            Oscar.grabber.goBottom();
-        });
+
         controller2.addEventListener("b", ButtonState.PRESSED, () -> {
             Oscar.elbow.moveStart();
             Oscar.grabber.goStart();
@@ -176,214 +142,147 @@ public class TeleopODO extends LinearOpMode {
             Oscar.grabber.goStart();
             Oscar.grabber.grabberGrabExtra();
             Oscar.slides.slidesGrab();
+            Thread.sleep(1500);
+            Oscar.elbow.goToGrabPos();
+            Oscar.grabber.openGrab();
         });
 
         waitForStart();//
 
         while (opModeIsActive()) {
 
-            positionTracker.setXDirection(0);
-            positionTracker.setYDirection(0);
-            positionTracker.setAngDirection(0);
-
             telemetry.update();
-            telemetry.addData("Wheel location", Oscar.drive.getWheelPositions());
-            telemetry.addData("Slide Position", Oscar.slides.getMotorPosition());
-            telemetry.addData("Slide Position", Oscar.slides.getCurrentTargetPosition());
+//            telemetry.addData("Wheel location", Oscar.drive.getWheelPositions());
+//            telemetry.addData("Slide Position", Oscar.slides.getMotorPosition());
+//            telemetry.addData("Slide Position", Oscar.slides.getCurrentTargetPosition());
             telemetry.addData("Endstop", !Oscar.slides.getEndstop());
 
+            telemetry.addData("IS GRABBING? ", Oscar.grabber.getIsGrab());
+            telemetry.addData("IS GRABBING EXTRA? ", Oscar.grabber.getIsGrabExtra());
 
             switch (cycleState) {
                 case CYCLE_START:
-                    telemetry.addLine("in cycle start");
-                    Oscar.elbow.goToGrabPos();
-
+                    telemetry.addLine("CYCLE START");
                     if(gamepad1.y){
-
-
+                        Oscar.grabber.closeGrab();
                         Oscar.grabber.goStart();
-                        Oscar.grabber.moveByAngle(-.1, "start");
+                        Oscar.slides.slidesHome();
                         cycleTimer.reset();
                         stateTimer.reset();
                         cycleState = CycleState.CYCLE_UP;
-
-
-
-
-
-
                     }
                     break;
 
                 case CYCLE_UP:
-
-                    telemetry.addLine("in cycle up");
-                    if(stateTimer.milliseconds() >= 1000) {
-                        if (cycleTimer.milliseconds() >= startTime) {
-
-
-                            telemetry.addData("timer1", cycleTimer.milliseconds());
-
-                            Oscar.grabber.moveByAngle(.1, "start");
-                            Oscar.grabber.openGrab();
+                    telemetry.addLine("CYCLE UP");
+                    if(stateTimer.milliseconds() >= 100) {
+                        if (cycleTimer.milliseconds() >= startTime + 100) {
+                            Oscar.elbow.moveStart();
                             cycleTimer.reset();
-
                             stateTimer.reset();
-
                             cycleState = CycleState.CYCLE_EXTEND;
-
                         }
                     }
-
-
-
                     break;
+
                 case CYCLE_EXTEND:
-                    //if(gamepad1.y) {
-
-                    telemetry.addLine("in cycle extend");
-                    telemetry.addData("timer2", cycleTimer.milliseconds());
-                    if(stateTimer.milliseconds() >= 1500) {
-                        Oscar.elbow.moveStart();
-                        if (cycleTimer.milliseconds() >= topGrabTime) {
-                            Oscar.slides.slidesTop();
-                            cycleTimer.reset();
-                            stateTimer.reset();
-                            cycleState = CycleState.CYCLE_DUMP;
-
-                        }
+                    telemetry.addLine("CYCLE EXTEND");
+                    if(stateTimer.milliseconds() >= 500) {
+                        Oscar.slides.slidesTop();
+                        cycleTimer.reset();
+                        stateTimer.reset();
+                        cycleState = CycleState.CYCLE_DUMP;
                     }
-
-
-                    //cycleState = cycleState.CYCLE_RETRACT;
-                    //}
                     break;
+
                 case CYCLE_DUMP:
-                    telemetry.addLine("In cycle dump");
-                    if(stateTimer.milliseconds() >= 1500) {
-                        if ((cycleTimer.milliseconds()) >= elbowTopTime) {
-                            Oscar.elbow.moveTop();
-                            Oscar.grabber.goTop();
-                            cycleTimer.reset();
-                            stateTimer.reset();
-                            cycleState = CycleState.CYCLE_GRABBER_TOP;
-                        }
+                    telemetry.addLine("CYCLE DUMP");
+                    if(Oscar.slides.getMotorPosition() > Oscar.slides.TOP_SLIDE_TICKS - 500) {
+                        Oscar.elbow.moveTop();
+                        Oscar.grabber.goTop();
+                        cycleTimer.reset();
+                        stateTimer.reset();
+                        cycleState = CycleState.CYCLE_GRABBER_TOP;
                     }
                     break;
+
                 case CYCLE_GRABBER_TOP:
-                    telemetry.addLine("Grabber Top");
-                    if(stateTimer.milliseconds() >= 1000) {
-                        if (cycleTimer.milliseconds() >= grabberTopTime) {
-                            //Oscar.grabber.goTop();
-                            Oscar.grabber.grabberGrabExtra();
-                            cycleTimer.reset();
-                            stateTimer.reset();
-                            grabberTimer.reset();
-                            cycleState = CycleState.CYCLE_RETRACT;
-
-                        }
+                    telemetry.addLine("GRABBER TOP");
+                    if(stateTimer.milliseconds() >= 300) {
+                        Oscar.grabber.openGrab();
+                        Oscar.grabber.grabberGrabExtra();
+                        cycleTimer.reset();
+                        stateTimer.reset();
+                        slideTimer.reset();
+                        grabberTimer.reset();
+                        cycleState = CycleState.CYCLE_RETRACT;
                     }
                     break;
-
 
                 case CYCLE_RETRACT:
-                    //if(gamepad1.y) {
-                        telemetry.addLine("retracting slides");
-                        telemetry.addData("in retract timer", cycleTimer.milliseconds());
-                        if(stateTimer.milliseconds() >= 1000){
-                        //Oscar.elbow.moveStart();
-                        if (cycleTimer.milliseconds() >= retractTime) {
-                            Oscar.elbow.moveStart();
-                           // Oscar.grabber.goStart();
-                            //Oscar.grabber.grabberGrabExtra();
-                            if(grabberTimer.milliseconds() >= 1000 + retractTime){
-                                Oscar.grabber.goStart();
+                    telemetry.addLine("SLIDES RETRACT");
+                    if(stateTimer.milliseconds() >= 650) {
+                        Oscar.elbow.moveStart();
+                        if(cycleTimer.milliseconds() >= 650 + retractTime) {
+                            Oscar.grabber.goStart();
+                            Oscar.grabber.closeGrab();
+                            Oscar.slides.slidesGrab();
+                            if(Oscar.slides.getMotorPosition() <= 500) {
                                 Oscar.grabber.grabberGrabExtra();
-                                Oscar.grabber.grab();
-                                slideTimer.reset();
-
-                                Oscar.slides.slidesGrab();
+                                Oscar.grabber.openGrab();
+                                Oscar.elbow.goToGrabPos();
                                 cycleTimer.reset();
+                                stateTimer.reset();
+                                slideTimer.reset();
+                                grabberTimer.reset();
                                 cycleState = CycleState.CYCLE_START;
-
-
-                               /* if(slideTimer.milliseconds() >= 200) {
-                                    Oscar.elbow.goToGrabPos();
-                                    //meep
-
-
-                                    cycleTimer.reset();
-                                    cycleState = CycleState.CYCLE_START;
-
-
-                                }
-
-                                */
-
-
-
                             }
-
                         }
                     }
                     break;
+
                 default:
                     cycleState = CycleState.CYCLE_START;
-
-
             }
 
             if (gamepad1.a && cycleState != CycleState.CYCLE_START) {
                 cycleState = CycleState.CYCLE_START;
             }
 
-
             controller1.updateControllerState();
             controller2.updateControllerState();
-
-
-//            Oscar.setVel(new Pose2d(
-//                    -Math.pow(controller1.getAnalogValue("left_stick_x"),3),
-//                    Math.pow(controller1.getAnalogValue("left_stick_y"),3),
-//                    -Math.pow(controller1.getAnalogValue("right_stick_x"),3)
-//
-//            ));
-
 
             controller1.handleEvents();
             controller2.handleEvents();
 
-            positionTracker.iterate();
-            telemetry.addData("Accels: ", positionTracker.getAccels());
-            telemetry.addData("Velocities: ", positionTracker.getAccels());
-            if (positionTracker.getPreviousPose().getX() != positionTracker.getPose().getX() || positionTracker.getPreviousPose().getY() != positionTracker.getPose().getY() || positionTracker.getPreviousPose().getHeading() != positionTracker.getPose().getHeading()) {
-                telemetry.addData("Ran From: ", positionTracker.getPreviousPose());
-                telemetry.addData("Ran To: ", positionTracker.getPose());
-                Trajectory move = drive.trajectoryBuilder(positionTracker.getPreviousPose()).lineToLinearHeading(positionTracker.getPose()).build();
-                drive.followTrajectory(move);
+            if(Oscar.slides.getMotorPosition() <= 100) {
+                if (gamepad2.left_trigger > .5) {
+                    Oscar.intake.reverse();
+                } else if (gamepad2.right_trigger > .5) {
+                    Oscar.intake.on();
+                } else {
+                    Oscar.intake.off();
+                }
+
+                if (gamepad1.left_bumper) {
+                    Oscar.intake.reverse();
+                } else if (gamepad1.right_bumper) {
+                    Oscar.intake.on();
+                } else {
+                    Oscar.intake.off();
+                }
             }
-
-
-            if (gamepad2.left_trigger > .5) {
-                Oscar.intake.reverse();
-
-
-            } else if (gamepad2.right_trigger > .5) {
-                Oscar.intake.on();
-            } else {
+            else {
                 Oscar.intake.off();
             }
 
-            //Allow Dpad override
-            Oscar.drive.setDrivePower(Oscar.getVel());
-            Oscar.drive.update();
-
-
-            Oscar.setVel(new Pose2d(Oscar.getPoseX(), Oscar.getPoseY(), Oscar.getPoseHeading()));
-
-
+            Oscar.drive.setWeightedDrivePower(
+                    new Pose2d(
+                            -gamepad1.left_stick_y * .7,
+                            -gamepad1.left_stick_x * .7,
+                            -gamepad1.right_stick_x * .5
+                    )
+            );
         }
-
-
     }
 }

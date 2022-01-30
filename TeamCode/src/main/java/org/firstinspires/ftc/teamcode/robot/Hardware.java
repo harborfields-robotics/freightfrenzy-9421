@@ -37,7 +37,7 @@ public class Hardware {
         vel = new Pose2d(0,0,0);
         elbow.moveStart();
         grabber.goStart();
-        grabber.stopGrab();
+        grabber.closeGrab();
 
     }
 
@@ -63,7 +63,7 @@ public class Hardware {
         vel = new Pose2d(0,0,0);
         elbow.moveStart();
         grabber.goStart();
-        grabber.stopGrab();
+        grabber.closeGrab();
 
     }
     //too lazy to make a new class( vel method will be here)

@@ -67,8 +67,8 @@ public class Intake {
         intakeBack.setPower(INTAKE_POWER);
     }
     public void reverse(){
-        intakeFront.setPower(-INTAKE_POWER_SLOW);
-        intakeBack.setPower(-INTAKE_POWER_SLOW);
+        intakeFront.setPower(-INTAKE_POWER);
+        intakeBack.setPower(-INTAKE_POWER);
     }
     public void off(){
         intakeFront.setPower(0);

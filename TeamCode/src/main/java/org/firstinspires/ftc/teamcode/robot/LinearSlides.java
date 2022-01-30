@@ -18,13 +18,13 @@ public class LinearSlides {
     //position when the slides start
     public double ORIGINAL_POSITION = 0;
     //power motor uses for slides
-    public static double SLIDE_POWER = -.5;
+    public static double SLIDE_POWER = -1;
     //Max length
     public static double MAX_LENGTH = RobotConstants.SLIDE_MAX_LENGTH;
-    private double TOP_SLIDE_TICKS = 1800;
+    public double TOP_SLIDE_TICKS = 1800;
     private double MID_SLIDE_TICKS = 1000;
     private double BOTTOM_SLIDE_TICKS = 500;
-    private double GRAB_SLIDE_TICKS = 100;
+    private double GRAB_SLIDE_TICKS = 0;
 
 
     //Must tune to get more efficient

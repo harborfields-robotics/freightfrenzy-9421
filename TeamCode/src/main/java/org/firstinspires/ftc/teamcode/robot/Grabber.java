@@ -103,18 +103,27 @@ public class Grabber {
             cur0 -= grabOffset0;
             cur1 += grabOffset1;
         }
+        grabberUpdatePositions(position);
+    }
+    public void closeGrab() {
+        if(!isGrab) {
+            isGrab = true;
+            cur0 += grabOffset0;
+            cur1 -= grabOffset1;
+        }
+        grabberUpdatePositions(position);
     }
 
     //Same comment
-    public void stopGrab() {
-        if(isGrab) {
-            isGrab = false;
-            cur0 -= grabOffset0 - .15;
-            cur1 += grabOffset1 + .15;
-            grabberUpdatePositions(position);
-            //curMid does not change
-        }
-    }
+//    public void stopGrab() {
+//        if(isGrab) {
+//            isGrab = false;
+//            cur0 -= grabOffset0 - .15;
+//            cur1 += grabOffset1 + .15;
+//            grabberUpdatePositions(position);
+//            //curMid does not change
+//        }
+//    }
 
 
 
@@ -180,6 +189,7 @@ public class Grabber {
     public boolean getIsGrab() {
         return isGrab;
     }
+    public boolean getIsGrabExtra() {return isGrabCurrentlyExtra;}
 
     public double getCur0() {
         return cur0;
