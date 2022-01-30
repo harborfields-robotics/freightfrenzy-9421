@@ -31,7 +31,7 @@ public class TeleopODO extends LinearOpMode {
 
     ElapsedTime cycleTimer = new ElapsedTime();
 
-    private int startTime = 200;
+    private int startTime = 300;
 
     private int topGrabTime = 250;
 
@@ -111,7 +111,7 @@ public class TeleopODO extends LinearOpMode {
             switch(cycleState){
                 case CYCLE_START:
                     if(gamepad1.y){
-
+                        cycleTimer.reset();
                         Oscar.grabber.goStart();
                         Oscar.grabber.moveByAngle(-.1, "start");
                         if(cycleTimer.milliseconds() >= startTime){
@@ -121,7 +121,7 @@ public class TeleopODO extends LinearOpMode {
 
                             Oscar.grabber.moveByAngle(.1, "start");
                             Oscar.grabber.openGrab();
-                            cycleTimer.reset();
+
                         }
                         cycleState = cycleState.CYCLE_EXTEND;
 
@@ -133,6 +133,7 @@ public class TeleopODO extends LinearOpMode {
                     break;
                 case CYCLE_EXTEND:
                     //if(gamepad1.y) {
+                    cycleTimer.reset();
                         telemetry.addLine("in cycle extend");
                         telemetry.addData("timer2", cycleTimer.milliseconds());
                         Oscar.elbow.moveStart();
@@ -146,8 +147,9 @@ public class TeleopODO extends LinearOpMode {
                             Oscar.grabber.goTop();
                             Oscar.grabber.grabberGrabExtra();
                             cycleTimer.reset();
+                            cycleState = cycleState.CYCLE_RETRACT;
                         }
-                        cycleState = cycleState.CYCLE_RETRACT;
+                        //cycleState = cycleState.CYCLE_RETRACT;
                     //}
                     break;
 
