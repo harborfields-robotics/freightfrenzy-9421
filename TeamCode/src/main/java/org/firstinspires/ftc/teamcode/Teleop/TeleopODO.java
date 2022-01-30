@@ -228,11 +228,14 @@ public class TeleopODO extends LinearOpMode {
                             if(slideTimer.milliseconds() >= 800){
                                 Oscar.grabber.goStart();
                                 Oscar.grabber.grabberGrabExtra();
+                                Oscar.grabber.grabberGrabExtra();
                                 Oscar.slides.slidesGrab();
+                                cycleTimer.reset();
+                                cycleState = CycleState.CYCLE_START;
                             }
                             //Oscar.slides.slidesGrab();
-                            cycleTimer.reset();
-                            cycleState = CycleState.CYCLE_START;
+                            //cycleTimer.reset();
+                            //cycleState = CycleState.CYCLE_START;
                         }
                     }
                     break;
