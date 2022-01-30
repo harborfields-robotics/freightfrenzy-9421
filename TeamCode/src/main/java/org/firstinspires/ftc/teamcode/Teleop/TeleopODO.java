@@ -225,7 +225,7 @@ public class TeleopODO extends LinearOpMode {
                             Oscar.elbow.moveStart();
                            // Oscar.grabber.goStart();
                             //Oscar.grabber.grabberGrabExtra();
-                            if(slideTimer.milliseconds() >= 700){
+                            if(slideTimer.milliseconds() >= 800){
                                 Oscar.grabber.goStart();
                                 Oscar.grabber.grabberGrabExtra();
                                 Oscar.slides.slidesGrab();
