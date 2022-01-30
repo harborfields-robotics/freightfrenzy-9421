@@ -126,7 +126,7 @@ public class TeleopODO extends LinearOpMode {
                         Oscar.grabber.goStart();
                         Oscar.grabber.moveByAngle(-.1, "start");
                         cycleTimer.reset();
-                        cycleState = cycleState.CYCLE_UP;
+                        cycleState = CycleState.CYCLE_UP;
 
 
 
@@ -137,6 +137,7 @@ public class TeleopODO extends LinearOpMode {
                     break;
 
                 case CYCLE_UP:
+
                     telemetry.addLine("in cycle up");
                     if(cycleTimer.milliseconds() >= startTime){
                         Oscar.elbow.goToGrabPos();
@@ -146,10 +147,7 @@ public class TeleopODO extends LinearOpMode {
                         Oscar.grabber.moveByAngle(.1, "start");
                         Oscar.grabber.openGrab();
                         cycleTimer.reset();
-                        cycleState = cycleState.CYCLE_EXTEND;
-
-
-
+                        cycleState = CycleState.CYCLE_EXTEND;
 
                     }
 
@@ -165,7 +163,7 @@ public class TeleopODO extends LinearOpMode {
                     if (cycleTimer.milliseconds() >= topGrabTime) {
                         Oscar.slides.slidesTop();
                         cycleTimer.reset();
-                        cycleState = cycleState.CYCLE_DUMP;
+                        cycleState = CycleState.CYCLE_DUMP;
 
                     }
 
@@ -180,7 +178,7 @@ public class TeleopODO extends LinearOpMode {
                         Oscar.grabber.goTop();
                         Oscar.grabber.grabberGrabExtra();
                         cycleTimer.reset();
-                        cycleState = cycleState.CYCLE_RETRACT;
+                        cycleState = CycleState.CYCLE_RETRACT;
                     }
                     break;
 
@@ -195,7 +193,7 @@ public class TeleopODO extends LinearOpMode {
                             Oscar.grabber.grabberGrabExtra();
                             Oscar.slides.slidesGrab();
                             cycleTimer.reset();
-                            cycleState = cycleState.CYCLE_START;
+                            cycleState = CycleState.CYCLE_START;
                         }
                    // }
                     break;
