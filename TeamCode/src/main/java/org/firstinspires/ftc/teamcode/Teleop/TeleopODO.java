@@ -129,9 +129,10 @@ public class TeleopODO extends LinearOpMode {
 
 
                     }
+
                     break;
                 case CYCLE_EXTEND:
-                    if(gamepad1.y) {
+                    //if(gamepad1.y) {
                         telemetry.addLine("in cycle extend");
                         telemetry.addData("timer2", cycleTimer.milliseconds());
                         Oscar.elbow.moveStart();
@@ -147,11 +148,11 @@ public class TeleopODO extends LinearOpMode {
                             cycleTimer.reset();
                         }
                         cycleState = cycleState.CYCLE_RETRACT;
-                    }
+                    //}
                     break;
 
                 case CYCLE_RETRACT:
-                    if(gamepad1.y) {
+                    //if(gamepad1.y) {
                         telemetry.addLine("retracting slides");
                         telemetry.addData("in retract timer", cycleTimer.milliseconds());
                         Oscar.elbow.moveStart();
@@ -161,7 +162,7 @@ public class TeleopODO extends LinearOpMode {
                             Oscar.slides.slidesGrab();
                             cycleTimer.reset();
                         }
-                    }
+                   // }
                     break;
                 default:
                     cycleState = CycleState.CYCLE_START;
