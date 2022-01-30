@@ -119,9 +119,10 @@ public class TeleopODO extends LinearOpMode {
 
             switch(cycleState){
                 case CYCLE_START:
+                    telemetry.addLine("in cycle start");
                     if(gamepad1.y){
 
-                        telemetry.addLine("in cycle start");
+
                         Oscar.grabber.goStart();
                         Oscar.grabber.moveByAngle(-.1, "start");
                         cycleTimer.reset();
@@ -135,9 +136,10 @@ public class TeleopODO extends LinearOpMode {
                     }
 
                 case CYCLE_UP:
+                    telemetry.addLine("in cycle up");
                     if(cycleTimer.milliseconds() >= startTime){
                         Oscar.elbow.goToGrabPos();
-                        telemetry.addLine("in cycle start");
+
                         telemetry.addData("timer1", cycleTimer.milliseconds());
 
                         Oscar.grabber.moveByAngle(.1, "start");
@@ -169,6 +171,7 @@ public class TeleopODO extends LinearOpMode {
                     //}
                     break;
                 case CYCLE_DUMP:
+                    telemetry.addLine("In cycle dump");
                     if ((cycleTimer.milliseconds() ) >= elbowTopTime) {
                         Oscar.elbow.moveTop();
                         Oscar.grabber.goTop();
