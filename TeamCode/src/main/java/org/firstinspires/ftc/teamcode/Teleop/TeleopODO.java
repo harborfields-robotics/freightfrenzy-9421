@@ -24,6 +24,7 @@ public class TeleopODO extends LinearOpMode {
         CYCLE_START,
         CYCLE_UP,
         CYCLE_EXTEND,
+        CYCLE_GRABBER_TOP,
         CYCLE_DUMP,
         CYCLE_RETRACT
     };
@@ -37,6 +38,8 @@ public class TeleopODO extends LinearOpMode {
     private int topGrabTime = 250;
 
     private int elbowTopTime = 1500;
+
+    private int grabberTopTime = 300;
 
     private int retractTime = 500;
 
@@ -175,10 +178,18 @@ public class TeleopODO extends LinearOpMode {
                     telemetry.addLine("In cycle dump");
                     if ((cycleTimer.milliseconds() ) >= elbowTopTime) {
                         Oscar.elbow.moveTop();
+                        cycleTimer.reset();
+                        cycleState = CycleState.CYCLE_GRABBER_TOP;
+                    }
+                    break;
+                case CYCLE_GRABBER_TOP:
+                    telemetry.addLine("Grabber Top");
+                    if (cycleTimer.milliseconds() >= grabberTopTime){
                         Oscar.grabber.goTop();
                         Oscar.grabber.grabberGrabExtra();
                         cycleTimer.reset();
                         cycleState = CycleState.CYCLE_RETRACT;
+
                     }
                     break;
 
