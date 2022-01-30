@@ -152,6 +152,7 @@ public class TeleopODO extends LinearOpMode {
 
                 case CYCLE_RETRACT:
                     if(gamepad1.y) {
+                        telemetry.addLine("retracting slides");
                         telemetry.addData("in retract timer", cycleTimer.milliseconds());
                         Oscar.elbow.moveStart();
                         if (cycleTimer.milliseconds() >= retractTime) {
