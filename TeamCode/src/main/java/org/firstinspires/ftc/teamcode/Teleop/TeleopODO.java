@@ -109,6 +109,12 @@ public class TeleopODO extends LinearOpMode {
 
         while(opModeIsActive()){
 
+            telemetry.update();
+            telemetry.addData("Wheel location", Oscar.drive.getWheelPositions());
+            telemetry.addData("Slide Position", Oscar.slides.getMotorPosition());
+            telemetry.addData("Slide Position", Oscar.slides.getCurrentTargetPosition());
+            telemetry.addData("Endstop", !Oscar.slides.getEndstop());
+
 
             switch(cycleState){
                 case CYCLE_START:
@@ -183,6 +189,7 @@ public class TeleopODO extends LinearOpMode {
 
 
             }
+
             if (gamepad1.a && cycleState != CycleState.CYCLE_START) {
                 cycleState = CycleState.CYCLE_START;
             }
@@ -190,7 +197,7 @@ public class TeleopODO extends LinearOpMode {
 
             controller1.updateControllerState();
             controller2.updateControllerState();
-            //
+
 
             Oscar.setVel(new Pose2d(
                     -Math.pow(controller1.getAnalogValue("left_stick_x"),3),
@@ -198,6 +205,8 @@ public class TeleopODO extends LinearOpMode {
                     -Math.pow(controller1.getAnalogValue("right_stick_x"),3)
 
             ));
+
+
             controller1.handleEvents();
             controller2.handleEvents();
 
@@ -217,11 +226,7 @@ public class TeleopODO extends LinearOpMode {
             Oscar.drive.setDrivePower(Oscar.getVel());
             Oscar.drive.update();
 
-            telemetry.update();
-            telemetry.addData("Wheel location", Oscar.drive.getWheelPositions());
-            telemetry.addData("Slide Position", Oscar.slides.getMotorPosition());
-            telemetry.addData("Slide Position", Oscar.slides.getCurrentTargetPosition());
-            telemetry.addData("Endstop", !Oscar.slides.getEndstop());
+
 
             Oscar.setVel(new Pose2d(Oscar.getPoseX(),Oscar.getPoseY(),Oscar.getPoseHeading()));
 
