@@ -236,11 +236,11 @@ public class TeleopODO extends LinearOpMode {
                                 slideTimer.reset();
 
                                 Oscar.slides.slidesGrab();
-                                cycleTimer.reset();
-                                cycleState = CycleState.CYCLE_START;
+                               // cycleTimer.reset();
+                                //cycleState = CycleState.CYCLE_START;
 
 
-                               /* if(slideTimer.milliseconds() >= 200) {
+                                if(slideTimer.milliseconds() >= 200) {
                                     Oscar.elbow.goToGrabPos();
                                     //meep
 
@@ -251,7 +251,7 @@ public class TeleopODO extends LinearOpMode {
 
                                 }
 
-                                */
+
 
 
 
