@@ -22,6 +22,7 @@ public class TeleopODO extends LinearOpMode {
 
     public enum CycleState {
         CYCLE_START,
+        CYCLE_UP,
         CYCLE_EXTEND,
         CYCLE_DUMP,
         CYCLE_RETRACT
@@ -123,25 +124,31 @@ public class TeleopODO extends LinearOpMode {
                         telemetry.addLine("in cycle start");
                         Oscar.grabber.goStart();
                         Oscar.grabber.moveByAngle(-.1, "start");
-                        if(cycleTimer.milliseconds() >= startTime){
-                            Oscar.elbow.goToGrabPos();
-                            telemetry.addLine("in cycle start");
-                            telemetry.addData("timer1", cycleTimer.milliseconds());
+                        cycleTimer.reset();
+                        cycleState = cycleState.CYCLE_UP;
 
-                            Oscar.grabber.moveByAngle(.1, "start");
-                            Oscar.grabber.openGrab();
-                            cycleState = cycleState.CYCLE_EXTEND;
-                            cycleTimer.reset();
-
-
-
-                        }
 
 
 
 
 
                     }
+
+                case CYCLE_UP:
+                    if(cycleTimer.milliseconds() >= startTime){
+                        Oscar.elbow.goToGrabPos();
+                        telemetry.addLine("in cycle start");
+                        telemetry.addData("timer1", cycleTimer.milliseconds());
+
+                        Oscar.grabber.moveByAngle(.1, "start");
+                        Oscar.grabber.openGrab();
+                        cycleState = cycleState.CYCLE_EXTEND;
+                        cycleTimer.reset();
+
+
+
+                    }
+
 
 
                     break;
