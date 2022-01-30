@@ -35,6 +35,8 @@ public class TeleopODO extends LinearOpMode {
 
     ElapsedTime stateTimer = new ElapsedTime();
 
+    ElapsedTime slideTimer = new ElapsedTime();
+
     private int startTime = 300;
 
     private int topGrabTime = 250;
@@ -205,6 +207,7 @@ public class TeleopODO extends LinearOpMode {
                             Oscar.grabber.grabberGrabExtra();
                             cycleTimer.reset();
                             stateTimer.reset();
+                            slideTimer.reset();
                             cycleState = CycleState.CYCLE_RETRACT;
 
                         }
@@ -217,11 +220,15 @@ public class TeleopODO extends LinearOpMode {
                         telemetry.addLine("retracting slides");
                         telemetry.addData("in retract timer", cycleTimer.milliseconds());
                         if(stateTimer.milliseconds() >= 1000){
-                        Oscar.elbow.moveStart();
+                        //Oscar.elbow.moveStart();
                         if (cycleTimer.milliseconds() >= retractTime) {
+                            Oscar.elbow.moveStart();
                             Oscar.grabber.goStart();
                             Oscar.grabber.grabberGrabExtra();
-                            Oscar.slides.slidesGrab();
+                            if(slideTimer.milliseconds() >= 500){
+                                Oscar.slides.slidesGrab();
+                            }
+                            //Oscar.slides.slidesGrab();
                             cycleTimer.reset();
                             cycleState = CycleState.CYCLE_START;
                         }
