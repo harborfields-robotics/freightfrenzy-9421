@@ -134,6 +134,7 @@ public class TeleopODO extends LinearOpMode {
 
 
                     }
+                    break;
 
                 case CYCLE_UP:
                     telemetry.addLine("in cycle up");
@@ -179,6 +180,7 @@ public class TeleopODO extends LinearOpMode {
                         cycleTimer.reset();
                         cycleState = cycleState.CYCLE_RETRACT;
                     }
+                    break;
 
 
                 case CYCLE_RETRACT:
