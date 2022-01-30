@@ -190,6 +190,7 @@ public class TeleopODO extends LinearOpMode {
                     if(stateTimer.milliseconds() >= 1500) {
                         if ((cycleTimer.milliseconds()) >= elbowTopTime) {
                             Oscar.elbow.moveTop();
+                            Oscar.grabber.goTop();
                             cycleTimer.reset();
                             stateTimer.reset();
                             cycleState = CycleState.CYCLE_GRABBER_TOP;
@@ -200,7 +201,7 @@ public class TeleopODO extends LinearOpMode {
                     telemetry.addLine("Grabber Top");
                     if(stateTimer.milliseconds() >= 1000) {
                         if (cycleTimer.milliseconds() >= grabberTopTime) {
-                            Oscar.grabber.goTop();
+                            //Oscar.grabber.goTop();
                             Oscar.grabber.grabberGrabExtra();
                             cycleTimer.reset();
                             stateTimer.reset();
