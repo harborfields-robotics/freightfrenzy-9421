@@ -145,8 +145,9 @@ public class TeleopODO extends LinearOpMode {
 
                         Oscar.grabber.moveByAngle(.1, "start");
                         Oscar.grabber.openGrab();
-                        cycleState = cycleState.CYCLE_EXTEND;
                         cycleTimer.reset();
+                        cycleState = cycleState.CYCLE_EXTEND;
+
 
 
 
@@ -163,8 +164,9 @@ public class TeleopODO extends LinearOpMode {
                     Oscar.elbow.moveStart();
                     if (cycleTimer.milliseconds() >= topGrabTime) {
                         Oscar.slides.slidesTop();
-                        cycleState = cycleState.CYCLE_DUMP;
                         cycleTimer.reset();
+                        cycleState = cycleState.CYCLE_DUMP;
+
                     }
 
 
@@ -193,6 +195,7 @@ public class TeleopODO extends LinearOpMode {
                             Oscar.grabber.grabberGrabExtra();
                             Oscar.slides.slidesGrab();
                             cycleTimer.reset();
+                            cycleState = cycleState.CYCLE_START;
                         }
                    // }
                     break;
