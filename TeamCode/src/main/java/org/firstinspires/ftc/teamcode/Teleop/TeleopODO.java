@@ -80,8 +80,8 @@ public class TeleopODO extends LinearOpMode {
 
         controller1.addEventListener("x", ButtonState.HELD, () -> Oscar.grabber.carousellOn());
         controller1.addEventListener("x", ButtonState.OFF, () -> Oscar.grabber.carousellOff());
-//        controller1.addEventListener("right_bumper",ButtonState.HELD,() ->{Oscar.intake.setIntakeDirection(false); Oscar.intake.setIntakeMode(true);});
-//        controller1.addEventListener("right_bumper",ButtonState.OFF,() ->{Oscar.intake.setIntakeMode(false);});
+        //controller1.addEventListener("right_bumper",ButtonState.HELD,() ->{Oscar.intake.setIntakeDirection(false); Oscar.intake.setIntakeMode(true);});
+       //controller1.addEventListener("right_bumper",ButtonState.OFF,() ->{Oscar.intake.setIntakeMode(false);});
         /*controller 2
         sets intake on or off
         runs cycle for placing and releasing
@@ -113,9 +113,8 @@ public class TeleopODO extends LinearOpMode {
             switch(cycleState){
                 case CYCLE_START:
                     if(gamepad1.y){
-                        cycleTimer.reset();
-                        telemetry.addLine("in cycle start");
 
+                        telemetry.addLine("in cycle start");
                         Oscar.grabber.goStart();
                         Oscar.grabber.moveByAngle(-.1, "start");
                         if(cycleTimer.milliseconds() >= startTime){
