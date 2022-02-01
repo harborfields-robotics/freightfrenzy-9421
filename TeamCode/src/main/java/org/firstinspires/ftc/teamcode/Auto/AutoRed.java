@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.robot.Robot;
 
 import org.firstinspires.ftc.teamcode.robot.Hardware;
 
@@ -15,7 +16,7 @@ import dashboard.RobotConstants;
 @Autonomous(group = "drive")
 public class AutoRed extends LinearOpMode {
     private FtcDashboard dashboard;
-    public static Pose2d startPR = new Pose2d(-60,-48,Math.toRadians(180));
+    public static Pose2d startPR = new Pose2d(RobotConstants.STARTX,RobotConstants.STARTY,Math.toRadians(RobotConstants.HEADING));
     public static Pose2d deliverPos = new Pose2d(RobotConstants.DELIVERPOSX,RobotConstants.DELIVERPOSY,RobotConstants.DELIVERPOSANG);
     Hardware Oscar = new Hardware();
 
@@ -24,8 +25,8 @@ public class AutoRed extends LinearOpMode {
 
         Pose2d startPose = new Pose2d(RobotConstants.STARTPOSEX, RobotConstants.STARTPOSEY, RobotConstants.STARTPOSEANG);
         Oscar.init(hardwareMap);
-        Trajectory straitPark = Oscar.drive.trajectoryBuilder(new Pose2d())
-                .back(30)
+        Trajectory straitPark = Oscar.drive.trajectoryBuilder(startPR)
+                .back(70)
                 .build();
 
         Trajectory hitWall = Oscar.drive.trajectoryBuilder(new Pose2d())
@@ -37,15 +38,19 @@ public class AutoRed extends LinearOpMode {
                 .build();
 
         Trajectory carousell2 = Oscar.drive.trajectoryBuilder(new Pose2d())
-                .forward(9.35)
+                .forward(39)
+                //.strafeRight(4)
                 .build();
 
-        Trajectory carousell1 = Oscar.drive.trajectoryBuilder(new Pose2d())
-                .strafeRight(1.5)
+        Trajectory carousell1 = Oscar.drive.trajectoryBuilder(startPR)
+                .strafeRight(4)
                 .build();
+
+
 
 
         waitForStart();
+        Oscar.drive.setPoseEstimate(startPose);
 
         // When auto starts
         Oscar.elbow.goToGrabPos();
