@@ -123,12 +123,15 @@ public class TeleopODO extends LinearOpMode {
         });
         controller2.addEventListener("dpad_up", ButtonState.PRESSED, () -> {
             Oscar.elbow.moveStart();
+            Oscar.grabber.openGrab();
+            Oscar.grabber.goStart();
             Thread.sleep(250);
-            Oscar.slides.slidesTop();
-            Thread.sleep(1500);
-            Oscar.elbow.moveTop();
-            Oscar.grabber.goTop();
-            Oscar.grabber.grabberGrabExtra();
+            Oscar.slides.slidesHome();
+            Oscar.slides.slidesAbsoluteOut();
+            Thread.sleep(200);
+            Oscar.elbow.goToGrabPos();
+            Thread.sleep(180);
+            Oscar.slides.slidesHome();
         });
         controller2.addEventListener("left_bumper", ButtonState.PRESSED, () -> {
             Oscar.slides.slidesHome();
@@ -163,7 +166,7 @@ public class TeleopODO extends LinearOpMode {
             switch (cycleState) {
                 case CYCLE_START:
                     telemetry.addLine("CYCLE START");
-                    if(gamepad1.y){
+                    if(gamepad2.y){
                         Oscar.grabber.closeGrab();
                         Oscar.grabber.goStart();
                         Oscar.slides.slidesHome();
@@ -197,7 +200,7 @@ public class TeleopODO extends LinearOpMode {
 
                 case CYCLE_DUMP:
                     telemetry.addLine("CYCLE DUMP");
-                    if(Oscar.slides.getMotorPosition() > Oscar.slides.TOP_SLIDE_TICKS - 500) {
+                    if(Oscar.slides.getMotorPosition() > Oscar.slides.TOP_SLIDE_TICKS - 480) {
                         Oscar.elbow.moveTop();
                         Oscar.grabber.goTop();
                         cycleTimer.reset();
@@ -208,7 +211,7 @@ public class TeleopODO extends LinearOpMode {
 
                 case CYCLE_GRABBER_TOP:
                     telemetry.addLine("GRABBER TOP");
-                    if(stateTimer.milliseconds() >= 300) {
+                    if(stateTimer.milliseconds() >= 250) {
                         Oscar.grabber.openGrab();
                         Oscar.grabber.grabberGrabExtra();
                         cycleTimer.reset();
@@ -221,9 +224,9 @@ public class TeleopODO extends LinearOpMode {
 
                 case CYCLE_RETRACT:
                     telemetry.addLine("SLIDES RETRACT");
-                    if(stateTimer.milliseconds() >= 650) {
+                    if(stateTimer.milliseconds() >= 600) {
                         Oscar.elbow.moveStart();
-                        if(cycleTimer.milliseconds() >= 650 + retractTime) {
+                        if(cycleTimer.milliseconds() >= 550 + retractTime) {
                             Oscar.grabber.goStart();
                             Oscar.grabber.closeGrab();
                             Oscar.slides.slidesGrab();
@@ -256,17 +259,17 @@ public class TeleopODO extends LinearOpMode {
             controller2.handleEvents();
 
             if(Oscar.slides.getMotorPosition() <= 100) {
-                if (gamepad2.left_trigger > .5) {
+                if (gamepad2.left_trigger > .2) {
                     Oscar.intake.reverse();
-                } else if (gamepad2.right_trigger > .5) {
+                } else if (gamepad2.right_trigger > .2) {
                     Oscar.intake.on();
                 } else {
                     Oscar.intake.off();
                 }
 
-                if (gamepad1.left_bumper) {
+                if (gamepad2.left_bumper) {
                     Oscar.intake.reverse();
-                } else if (gamepad1.right_bumper) {
+                } else if (gamepad2.right_bumper) {
                     Oscar.intake.on();
                 } else {
                     Oscar.intake.off();

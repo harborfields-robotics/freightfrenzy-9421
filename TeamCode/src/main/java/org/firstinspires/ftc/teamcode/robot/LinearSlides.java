@@ -26,6 +26,8 @@ public class LinearSlides {
     private double BOTTOM_SLIDE_TICKS = 500;
     private double GRAB_SLIDE_TICKS = 0;
 
+    private double THRESHOLD = 10;
+
 
     //Must tune to get more efficient
     private double[] positions = {0.0, TOP_SLIDE_TICKS, MID_SLIDE_TICKS, BOTTOM_SLIDE_TICKS};
@@ -48,6 +50,10 @@ public class LinearSlides {
 
 
     }
+    private boolean isItInThreshold(double desiredPosition) {
+        return(slideMotor1.getCurrentPosition() > desiredPosition - THRESHOLD || slideMotor1.getCurrentPosition() < desiredPosition + THRESHOLD);
+    }
+
     public void out(){
 
         slideMotor1.setPower(SLIDE_POWER);
@@ -91,6 +97,11 @@ public class LinearSlides {
 
         //slideMotor2.setMode((DcMotor.RunMode.RUN_TO_POSITION));
         slideMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        if(isItInThreshold(currentPosition)){
+            slideMotor1.setPower(0);
+        }
+
         out();
     }
     public void slidesMid(){ currentPosition = MID_SLIDE_TICKS; arrayPos = 2; slideMotor1.setTargetPosition((int)currentPosition);
@@ -105,6 +116,26 @@ public class LinearSlides {
         arrayPos = 0;
         slideMotor1.setTargetPosition((int)currentPosition);
         slideMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        if(isItInThreshold(currentPosition)){
+            slideMotor1.setPower(0);
+        }
+        out();
+    }
+    public void slidesAbsoluteOut(){
+
+        slideMotor1.setTargetPosition((int)GRAB_SLIDE_TICKS + 200);
+        slideMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if(isItInThreshold(currentPosition)){
+            slideMotor1.setPower(0);
+        }
+        out();
+    }
+    public void slidesAbsolutIn(){
+        slideMotor1.setTargetPosition((int)GRAB_SLIDE_TICKS);
+        slideMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if(isItInThreshold(currentPosition)){
+            slideMotor1.setPower(0);
+        }
         out();
     }
 
@@ -129,8 +160,8 @@ public class LinearSlides {
     }
 
 
-    public double getCurrentTargetPosition(){
-        return positions[arrayPos];
+    public int getCurrentMotortPosition(){
+        return slideMotor1.getCurrentPosition();
     }
 
     public boolean getEndstop(){ return endstop.getState();}

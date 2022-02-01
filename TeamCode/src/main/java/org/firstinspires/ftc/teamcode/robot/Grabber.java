@@ -8,6 +8,7 @@ public class Grabber {
     public Servo g0;
     public Servo g1;
     public CRServo carosuell1;
+    public CRServo carousell2;
 
 
 
@@ -43,21 +44,26 @@ public class Grabber {
         g0 = ahwMap.get(Servo.class, "grabber1");
         g1 = ahwMap.get(Servo.class, "grabber2");
         carosuell1 = ahwMap.get(CRServo.class,"carousell1");
+        carousell2 = ahwMap.get(CRServo.class, "carousell2");
 
 
         g0.setPosition(initPos0);
         g1.setPosition(initPos1);
         carosuell1.setPower(0);
+        carousell2.setPower(0);
 
         position = "start";
     }
 
     public void carousellOn(){
         carosuell1.setPower(-1.0);
+        carousell2.setPower(-1.0);
     }
 
     public void carousellOff(){
+
         carosuell1.setPower(0);
+        carousell2.setPower(0);
     }
     //call this after changing tracking variables
     private void grabberUpdatePositions(String newPosition) {

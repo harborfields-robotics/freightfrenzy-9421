@@ -85,16 +85,6 @@ import dashboard.RobotConstants;
 
             Oscar.drive.followTrajectorySequence(autoTrajectory2);
 
-
-
-
-
-
-
-
-
-
-
         }
     }
 

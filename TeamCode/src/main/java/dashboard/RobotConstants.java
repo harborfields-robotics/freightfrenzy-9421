@@ -14,7 +14,12 @@ public class RobotConstants {
     public static double STARTPOSEX = -60;
     public static double STARTPOSEY = -48;
     public static double STARTPOSEANG = 180;
-    public static double STARTX = 10;
+    public static double STARTX = 6;
     public static double STARTY = -48;
     public static double HEADING = 180;
+
+    public static double CYCLEX;
+    public static double CYCLEY;
+    public static double CYCLEHEADING;
+
 }
