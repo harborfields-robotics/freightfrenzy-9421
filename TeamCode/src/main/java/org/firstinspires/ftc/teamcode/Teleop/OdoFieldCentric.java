@@ -1,36 +1,29 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
-//hardware
-import org.firstinspires.ftc.robotcore.internal.opengl.TextResourceReader;
+
 import org.firstinspires.ftc.teamcode.robot.Hardware;
-import org.firstinspires.ftc.teamcode.robot.controllers.AnalogCheck;
 import org.firstinspires.ftc.teamcode.robot.controllers.ButtonState;
 import org.firstinspires.ftc.teamcode.robot.controllers.ControllerState;
-
-@Config
 @TeleOp(group = "drive")
-public class TeleopODO extends LinearOpMode {
-    private FtcDashboard dashboard;
+public class OdoFieldCentric extends LinearOpMode {
+
+    public enum CycleState2 {
+        CYCLE2_START,
+        CYCLE2_UP,
+        CYCLE2_EXTEND,
+        CYCLE2_GRABBER_TOP,
+        CYCLE2_DUMP,
+        CYCLE2_RETRACT
+    };
+
+    CycleState2 cycleState = CycleState2.CYCLE2_START;
 
 
-    public enum CycleState {
-        CYCLE_START,
-        CYCLE_UP,
-        CYCLE_EXTEND,
-        CYCLE_GRABBER_TOP,
-        CYCLE_DUMP,
-        CYCLE_RETRACT
-    }
-
-    ;
-
-    CycleState cycleState = CycleState.CYCLE_START;
 
     ElapsedTime cycleTimer = new ElapsedTime();
 
@@ -42,7 +35,7 @@ public class TeleopODO extends LinearOpMode {
 
     private int startTime = 100;
 
-    private int topGrabTime = 250;
+    private int topGrabTime2 = 250;
 
     private int slideExtendTime = 1500;
 
@@ -61,51 +54,11 @@ public class TeleopODO extends LinearOpMode {
         ControllerState controller1 = new ControllerState(gamepad1);
         ControllerState controller2 = new ControllerState(gamepad2);
 
-//        controller1.addEventListener("left_trigger", AnalogCheck.GREATER_THAN, 0.1, () -> {
-//            positionTracker.setAngDirection(-1);
-//        });
-//
-//        controller1.addEventListener("right_trigger", AnalogCheck.GREATER_THAN, 0.1, () -> {
-//            positionTracker.setAngDirection(1);
-//        });
 
-//        controller1.addEventListener("dpad_left", ButtonState.HELD, () -> {Oscar.updateX(1); Oscar.setVel(new Pose2d(Oscar.getPoseX(),Oscar.getPoseY(),Oscar.getPoseHeading()));});
-//        controller1.addEventListener("dpad_left", ButtonState.OFF, () -> {Oscar.updateX(0);});
-//
-//        controller1.addEventListener("dpad_down", ButtonState.HELD, () -> {Oscar.updateY(.7); Oscar.setVel(new Pose2d(Oscar.getPoseX(),Oscar.getPoseY(),Oscar.getPoseHeading()));});
-//        controller1.addEventListener("dpad_down", ButtonState.OFF, () -> {Oscar.updateY(0);});
-//
-//        controller1.addEventListener("dpad_right", ButtonState.HELD, () -> {Oscar.updateX(-1); Oscar.setVel(new Pose2d(Oscar.getPoseX(),Oscar.getPoseY(),Oscar.getPoseHeading()));});
-//        controller1.addEventListener("dpad_right", ButtonState.OFF, () -> {Oscar.updateX(0);});
-//
-//        controller1.addEventListener("dpad_up",ButtonState.HELD, () -> {Oscar.updateY(-.7); Oscar.setVel(new Pose2d(Oscar.getPoseX(),Oscar.getPoseY(),Oscar.getPoseHeading()));});
-//        controller1.addEventListener("dpad_up", ButtonState.OFF, () -> {Oscar.updateY(0);});
-//
-//        controller1.addEventListener("left_trigger", AnalogCheck.GREATER_THAN, 0.1, () -> {Oscar.updateHeading(.3); Oscar.setVel(new Pose2d(Oscar.getPoseX(),Oscar.getPoseY(),Oscar.getPoseHeading()));});
-//        controller1.addEventListener("left_trigger", AnalogCheck.LESS_THAN_EQUALS, 0.1, () -> {Oscar.updateHeading(0);});
-//
-//        controller1.addEventListener("right_trigger", AnalogCheck.GREATER_THAN, 0.1, () -> {Oscar.updateHeading(-.3); Oscar.setVel(new Pose2d(Oscar.getPoseX(),Oscar.getPoseY(),Oscar.getPoseHeading()));});
-//        controller1.addEventListener("right_trigger", AnalogCheck.LESS_THAN_EQUALS, 0.1, () -> {Oscar.updateHeading(0);});
 
         controller1.addEventListener("x", ButtonState.HELD, () -> Oscar.grabber.carousellOn());
         controller1.addEventListener("x", ButtonState.OFF, () -> Oscar.grabber.carousellOff());
 
-//        controller1.addEventListener("right_bumper",ButtonState.HELD,() ->{Oscar.intake.reverse();});
-//        controller1.addEventListener("right_bumper",ButtonState.OFF,() ->{Oscar.intake.off();});
-        /*controller 2
-        sets intake on or off
-        runs cycle for placing and releasing
-         */
-        // toggle intake on if the grabber is open and the elbow is at its home position
-//        controller2.addEventListener("left_trigger", AnalogCheck.GREATER_THAN, 0.1, () -> {
-//            Oscar.intake.on();
-//        });
-//        controller2.addEventListener("left_trigger", AnalogCheck.LESS_THAN, 0.1, () -> {
-//            Oscar.intake.off();
-//        });
-        // controller2.addEventListener("right_trigger", AnalogCheck.GREATER_THAN, 0.1,()-> {Oscar.intake.reverse();});
-        //controller2.addEventListener("right_trigger",AnalogCheck.LESS_THAN, 0.1,() ->{Oscar.intake.off();});
-        //IDK how this will work will test to see but may change
 
         //It all keeps heading up
         // When button y is pressed it will go through the entire top cycle
@@ -156,11 +109,17 @@ public class TeleopODO extends LinearOpMode {
         waitForStart();//
 
         while (opModeIsActive()) {
+            Pose2d poseEstimate = Oscar.drive.getPoseEstimate();
+
+            Vector2d input = new Vector2d(
+                    -gamepad1.left_stick_y,
+                    -gamepad1.left_stick_x
+            ).rotated(-poseEstimate.getHeading());
 
             telemetry.update();
-//            telemetry.addData("Wheel location", Oscar.drive.getWheelPositions());
-//            telemetry.addData("Slide Position", Oscar.slides.getMotorPosition());
-//            telemetry.addData("Slide Position", Oscar.slides.getCurrentTargetPosition());
+
+            telemetry.addData("Slide Position", Oscar.slides.getMotorPosition());
+
             telemetry.addData("Endstop", !Oscar.slides.getEndstop());
 
             telemetry.addData("IS GRABBING? ", Oscar.grabber.getIsGrab());
@@ -169,7 +128,7 @@ public class TeleopODO extends LinearOpMode {
 
 
             switch (cycleState) {
-                case CYCLE_START:
+                case CYCLE2_START:
                     telemetry.addLine("CYCLE START");
                     if(gamepad2.y){
                         Oscar.grabber.closeGrab();
@@ -177,44 +136,44 @@ public class TeleopODO extends LinearOpMode {
                         Oscar.slides.slidesHome();
                         cycleTimer.reset();
                         stateTimer.reset();
-                        cycleState = CycleState.CYCLE_UP;
+                        cycleState = CycleState2.CYCLE2_UP;
                     }
                     break;
 
-                case CYCLE_UP:
+                case CYCLE2_UP:
                     telemetry.addLine("CYCLE UP");
                     if(stateTimer.milliseconds() >= 100) {
                         if (cycleTimer.milliseconds() >= startTime + 100) {
                             Oscar.elbow.moveStart();
                             cycleTimer.reset();
                             stateTimer.reset();
-                            cycleState = CycleState.CYCLE_EXTEND;
+                            cycleState = CycleState2.CYCLE2_EXTEND;
                         }
                     }
                     break;
 
-                case CYCLE_EXTEND:
+                case CYCLE2_EXTEND:
                     telemetry.addLine("CYCLE EXTEND");
                     if(stateTimer.milliseconds() >= 500) {
                         Oscar.slides.slidesTop();
                         cycleTimer.reset();
                         stateTimer.reset();
-                        cycleState = CycleState.CYCLE_DUMP;
+                        cycleState = CycleState2.CYCLE2_DUMP;
                     }
                     break;
 
-                case CYCLE_DUMP:
+                case CYCLE2_DUMP:
                     telemetry.addLine("CYCLE DUMP");
                     if(Oscar.slides.getMotorPosition() > Oscar.slides.TOP_SLIDE_TICKS - 480) {
                         Oscar.elbow.moveTop();
                         Oscar.grabber.goTop();
                         cycleTimer.reset();
                         stateTimer.reset();
-                        cycleState = CycleState.CYCLE_GRABBER_TOP;
+                        cycleState = CycleState2.CYCLE2_GRABBER_TOP;
                     }
                     break;
 
-                case CYCLE_GRABBER_TOP:
+                case CYCLE2_GRABBER_TOP:
                     telemetry.addLine("GRABBER TOP");
                     if(stateTimer.milliseconds() >= 250) {
                         Oscar.grabber.openGrab();
@@ -223,11 +182,11 @@ public class TeleopODO extends LinearOpMode {
                         stateTimer.reset();
                         slideTimer.reset();
                         grabberTimer.reset();
-                        cycleState = CycleState.CYCLE_RETRACT;
+                        cycleState = CycleState2.CYCLE2_RETRACT;
                     }
                     break;
 
-                case CYCLE_RETRACT:
+                case CYCLE2_RETRACT:
                     telemetry.addLine("SLIDES RETRACT");
                     if(stateTimer.milliseconds() >= 600) {
                         Oscar.elbow.moveStart();
@@ -243,18 +202,18 @@ public class TeleopODO extends LinearOpMode {
                                 stateTimer.reset();
                                 slideTimer.reset();
                                 grabberTimer.reset();
-                                cycleState = CycleState.CYCLE_START;
+                                cycleState = CycleState2.CYCLE2_START;
                             }
                         }
                     }
                     break;
 
                 default:
-                    cycleState = CycleState.CYCLE_START;
+                    cycleState = CycleState2.CYCLE2_START;
             }
 
-            if (gamepad1.a && cycleState != CycleState.CYCLE_START) {
-                cycleState = CycleState.CYCLE_START;
+            if (gamepad1.a && cycleState != CycleState2.CYCLE2_START) {
+                cycleState = CycleState2.CYCLE2_START;
             }
 
             controller1.updateControllerState();
@@ -263,7 +222,7 @@ public class TeleopODO extends LinearOpMode {
             controller1.handleEvents();
             controller2.handleEvents();
 
-            if(Oscar.slides.    getMotorPosition() <= 100) {
+            if(Oscar.slides.getMotorPosition() <= 100) {
                 if (gamepad2.left_trigger > .2) {
                     Oscar.intake.reverse();
                 } else if (gamepad2.right_trigger > .2) {
@@ -286,8 +245,8 @@ public class TeleopODO extends LinearOpMode {
 
             Oscar.drive.setWeightedDrivePower(
                     new Pose2d(
-                            -gamepad1.left_stick_y * .7,
-                            -gamepad1.left_stick_x * .7,
+                            input.getX() * 1,
+                            input.getY() * 1,
                             -gamepad1.right_stick_x * .5
                     )
             );
