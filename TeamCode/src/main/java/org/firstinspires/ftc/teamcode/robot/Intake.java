@@ -62,7 +62,7 @@ public class Intake {
         }
     }
 
-    public void on(){
+    public void forward(){
         intakeFront.setPower(INTAKE_POWER);
         intakeBack.setPower(INTAKE_POWER);
     }

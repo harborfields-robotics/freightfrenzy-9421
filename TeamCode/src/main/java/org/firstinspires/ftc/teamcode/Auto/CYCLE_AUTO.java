@@ -3,10 +3,8 @@ package org.firstinspires.ftc.teamcode.Auto;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.robot.Robot;
 
 import org.firstinspires.ftc.teamcode.robot.Hardware;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
@@ -20,6 +18,7 @@ public class CYCLE_AUTO extends LinearOpMode {
     public static Pose2d startPR = new Pose2d(RobotConstants.STARTX,RobotConstants.STARTY,Math.toRadians(RobotConstants.HEADING));
     public static Pose2d deliverPos = new Pose2d(RobotConstants.DELIVERPOSX,RobotConstants.DELIVERPOSY,RobotConstants.DELIVERPOSANG);
     Hardware Oscar = new Hardware();
+    AUTO_HELPER helper = new AUTO_HELPER(Oscar);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -96,7 +95,7 @@ public class CYCLE_AUTO extends LinearOpMode {
 
         Oscar.grabber.openGrab();
 
-        Oscar.intake.on();
+        Oscar.intake.forward();
 
         Oscar.drive.followTrajectorySequence(autoTrajectory1);
 
@@ -135,7 +134,7 @@ public class CYCLE_AUTO extends LinearOpMode {
 
             Oscar.elbow.goToGrabPos();
 
-            Oscar.intake.on();
+            Oscar.intake.forward();
 
             Oscar.drive.followTrajectorySequence(autoTrajectory3);
 
@@ -172,7 +171,7 @@ public class CYCLE_AUTO extends LinearOpMode {
 
             Oscar.elbow.goToGrabPos();
 
-            Oscar.intake.on();
+            Oscar.intake.forward();
 
             Oscar.drive.followTrajectorySequence(autoTrajectory5);
 

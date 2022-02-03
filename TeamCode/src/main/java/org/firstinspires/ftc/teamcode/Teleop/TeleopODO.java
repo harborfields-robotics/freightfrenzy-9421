@@ -7,9 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 //hardware
-import org.firstinspires.ftc.robotcore.internal.opengl.TextResourceReader;
 import org.firstinspires.ftc.teamcode.robot.Hardware;
-import org.firstinspires.ftc.teamcode.robot.controllers.AnalogCheck;
 import org.firstinspires.ftc.teamcode.robot.controllers.ButtonState;
 import org.firstinspires.ftc.teamcode.robot.controllers.ControllerState;
 
@@ -263,11 +261,11 @@ public class TeleopODO extends LinearOpMode {
             controller1.handleEvents();
             controller2.handleEvents();
 
-            if(Oscar.slides.    getMotorPosition() <= 100) {
+            if(Oscar.slides.getMotorPosition() <= 100) {
                 if (gamepad2.left_trigger > .2) {
                     Oscar.intake.reverse();
                 } else if (gamepad2.right_trigger > .2) {
-                    Oscar.intake.on();
+                    Oscar.intake.forward();
                 } else {
                     Oscar.intake.off();
                 }
@@ -275,7 +273,7 @@ public class TeleopODO extends LinearOpMode {
                 if (gamepad2.left_bumper) {
                     Oscar.intake.reverse();
                 } else if (gamepad2.right_bumper) {
-                    Oscar.intake.on();
+                    Oscar.intake.forward();
                 } else {
                     Oscar.intake.off();
                 }

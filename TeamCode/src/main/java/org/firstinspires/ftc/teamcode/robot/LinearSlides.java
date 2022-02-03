@@ -159,6 +159,19 @@ public class LinearSlides {
         slidesGrab();
     }
 
+    public void slidesHomeAsync() {
+        //if not clicked
+        if(endstop.getState()) {
+            slideMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            slideMotor1.setPower(-.4);
+            resetEncoder();
+        }
+        //if clicked
+        else {
+            slideMotor1.setPower(0);
+        }
+    }
+
 
     public int getCurrentMotortPosition(){
         return slideMotor1.getCurrentPosition();

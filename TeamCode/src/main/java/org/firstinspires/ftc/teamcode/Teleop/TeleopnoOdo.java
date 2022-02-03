@@ -70,7 +70,7 @@ public class TeleopnoOdo extends OpMode {
         //intake controls
         //may change them to gamepad2 when we use 2 gamepads
 
-        if(gamepad1.right_trigger > 0.5) robot.intake.on();
+        if(gamepad1.right_trigger > 0.5) robot.intake.forward();
         else if(gamepad1.left_trigger > 0.5) robot.intake.reverse();
         else robot.intake.off();
 
@@ -90,7 +90,7 @@ public class TeleopnoOdo extends OpMode {
 
         }
         if(gamepad2.right_trigger > .5){
-            robot.intake.on();
+            robot.intake.forward();
         }
 
 

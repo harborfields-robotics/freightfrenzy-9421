@@ -84,6 +84,22 @@ public class Grabber {
         grabberUpdatePositions(position);
     }
 
+    public void closeGrabExtra() {
+        if(isGrabCurrentlyExtra) {
+            cur0 -= .2;
+            isGrabCurrentlyExtra = false;
+        }
+        grabberUpdatePositions(position);
+    }
+
+    public void openGrabExtra() {
+        if(!isGrabCurrentlyExtra) {
+            cur0 += .2;
+            isGrabCurrentlyExtra = true;
+        }
+        grabberUpdatePositions(position);
+    }
+
     //DO NOT CHANGE THESE SIGNS!!!!!!!!!!!
     public void grab() {
             if (!isGrab) {
