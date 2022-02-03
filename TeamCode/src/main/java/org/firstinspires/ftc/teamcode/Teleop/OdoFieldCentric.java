@@ -223,10 +223,10 @@ public class OdoFieldCentric extends LinearOpMode {
             controller2.handleEvents();
 
             if(Oscar.slides.getMotorPosition() <= 100) {
-                if (gamepad2.left_trigger > .2) {
+                if (gamepad2.left_trigger > .1) {
                     Oscar.intake.reverse();
-                } else if (gamepad2.right_trigger > .2) {
-                    Oscar.intake.on();
+                } else if (gamepad2.right_trigger > .1) {
+                    Oscar.intake.forward();
                 } else {
                     Oscar.intake.off();
                 }
@@ -234,7 +234,7 @@ public class OdoFieldCentric extends LinearOpMode {
                 if (gamepad2.left_bumper) {
                     Oscar.intake.reverse();
                 } else if (gamepad2.right_bumper) {
-                    Oscar.intake.on();
+                    Oscar.intake.forward();
                 } else {
                     Oscar.intake.off();
                 }

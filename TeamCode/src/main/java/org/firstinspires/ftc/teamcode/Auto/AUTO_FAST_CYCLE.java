@@ -33,7 +33,6 @@ public class AUTO_FAST_CYCLE extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        Pose2d startPose = new Pose2d(RobotConstants.STARTPOSEX, RobotConstants.STARTPOSEY, RobotConstants.STARTPOSEANG);
         Oscar.init(hardwareMap);
 
         TrajectorySequence autoTrajectory0 = Oscar.drive.trajectorySequenceBuilder(startPR)
@@ -136,6 +135,4 @@ public class AUTO_FAST_CYCLE extends LinearOpMode {
         }
         Oscar.drive.update();
     }
-
-
 }
