@@ -56,7 +56,7 @@ public class TeleopODO extends LinearOpMode {
 
         Hardware Oscar = new Hardware(hardwareMap);
 
-        Oscar.drive.setPoseEstimate(new Pose2d(0, 0, 0));
+        Oscar.drive.setPoseEstimate(new Pose2d(6, -48, 180));
 
         ControllerState controller1 = new ControllerState(gamepad1);
         ControllerState controller2 = new ControllerState(gamepad2);
@@ -150,6 +150,9 @@ public class TeleopODO extends LinearOpMode {
             Oscar.grabber.openGrab();
         });
 
+        Oscar.grabber.openGrab();
+        Oscar.elbow.goToGrabPos();
+
         waitForStart();//
 
         while (opModeIsActive()) {
@@ -162,6 +165,8 @@ public class TeleopODO extends LinearOpMode {
 
             telemetry.addData("IS GRABBING? ", Oscar.grabber.getIsGrab());
             telemetry.addData("IS GRABBING EXTRA? ", Oscar.grabber.getIsGrabExtra());
+
+
 
             switch (cycleState) {
                 case CYCLE_START:
@@ -230,10 +235,10 @@ public class TeleopODO extends LinearOpMode {
                             Oscar.grabber.goStart();
                             Oscar.grabber.closeGrab();
                             Oscar.slides.slidesGrab();
-                            if(Oscar.slides.getMotorPosition() <= 500) {
+                            if(Oscar.slides.getMotorPosition() <= 420) {
+                                Oscar.elbow.goToGrabPos();
                                 Oscar.grabber.grabberGrabExtra();
                                 Oscar.grabber.openGrab();
-                                Oscar.elbow.goToGrabPos();
                                 cycleTimer.reset();
                                 stateTimer.reset();
                                 slideTimer.reset();

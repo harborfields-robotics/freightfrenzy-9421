@@ -20,6 +20,4 @@ public class RobotConstants {
 
     public static double CYCLEX;
     public static double CYCLEY;
-    public static double CYCLEHEADING;
-
 }

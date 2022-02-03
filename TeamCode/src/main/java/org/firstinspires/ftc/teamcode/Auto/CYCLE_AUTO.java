@@ -27,107 +27,158 @@ public class CYCLE_AUTO extends LinearOpMode {
         Pose2d startPose = new Pose2d(RobotConstants.STARTPOSEX, RobotConstants.STARTPOSEY, RobotConstants.STARTPOSEANG);
         Oscar.init(hardwareMap);
         TrajectorySequence autoTrajectory1 = Oscar.drive.trajectorySequenceBuilder(startPR)
-                .strafeRight(2)
-                .forward(20)
+
+                .back(65)
                 .build();
 
         TrajectorySequence autoTrajectory2 = Oscar.drive.trajectorySequenceBuilder(autoTrajectory1.end())
-                .back(20)
+                .forward(65)
                 .build();
 
         TrajectorySequence autoTrajectory3 = Oscar.drive.trajectorySequenceBuilder(autoTrajectory2.end())
-                .forward(20)
+                .back(65)
+                .build();
+        TrajectorySequence autoTrajectory4 = Oscar.drive.trajectorySequenceBuilder(autoTrajectory3.end())
+                .forward(65)
+                .build();
+
+        TrajectorySequence autoTrajectory5 = Oscar.drive.trajectorySequenceBuilder(autoTrajectory4.end())
+                .back(65)
                 .build();
 
 
         waitForStart();
-        Oscar.drive.setPoseEstimate(startPose);
-
-
+        Oscar.drive.setPoseEstimate(startPR);
 
         // When auto starts
         Oscar.elbow.goToGrabPos();
-        Thread.sleep(1000);
+        Thread.sleep(250);
 
-        Oscar.grabber.grab();
-        Thread.sleep(200);
+        Oscar.grabber.closeGrab();
+
+        Oscar.intake.reverse();
+
+        Thread.sleep(100);
 
         Oscar.elbow.moveStart();
 
-        Thread.sleep(500);
+        Oscar.slides.slidesHome();
+
         Oscar.slides.slidesTop();
 
-        Thread.sleep(1200);
+        Thread.sleep(1000);
+
         Oscar.elbow.moveTop();
 
         Oscar.grabber.goTop();
 
         Oscar.grabber.grabberGrabExtra();
 
-        Thread.sleep(1000);
-        Oscar.grabber.grab();
+        Thread.sleep(600);
 
-        Thread.sleep(500);
+        Oscar.grabber.openGrab();
 
+        Thread.sleep(600);
 
         Oscar.elbow.moveStart();
-        Thread.sleep(500);
-        Oscar.grabber.goStart();
-        Oscar.grabber.grabberGrabExtra();
 
-        Oscar.slides.slidesHome();
-        Thread.sleep(200);
+        Thread.sleep(500);
+
+        Oscar.grabber.goStart();
+
+        Oscar.grabber.grabberGrabExtra();
 
         Oscar.slides.slidesGrab();
 
+        Thread.sleep(650);
+
         Oscar.elbow.goToGrabPos();
 
-        Oscar.drive.followTrajectorySequence(autoTrajectory1);
+        Oscar.grabber.openGrab();
 
         Oscar.intake.on();
 
-        Thread.sleep(500);
+        Oscar.drive.followTrajectorySequence(autoTrajectory1);
+
+        Thread.sleep(750);
 
         Oscar.drive.followTrajectorySequence(autoTrajectory2);
 
-            Oscar.grabber.grab();
-            Thread.sleep(200);
+            Oscar.grabber.closeGrab();
+
+            Oscar.intake.reverse();
+            Thread.sleep(100);
 
             Oscar.elbow.moveStart();
 
-            Thread.sleep(500);
+            Thread.sleep(250);
             Oscar.slides.slidesTop();
 
-            Thread.sleep(1200);
+            Thread.sleep(1000);
             Oscar.elbow.moveTop();
 
             Oscar.grabber.goTop();
 
             Oscar.grabber.grabberGrabExtra();
 
-            Thread.sleep(1000);
-            Oscar.grabber.grab();
+            Oscar.grabber.openGrab();
 
             Thread.sleep(500);
-
 
             Oscar.elbow.moveStart();
             Thread.sleep(500);
             Oscar.grabber.goStart();
             Oscar.grabber.grabberGrabExtra();
 
-            Oscar.slides.slidesHome();
-            Thread.sleep(200);
-
             Oscar.slides.slidesGrab();
+            Thread.sleep(600);
 
             Oscar.elbow.goToGrabPos();
 
+            Oscar.intake.on();
 
             Oscar.drive.followTrajectorySequence(autoTrajectory3);
 
+            Thread.sleep(750);
 
+            Oscar.drive.followTrajectorySequence(autoTrajectory4);
 
+            Oscar.grabber.closeGrab();
+
+            Oscar.intake.reverse();
+
+            Thread.sleep(100);
+
+            Oscar.elbow.moveStart();
+
+            Thread.sleep(250);
+
+            Oscar.slides.slidesTop();
+            Thread.sleep(1000);
+
+            Oscar.elbow.moveTop();
+            Oscar.grabber.goTop();
+            Oscar.grabber.grabberGrabExtra();
+            Oscar.grabber.openGrab();
+
+            Thread.sleep(500);
+
+            Oscar.elbow.moveStart();
+            Thread.sleep(500);
+            Oscar.grabber.goStart();
+            Oscar.grabber.grabberGrabExtra();
+            Oscar.slides.slidesGrab();
+            Thread.sleep(600);
+
+            Oscar.elbow.goToGrabPos();
+
+            Oscar.intake.on();
+
+            Oscar.drive.followTrajectorySequence(autoTrajectory5);
+
+            Thread.sleep(1000);
+
+            Oscar.intake.off();
 
     }
 
