@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Auto;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -23,36 +24,40 @@ public class AUTO_FAST_CYCLE extends LinearOpMode {
         IDLE     //When finished, stop everything
     }
 
-    State currentState = State.CYCLE_0;
+    private State currentState = State.CYCLE_0;
 
     public static Pose2d startPR = new Pose2d(RobotConstants.STARTX,RobotConstants.STARTY,Math.toRadians(RobotConstants.HEADING));
 
     Hardware Oscar = new Hardware();
-    AUTO_HELPER helper = new AUTO_HELPER(Oscar);
+    AUTO_HELPER_FSM helper = new AUTO_HELPER_FSM(Oscar, telemetry);
 
     @Override
     public void runOpMode() throws InterruptedException {
 
         Oscar.init(hardwareMap);
 
-        TrajectorySequence autoTrajectory0 = Oscar.drive.trajectorySequenceBuilder(startPR)
+        Trajectory autoTrajectory0 = Oscar.drive.trajectoryBuilder(startPR)
                 .back(65)
                 .build();
 
-        TrajectorySequence autoTrajectory1 = Oscar.drive.trajectorySequenceBuilder(autoTrajectory0.end())
+        Trajectory autoTrajectory1 = Oscar.drive.trajectoryBuilder(autoTrajectory0.end())
                 .forward(65)
                 .build();
 
-        TrajectorySequence autoTrajectory2 = Oscar.drive.trajectorySequenceBuilder(autoTrajectory1.end())
+        Trajectory autoTrajectory2 = Oscar.drive.trajectoryBuilder(autoTrajectory1.end())
                 .back(65)
                 .build();
-        TrajectorySequence autoTrajectory3 = Oscar.drive.trajectorySequenceBuilder(autoTrajectory2.end())
+        Trajectory autoTrajectory3 = Oscar.drive.trajectoryBuilder(autoTrajectory2.end())
                 .forward(65)
                 .build();
 
-        TrajectorySequence autoTrajectory4 = Oscar.drive.trajectorySequenceBuilder(autoTrajectory3.end())
+        Trajectory autoTrajectory4 = Oscar.drive.trajectoryBuilder(autoTrajectory3.end())
                 .back(65)
                 .build();
+
+        waitForStart();
+
+        if (isStopRequested()) return;
 
         ElapsedTime time = new ElapsedTime();
 
@@ -61,74 +66,79 @@ public class AUTO_FAST_CYCLE extends LinearOpMode {
             switch (currentState) {
 
                 case CYCLE_0:
+                    telemetry.addData("CYCLE 0", currentState);
                     if(helper.isBusy()) {
                         helper.doDepositTopAsync(time.milliseconds());
                     }
                     //After finishes deposit
-                    else if(!helper.isBusy()) {
+                    else if(helper.isDeposited()) {
                         Oscar.intake.forward();
-                        Oscar.drive.followTrajectorySequenceAsync(autoTrajectory0);
+                        Oscar.drive.followTrajectoryAsync(autoTrajectory0);
                     }
                     if(!helper.isBusy() && !Oscar.drive.isBusy()) {
                         currentState = State.CYCLE_1;
                         helper.reset();
                         time.reset();
                     }
-
+                    telemetry.update();
+                    break;
                 case CYCLE_1:
+                    telemetry.addData("CYCLE 1", currentState);
                     if(time.milliseconds() > 600) {
                         Oscar.intake.reverse();
                         helper.doDepositTopAsync(time.milliseconds());
                     }
                     if(!helper.isDeposited()) {
-                        Oscar.drive.followTrajectorySequenceAsync(autoTrajectory1);
+                        Oscar.drive.followTrajectoryAsync(autoTrajectory1);
                     }
                     else if(helper.isDeposited()) {
                         Oscar.intake.forward();
-                        Oscar.drive.followTrajectorySequenceAsync(autoTrajectory2);
+                        Oscar.drive.followTrajectoryAsync(autoTrajectory2);
                     }
                     if(helper.isDeposited() && !Oscar.drive.isBusy()) {
                         currentState = State.CYCLE_2;
                         helper.reset();
                         time.reset();
                     }
-
+                    break;
                 case CYCLE_2:
+                    telemetry.addLine("CYCLE 2");
                     if(time.milliseconds() > 600) {
                         Oscar.intake.reverse();
                         helper.doDepositTopAsync(time.milliseconds());
                     }
                     if(!helper.isDeposited()) {
-                        Oscar.drive.followTrajectorySequenceAsync(autoTrajectory1);
+                        Oscar.drive.followTrajectoryAsync(autoTrajectory1);
                     }
                     else if(helper.isDeposited()) {
                         Oscar.intake.forward();
-                        Oscar.drive.followTrajectorySequenceAsync(autoTrajectory2);
+                        Oscar.drive.followTrajectoryAsync(autoTrajectory2);
                     }
                     if(helper.isDeposited() && !Oscar.drive.isBusy()) {
                         currentState = State.CYCLE_2;
                         helper.reset();
                         time.reset();
                     }
-
+                    break;
                 case CYCLE_3:
+                    telemetry.addLine("CYCLE 3");
                     if(time.milliseconds() > 600) {
                         Oscar.intake.reverse();
                         helper.doDepositTopAsync(time.milliseconds());
                     }
                     if(!helper.isDeposited()) {
-                        Oscar.drive.followTrajectorySequenceAsync(autoTrajectory1);
+                        Oscar.drive.followTrajectoryAsync(autoTrajectory1);
                     }
                     else if(helper.isDeposited()) {
                         Oscar.intake.forward();
-                        Oscar.drive.followTrajectorySequenceAsync(autoTrajectory2);
+                        Oscar.drive.followTrajectoryAsync(autoTrajectory2);
                     }
                     if(helper.isDeposited() && !Oscar.drive.isBusy()) {
                         currentState = State.CYCLE_2;
                         helper.reset();
                         time.reset();
                     }
-
+                    break;
                 case IDLE:
                     break;
             }

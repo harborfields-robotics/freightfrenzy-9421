@@ -18,7 +18,7 @@ public class CYCLE_AUTO extends LinearOpMode {
     public static Pose2d startPR = new Pose2d(RobotConstants.STARTX,RobotConstants.STARTY,Math.toRadians(RobotConstants.HEADING));
     public static Pose2d deliverPos = new Pose2d(RobotConstants.DELIVERPOSX,RobotConstants.DELIVERPOSY,RobotConstants.DELIVERPOSANG);
     Hardware Oscar = new Hardware();
-    AUTO_HELPER helper = new AUTO_HELPER(Oscar);
+    AUTO_HELPER helper = new AUTO_HELPER(Oscar, telemetry);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -65,7 +65,7 @@ public class CYCLE_AUTO extends LinearOpMode {
 
         Oscar.slides.slidesTop();
 
-        Thread.sleep(1000);
+        Thread.sleep(700);
 
         Oscar.elbow.moveTop();
 
@@ -73,15 +73,15 @@ public class CYCLE_AUTO extends LinearOpMode {
 
         Oscar.grabber.grabberGrabExtra();
 
-        Thread.sleep(600);
+        Thread.sleep(400);
 
         Oscar.grabber.openGrab();
 
-        Thread.sleep(600);
+        Thread.sleep(200);
 
         Oscar.elbow.moveStart();
 
-        Thread.sleep(500);
+        Thread.sleep(450);
 
         Oscar.grabber.goStart();
 
@@ -89,7 +89,7 @@ public class CYCLE_AUTO extends LinearOpMode {
 
         Oscar.slides.slidesGrab();
 
-        Thread.sleep(650);
+        Thread.sleep(600);
 
         Oscar.elbow.goToGrabPos();
 
@@ -99,33 +99,37 @@ public class CYCLE_AUTO extends LinearOpMode {
 
         Oscar.drive.followTrajectorySequence(autoTrajectory1);
 
-        Thread.sleep(750);
+
+
+        Thread.sleep(50);
 
         Oscar.drive.followTrajectorySequence(autoTrajectory2);
 
+        Oscar.intake.reverse();
             Oscar.grabber.closeGrab();
 
-            Oscar.intake.reverse();
-            Thread.sleep(100);
+            Thread.sleep(50);
 
             Oscar.elbow.moveStart();
 
             Thread.sleep(250);
             Oscar.slides.slidesTop();
 
-            Thread.sleep(1000);
+            Thread.sleep(700);
             Oscar.elbow.moveTop();
 
             Oscar.grabber.goTop();
 
             Oscar.grabber.grabberGrabExtra();
 
+            Thread.sleep(400);
+
             Oscar.grabber.openGrab();
 
-            Thread.sleep(500);
+            Thread.sleep(200);
 
             Oscar.elbow.moveStart();
-            Thread.sleep(500);
+            Thread.sleep(450);
             Oscar.grabber.goStart();
             Oscar.grabber.grabberGrabExtra();
 
@@ -138,32 +142,35 @@ public class CYCLE_AUTO extends LinearOpMode {
 
             Oscar.drive.followTrajectorySequence(autoTrajectory3);
 
-            Thread.sleep(750);
+            Thread.sleep(50);
 
             Oscar.drive.followTrajectorySequence(autoTrajectory4);
 
-            Oscar.grabber.closeGrab();
-
             Oscar.intake.reverse();
 
-            Thread.sleep(100);
+            Oscar.grabber.closeGrab();
+
+            Thread.sleep(50);
 
             Oscar.elbow.moveStart();
 
             Thread.sleep(250);
 
             Oscar.slides.slidesTop();
-            Thread.sleep(1000);
+            Thread.sleep(700);
 
             Oscar.elbow.moveTop();
             Oscar.grabber.goTop();
             Oscar.grabber.grabberGrabExtra();
+
+            Thread.sleep(400);
+
             Oscar.grabber.openGrab();
 
-            Thread.sleep(500);
+            Thread.sleep(200);
 
             Oscar.elbow.moveStart();
-            Thread.sleep(500);
+            Thread.sleep(450);
             Oscar.grabber.goStart();
             Oscar.grabber.grabberGrabExtra();
             Oscar.slides.slidesGrab();
@@ -175,7 +182,7 @@ public class CYCLE_AUTO extends LinearOpMode {
 
             Oscar.drive.followTrajectorySequence(autoTrajectory5);
 
-            Thread.sleep(1000);
+            Thread.sleep(10000);
 
             Oscar.intake.off();
 

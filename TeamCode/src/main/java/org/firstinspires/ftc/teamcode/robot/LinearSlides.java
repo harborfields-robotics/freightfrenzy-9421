@@ -121,6 +121,13 @@ public class LinearSlides {
         }
         out();
     }
+
+    public void slidesRelativeOut(int ticks) {
+        slideMotor1.setTargetPosition(ticks);
+        slideMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        out();
+    }
+
     public void slidesAbsoluteOut(){
 
         slideMotor1.setTargetPosition((int)GRAB_SLIDE_TICKS + 200);

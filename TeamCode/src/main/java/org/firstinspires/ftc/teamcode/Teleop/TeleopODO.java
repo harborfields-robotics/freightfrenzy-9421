@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 //hardware
 import org.firstinspires.ftc.teamcode.robot.Hardware;
+import org.firstinspires.ftc.teamcode.robot.controllers.AnalogCheck;
 import org.firstinspires.ftc.teamcode.robot.controllers.ButtonState;
 import org.firstinspires.ftc.teamcode.robot.controllers.ControllerState;
 
@@ -101,52 +102,33 @@ public class TeleopODO extends LinearOpMode {
 //        controller2.addEventListener("left_trigger", AnalogCheck.LESS_THAN, 0.1, () -> {
 //            Oscar.intake.off();
 //        });
-        // controller2.addEventListener("right_trigger", AnalogCheck.GREATER_THAN, 0.1,()-> {Oscar.intake.reverse();});
-        //controller2.addEventListener("right_trigger",AnalogCheck.LESS_THAN, 0.1,() ->{Oscar.intake.off();});
+        controller2.addEventListener("left_trigger", AnalogCheck.GREATER_THAN, 0.1,()-> {Oscar.slides.slidesHome();});
+        //controller2.addEventListener("left_trigger",AnalogCheck.LESS_THAN, 0.1,() ->{Oscar.intake.off();});
         //IDK how this will work will test to see but may change
 
         //It all keeps heading up
         // When button y is pressed it will go through the entire top cycle
         controller2.addEventListener("a", ButtonState.PRESSED, () -> {
-            Oscar.elbow.goToGrabPos();
-            Oscar.grabber.goStart();
-        });
-
-        controller2.addEventListener("b", ButtonState.PRESSED, () -> {
             Oscar.elbow.moveStart();
             Oscar.grabber.goStart();
+            Thread.sleep(200);
+            Oscar.slides.slidesRelativeOut(200);
+            Thread.sleep(170);
+            Oscar.slides.slidesHome();
+            Oscar.elbow.goToGrabPos();
         });
+
+
+
         controller2.addEventListener("x", ButtonState.PRESSED, () -> {
             Oscar.grabber.grab();
         });
-        controller2.addEventListener("dpad_up", ButtonState.PRESSED, () -> {
-            Oscar.elbow.moveStart();
-            Oscar.grabber.openGrab();
-            Oscar.grabber.goStart();
-            Thread.sleep(250);
-            Oscar.slides.slidesHome();
-            Oscar.slides.slidesAbsoluteOut();
-            Thread.sleep(200);
-            Oscar.elbow.goToGrabPos();
-            Thread.sleep(180);
-            Oscar.slides.slidesHome();
-        });
+
         controller2.addEventListener("left_bumper", ButtonState.PRESSED, () -> {
             Oscar.slides.slidesHome();
         });
-        controller2.addEventListener("dpad_left", ButtonState.PRESSED, () -> {
-            Oscar.slides.slidesGrab();
-        });
-        controller2.addEventListener("dpad_down", ButtonState.PRESSED, () -> {
-            Oscar.elbow.moveStart();
-            Thread.sleep(500);
-            Oscar.grabber.goStart();
-            Oscar.grabber.grabberGrabExtra();
-            Oscar.slides.slidesGrab();
-            Thread.sleep(1500);
-            Oscar.elbow.goToGrabPos();
-            Oscar.grabber.openGrab();
-        });
+
+        
 
         Oscar.grabber.openGrab();
         Oscar.elbow.goToGrabPos();
@@ -214,7 +196,7 @@ public class TeleopODO extends LinearOpMode {
 
                 case CYCLE_GRABBER_TOP:
                     telemetry.addLine("GRABBER TOP");
-                    if(stateTimer.milliseconds() >= 250) {
+                    if(stateTimer.milliseconds() >= 450) {
                         Oscar.grabber.openGrab();
                         Oscar.grabber.grabberGrabExtra();
                         cycleTimer.reset();
@@ -229,11 +211,11 @@ public class TeleopODO extends LinearOpMode {
                     telemetry.addLine("SLIDES RETRACT");
                     if(stateTimer.milliseconds() >= 600) {
                         Oscar.elbow.moveStart();
-                        if(cycleTimer.milliseconds() >= 550 + retractTime) {
+                        if(cycleTimer.milliseconds() >= 600 + retractTime) {
                             Oscar.grabber.goStart();
                             Oscar.grabber.closeGrab();
                             Oscar.slides.slidesGrab();
-                            if(Oscar.slides.getMotorPosition() <= 420) {
+                            if(Oscar.slides.getMotorPosition() <= 385) {
                                 Oscar.elbow.goToGrabPos();
                                 Oscar.grabber.grabberGrabExtra();
                                 Oscar.grabber.openGrab();
@@ -262,25 +244,17 @@ public class TeleopODO extends LinearOpMode {
             controller2.handleEvents();
 
             if(Oscar.slides.getMotorPosition() <= 100) {
-                if (gamepad2.left_trigger > .2) {
-                    Oscar.intake.reverse();
-                } else if (gamepad2.right_trigger > .2) {
-                    Oscar.intake.forward();
-                } else {
-                    Oscar.intake.off();
-                }
 
-                if (gamepad2.left_bumper) {
+
+                if (gamepad2.dpad_left) {
                     Oscar.intake.reverse();
-                } else if (gamepad2.right_bumper) {
+                } else if (gamepad2.dpad_up) {
                     Oscar.intake.forward();
                 } else {
                     Oscar.intake.off();
                 }
             }
-            else {
-                Oscar.intake.off();
-            }
+
 
             Oscar.drive.setWeightedDrivePower(
                     new Pose2d(

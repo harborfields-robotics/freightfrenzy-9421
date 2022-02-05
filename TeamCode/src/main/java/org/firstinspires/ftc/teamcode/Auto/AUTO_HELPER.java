@@ -1,15 +1,17 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.robot.Hardware;
 
 public class AUTO_HELPER {
     private Hardware Oscar;
     private boolean busy = true;
     private boolean deposited = false;
-    public AUTO_HELPER(Hardware hardware) {
+    private Telemetry telemetry;
+    public AUTO_HELPER(Hardware hardware, Telemetry telemetry) {
         this.Oscar = hardware;
+        this.telemetry = telemetry;
     }
-
     //Assumes starting position is grab position
     private double interval0 = 200; //Grab stone and move elbow horizontal, home slides
     //Interval5 is unreasonably high because next interval relies on position, so timer should never reach this value.
@@ -35,9 +37,10 @@ public class AUTO_HELPER {
     //When you use this, reset a timer before depositing and repeatedly call this method with updated times
     //Returns true if cycle is finished
     public void doDepositTopAsync(double milliseconds) {
-
+        telemetry.addData("Time: ", milliseconds);
         //INTERVAL 0
         if(milliseconds < interval0) {
+            telemetry.addLine("interval 0");
             Oscar.grabber.closeGrab();
             Oscar.grabber.goStart();
             Oscar.slides.slidesHomeAsync();
@@ -48,11 +51,13 @@ public class AUTO_HELPER {
         else if(milliseconds < interval0 + interval1) {
             //INTERVAL 2 ***USES POSITION, NOT TIME***
             if(Oscar.slides.getMotorPosition() > Oscar.slides.TOP_SLIDE_TICKS - 600) {
+                telemetry.addLine("interval 2");
                 Oscar.slides.slidesTop();
                 correctedInterval2 = milliseconds;
                 interval1 = 0; //So next call of doDepositTopAsync does not run INTERVAL 1
             }
             else {
+                telemetry.addLine("interval 1");
                 Oscar.slides.slidesTop();
                 Oscar.elbow.moveStart();
             }
@@ -61,6 +66,7 @@ public class AUTO_HELPER {
         }
         //INTERVAL 3
         else if(milliseconds < correctedInterval2 + interval3) {
+            telemetry.addLine("interval 3");
             Oscar.slides.slidesTop();
             Oscar.elbow.moveTop();
             Oscar.grabber.goTop();
@@ -69,6 +75,7 @@ public class AUTO_HELPER {
         }
         //INTERVAL 4
         else if(milliseconds < correctedInterval2 + interval3 + interval4) {
+            telemetry.addLine("interval 4");
             Oscar.slides.slidesTop();
             Oscar.grabber.openGrab();
             Oscar.grabber.openGrabExtra();
@@ -79,6 +86,7 @@ public class AUTO_HELPER {
         else if(milliseconds < correctedInterval2 + interval3 + interval4 + interval5) {
             //INTERVAL 6 ***USES POSITION, NOT TIME***
             if(Oscar.slides.getMotorPosition() < 420) {
+                telemetry.addLine("interval 6");
                 Oscar.slides.slidesGrab();
                 Oscar.grabber.goStart();
                 Oscar.elbow.goToGrabPos();
@@ -86,6 +94,7 @@ public class AUTO_HELPER {
                 interval5 = 0; //So next call of doDepositTopAsync does not run this INTERVAL 5
             }
             else {
+                telemetry.addLine("interval 5");
                 Oscar.slides.slidesGrab();
                 Oscar.elbow.moveStart();
                 Oscar.grabber.closeGrabExtra();
@@ -100,11 +109,15 @@ public class AUTO_HELPER {
         }
         //INTERVAL 7
         else if(milliseconds < correctedInterval6) {
+            telemetry.addLine("interval 7");
             Oscar.grabber.openGrab();
             busy = true;
             deposited = true;
         }
         //CYCLE FINISHED
-        else {busy = false; deposited = true;}
+        else {
+            telemetry.addLine("DEPOSIT SEQUENCE END");
+            busy = false;
+            deposited = true;}
     }
 }
