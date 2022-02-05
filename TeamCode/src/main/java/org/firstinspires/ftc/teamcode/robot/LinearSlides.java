@@ -42,9 +42,7 @@ public class LinearSlides {
         slideMotor1.setDirection(DcMotor.Direction.FORWARD);
         slideMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-       // slideMotor2.setDirection(DcMotor.Direction.FORWARD);
-       // slideMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-      //  slideMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         resetEncoder();
 
 

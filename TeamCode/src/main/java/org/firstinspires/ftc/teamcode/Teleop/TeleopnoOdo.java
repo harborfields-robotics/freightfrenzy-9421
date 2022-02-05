@@ -14,15 +14,9 @@ public class TeleopnoOdo extends OpMode {
     // makes and instance of the Hardware class
     Hardware robot = new Hardware();
 
-    CycleState cycleState = CycleState.CYCLE_START;
+
     ElapsedTime timer = new ElapsedTime();
 
-    public enum CycleState {
-        CYCLE_START,
-        CYCLE_EXTEND,
-        CYCLE_DUMP,
-        CYCLE_RETRACT
-    };
 
 
     public void init(){robot.init(hardwareMap);}
