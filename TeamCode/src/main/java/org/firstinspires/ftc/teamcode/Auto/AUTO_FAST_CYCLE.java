@@ -18,9 +18,9 @@ public class AUTO_FAST_CYCLE extends LinearOpMode {
 
     enum State {
         CYCLE_0, //Deposit preload, move to warehouse
-        CYCLE_1, //Intake first (non-preloaded) stone, move to deposit position, deposit, move to warehouse
-        CYCLE_2, //Intake second stone, move to deposit position, deposit, move to warehouse
-        CYCLE_3, //Intake third stone, move to deposit position, deposit, move to warehouse
+        CYCLE_1, //Intake first (non-preloaded) stone(MINERAL), move to deposit position, deposit, move to warehouse
+        CYCLE_2, //Intake second stone(MINERAL), move to deposit position, deposit, move to warehouse
+        CYCLE_3, //Intake third stone(MINERAL), move to deposit position, deposit, move to warehouse
         IDLE     //When finished, stop everything
     }
 
