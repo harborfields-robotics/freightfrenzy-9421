@@ -13,31 +13,26 @@ public class LinearSlides {
     public DcMotor slideMotor2;
     public DigitalChannel endstop;
 
-
-
     //position when the slides start
     public double ORIGINAL_POSITION = 0;
     //power motor uses for slides
     public static double SLIDE_POWER = -1;
     //Max length
     public static double MAX_LENGTH = RobotConstants.SLIDE_MAX_LENGTH;
-    public double TOP_SLIDE_TICKS = 1500;
-    private double MID_SLIDE_TICKS = 1000;
-    private double BOTTOM_SLIDE_TICKS = 500;
-    private double GRAB_SLIDE_TICKS = 0;
+    public double TOP_SLIDE_TICKS = 420;
+    private double MID_SLIDE_TICKS = 350;
+    private double BOTTOM_SLIDE_TICKS = 350;
+    private double GRAB_SLIDE_TICKS = 15;
 
-    private double THRESHOLD = 50;
-
-
-    //Must tune to get more efficient
-    private double[] positions = {0.0, TOP_SLIDE_TICKS, MID_SLIDE_TICKS, BOTTOM_SLIDE_TICKS};
+    private double THRESHOLD = 2;
 
     private double currentPosition = 0.0;
     private int arrayPos = 0;
 
     public LinearSlides(HardwareMap ahwMap){
         slideMotor1 = ahwMap.get(DcMotor.class, "slideMotor1");
-       // slideMotor2 = ahwMap.get(DcMotor.class, "slideMotor2");
+        slideMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        // slideMotor2 = ahwMap.get(DcMotor.class, "slideMotor2");
         endstop = ahwMap.get(DigitalChannel.class, "lift_limit_switch");
         slideMotor1.setDirection(DcMotor.Direction.FORWARD);
         slideMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -51,7 +46,7 @@ public class LinearSlides {
 
     }
     private boolean isItInThreshold(double desiredPosition) {
-        return(slideMotor1.getCurrentPosition() > desiredPosition - THRESHOLD || slideMotor1.getCurrentPosition() < desiredPosition + THRESHOLD);
+        return(slideMotor1.getCurrentPosition() > desiredPosition - THRESHOLD && slideMotor1.getCurrentPosition() < desiredPosition + THRESHOLD);
     }
 
     public void out(){
@@ -72,12 +67,6 @@ public class LinearSlides {
         return slideMotor1.getCurrentPosition();
     }
 
-    public void positionCorrection(){
-        double error = positions[arrayPos] - getMotorPosition();
-
-        slideMotor1.setPower(error * 0.001);
-    }
-
     public void setEncoderPosition(int val) {
         slideMotor1.setTargetPosition(val);
     }
@@ -85,24 +74,16 @@ public class LinearSlides {
     public void resetEncoder(){
         slideMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slideMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //slideMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //slideMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
-    //lets see if this works
+
     public void slidesTop(){
-        currentPosition = TOP_SLIDE_TICKS; arrayPos = 1;
+        currentPosition = TOP_SLIDE_TICKS;
         slideMotor1.setTargetPosition((int)currentPosition);
-
-        //slideMotor2.setTargetPosition((int)-currentPosition);
-
-        //slideMotor2.setMode((DcMotor.RunMode.RUN_TO_POSITION));
         slideMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
         if(isItInThreshold(currentPosition)){
             slideMotor1.setPower(0);
         }
-
-        out();
+        else out();
     }
     public void slidesMid(){ currentPosition = MID_SLIDE_TICKS; arrayPos = 2; slideMotor1.setTargetPosition((int)currentPosition);
         slideMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -119,7 +100,7 @@ public class LinearSlides {
         if(isItInThreshold(currentPosition)){
             slideMotor1.setPower(0);
         }
-        out();
+        else out();
     }
 
     public void slidesRelativeOut(int ticks) {
@@ -145,7 +126,6 @@ public class LinearSlides {
         }
         out();
     }
-
 
     public void slidesHome() {
         boolean run = true;
@@ -179,13 +159,10 @@ public class LinearSlides {
         }
     }
 
-
-    public int getCurrentMotortPosition(){
-        return slideMotor1.getCurrentPosition();
+    public void slidesHold() {
+        slideMotor1.setPower(0);
     }
 
     public boolean getEndstop(){ return endstop.getState();}
-
-
 
 }

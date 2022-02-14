@@ -15,6 +15,7 @@ public class Hardware {
     public Elbow elbow = null;
     private Pose2d vel;
     public LinearSlides slides = null;
+    public Flippers flippers = null;
 
     public SampleMecanumDrive drive;
 
@@ -29,6 +30,7 @@ public class Hardware {
         grabber = new Grabber(hwMap);
         elbow = new Elbow(hwMap);
         slides = new LinearSlides(hwMap);
+        flippers = new Flippers(hwMap);
 
 
         drive = new SampleMecanumDrive(hwMap);
@@ -55,6 +57,7 @@ public class Hardware {
         grabber = new Grabber(hwMap);
         elbow = new Elbow(hwMap);
         slides = new LinearSlides(hwMap);
+        flippers = new Flippers(hwMap);
 
 
         drive = new SampleMecanumDrive(hwMap);
