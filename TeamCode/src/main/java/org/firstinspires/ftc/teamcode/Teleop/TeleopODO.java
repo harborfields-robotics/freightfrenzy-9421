@@ -76,6 +76,7 @@ public class TeleopODO extends LinearOpMode {
             deposit_fsm.doDepositTopAsync();
 
             intake_fsm.doFlipBackAsync();
+            intake_fsm.doFlipFrontAsync();
 
             if(Oscar.slides.getMotorPosition() <= 200 && !intake_fsm.isBackBusy()) {
                 if (gamepad2.dpad_left || gamepad1.left_trigger > .1) Oscar.intake.reverse();
@@ -84,6 +85,8 @@ public class TeleopODO extends LinearOpMode {
             }
 
             Oscar.drive.setWeightedDrivePower(new Pose2d(-gamepad1.left_stick_y * 1,-gamepad1.left_stick_x * 1,-gamepad1.right_stick_x * .5));
+
+
         }
     }
 }

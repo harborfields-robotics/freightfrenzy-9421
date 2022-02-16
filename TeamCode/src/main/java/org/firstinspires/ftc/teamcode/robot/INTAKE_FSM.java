@@ -51,10 +51,60 @@ public class INTAKE_FSM {
         time.reset();
     }
 
+    public void doFlipFrontAsync() {
+        telemetry.addData("FRONT FLIPPER STATE: ", front_state);
+        switch(front_state) {
+            case INIT:
+                if((gamepad1.dpad_down) && !backBusy) {
+                    front_state = FRONT_STATE.STATE_0;
+                    frontBusy = true;
+                    time.reset();
+                }
+                else {
+                    frontBusy = false;
+                }
+                break;
+            case STATE_0:
+                if(time.milliseconds() > 100) {
+                    front_state = FRONT_STATE.STATE_1;
+                    time.reset();
+                }
+                else {
+                    Oscar.flippers.moveUp("front");
+                    Oscar.intake.frontIn();
+                }
+                break;
+            case STATE_1:
+                if(time.milliseconds() > 200) {
+                    front_state = FRONT_STATE.STATE_2;
+                    time.reset();
+                }
+                else {
+                    Oscar.intake.frontOut();
+                }
+                break;
+            case STATE_2:
+                if(time.milliseconds() > 400) {
+                    front_state = FRONT_STATE.STATE_3;
+                    Oscar.flippers.moveDown("front");
+                    time.reset();
+                }
+                break;
+            case STATE_3:
+                if(time.milliseconds() > 500) {
+                    front_state = FRONT_STATE.INIT;
+                    Oscar.intake.off();
+                    reset();
+                }
+                break;
+            default:
+                front_state = FRONT_STATE.INIT;
+                break;
+        }
+    }
+
     public void doFlipBackAsync() {
         telemetry.addData("BACK FLIPPER STATE: ", back_state);
-        telemetry.addData("FONT FLIPPER STATE: ", front_state);
-//        telemetry.update();
         switch(back_state) {
             case INIT:
                 if((gamepad1.dpad_up) && !frontBusy) {
