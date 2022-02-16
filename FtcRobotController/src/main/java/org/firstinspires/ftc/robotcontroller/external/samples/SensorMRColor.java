@@ -52,7 +52,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 @TeleOp(name = "Sensor: MR Color", group = "Sensor")
-@Disabled
+
 public class SensorMRColor extends LinearOpMode {
 
   ColorSensor colorSensor;    // Hardware Device Object
@@ -132,7 +132,7 @@ public class SensorMRColor extends LinearOpMode {
     // Set the panel back to the default color
     relativeLayout.post(new Runnable() {
       public void run() {
-        relativeLayout.setBackgroundColor(Color.WHITE);
+        relativeLayout.setBackgroundColor(Color.BLACK);
       }
     });
   }

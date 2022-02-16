@@ -60,8 +60,7 @@ public class CamTargetDistance {
     private double cameraFOV;
     private double cameraAngle;
 
-//	double camWidth = 720, camFOV = 45;
-//	double cameraAngle = 90 - 22.5;
+
 
     public CamTargetDistance( double camWidth, double camFOV, double camAngle ) {
 

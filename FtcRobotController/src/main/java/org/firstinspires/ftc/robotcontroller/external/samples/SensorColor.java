@@ -67,7 +67,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Remove or comment out the @Disabled line to add this Op Mode to the Driver Station OpMode list
  */
 @TeleOp(name = "Sensor: Color", group = "Sensor")
-@Disabled
+
 public class SensorColor extends LinearOpMode {
 
   /** The colorSensor field will contain a reference to our color sensor hardware object */
@@ -88,7 +88,8 @@ public class SensorColor extends LinearOpMode {
    * block around the main, core logic, and an easy way to make that all clear was to separate
    * the former from the latter in separate methods.
    */
-  @Override public void runOpMode() {
+
+  public void runOpMode() {
 
     // Get a reference to the RelativeLayout so we can later change the background
     // color of the Robot Controller app to match the hue detected by the RGB sensor.
@@ -104,7 +105,7 @@ public class SensorColor extends LinearOpMode {
       // Set the panel back to the default color
       relativeLayout.post(new Runnable() {
         public void run() {
-          relativeLayout.setBackgroundColor(Color.WHITE);
+          relativeLayout.setBackgroundColor(Color.WHITE );
         }
       });
       }
