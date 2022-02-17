@@ -108,6 +108,9 @@ public class BarcodePositionDetector extends OpenCvPipeline {
             return duckImage;
         return elementImage;
     }
+// this will return the barcode position that we will use in for auto
+    // example if pos is mid go mid etc
+
 
     public BarcodePosition getBarcodePosition( ) {
         return barcodePosition;
