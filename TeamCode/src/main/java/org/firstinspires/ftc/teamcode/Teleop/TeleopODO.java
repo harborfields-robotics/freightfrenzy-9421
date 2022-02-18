@@ -23,19 +23,24 @@ public class TeleopODO extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        Hardware Oscar = new Hardware(hardwareMap);
+        Hardware Oscar = new Hardware(hardwareMap, telemetry);
 
         Oscar.drive.setPoseEstimate(new Pose2d(6, -48, 180));
 
         ControllerState controller1 = new ControllerState(gamepad1);
         ControllerState controller2 = new ControllerState(gamepad2);
 
-        controller1.addEventListener("dpad_up", ButtonState.PRESSED, () -> {Oscar.flippers.moveUp("back");});
-        controller1.addEventListener("dpad_down", ButtonState.PRESSED, () -> {Oscar.flippers.moveDown("back");});
-
         controller1.addEventListener("x", ButtonState.HELD, () -> Oscar.grabber.carousellOn());
         controller1.addEventListener("x", ButtonState.OFF, () -> Oscar.grabber.carousellOff());
-        controller2.addEventListener("left_trigger", AnalogCheck.GREATER_THAN, 0.1,()-> {Oscar.slides.slidesHome();});
+
+        controller2.addEventListener("left_bumper", ButtonState.PRESSED,()-> {Oscar.slides.slidesHome();});
+        controller2.addEventListener("right_bumper", ButtonState.PRESSED,()-> {Oscar.grabber.goTop(); Thread.sleep(200); Oscar.grabber.goStart();});
+
+        controller1.addEventListener("dpad_left", ButtonState.HELD, () -> Oscar.slides.relativeMove(-5));
+        controller1.addEventListener("dpad_right", ButtonState.HELD, () -> Oscar.slides.relativeMove(5));
+
+        controller2.addEventListener("dpad_left", ButtonState.HELD, () -> Oscar.slides.relativeMove(-5));
+        controller2.addEventListener("dpad_right", ButtonState.HELD, () -> Oscar.slides.relativeMove(5));
 
         DEPOSIT_FSM deposit_fsm = new DEPOSIT_FSM(Oscar, telemetry, gamepad1, gamepad2);
         INTAKE_FSM intake_fsm = new INTAKE_FSM(Oscar, telemetry, gamepad1, gamepad2);
@@ -50,9 +55,9 @@ public class TeleopODO extends LinearOpMode {
             Oscar.elbow.goToGrabPos();
         });
 
-        controller2.addEventListener("x", ButtonState.PRESSED, () -> {
-            Oscar.grabber.grab();
-        });
+       // controller2.addEventListener("x", ButtonState.PRESSED, () -> {
+           // Oscar.grabber.grab();
+       // });
 
         controller2.addEventListener("left_bumper", ButtonState.PRESSED, () -> {
             Oscar.slides.slidesHome();
@@ -74,19 +79,18 @@ public class TeleopODO extends LinearOpMode {
             controller2.handleEvents();
 
             deposit_fsm.doDepositTopAsync();
+            deposit_fsm.doDepositMiddleAsync();
 
             intake_fsm.doFlipBackAsync();
             intake_fsm.doFlipFrontAsync();
 
             if(Oscar.slides.getMotorPosition() <= 200 && !intake_fsm.isBackBusy()) {
-                if (gamepad2.dpad_left || gamepad1.left_trigger > .1) Oscar.intake.reverse();
-                else if (gamepad2.dpad_up || gamepad1.right_trigger > .1) Oscar.intake.forward();
+                if (gamepad2.left_trigger > .1 || gamepad1.left_trigger > .1) Oscar.intake.reverse();
+                else if (gamepad2.right_trigger > .1 || gamepad1.right_trigger > .1) Oscar.intake.forward();
                 else Oscar.intake.off();
             }
 
-            Oscar.drive.setWeightedDrivePower(new Pose2d(-gamepad1.left_stick_y * 1,-gamepad1.left_stick_x * 1,-gamepad1.right_stick_x * .5));
-
-
+            Oscar.drive.setWeightedDrivePower(new Pose2d(gamepad1.left_stick_y * 1,gamepad1.left_stick_x * 1,-gamepad1.right_stick_x * .5));
         }
     }
 }

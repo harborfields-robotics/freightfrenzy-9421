@@ -5,12 +5,13 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import dashboard.RobotConstants;
 
 public class LinearSlides {
 
     public DcMotor slideMotor1;
-    public DcMotor slideMotor2;
     public DigitalChannel endstop;
 
     //position when the slides start
@@ -20,16 +21,19 @@ public class LinearSlides {
     //Max length
     public static double MAX_LENGTH = RobotConstants.SLIDE_MAX_LENGTH;
     public double TOP_SLIDE_TICKS = 420;
-    private double MID_SLIDE_TICKS = 350;
+    private double MID_SLIDE_TICKS = 242;
+    private double OUT_A_BIT_SLIDE_TICKS = 100;
     private double BOTTOM_SLIDE_TICKS = 350;
     private double GRAB_SLIDE_TICKS = 15;
 
-    private double THRESHOLD = 2;
+    private Telemetry telemetry;
+
+    private double THRESHOLD = 1;
 
     private double currentPosition = 0.0;
     private int arrayPos = 0;
 
-    public LinearSlides(HardwareMap ahwMap){
+    public LinearSlides(HardwareMap ahwMap, Telemetry telemetry){
         slideMotor1 = ahwMap.get(DcMotor.class, "slideMotor1");
         slideMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         // slideMotor2 = ahwMap.get(DcMotor.class, "slideMotor2");
@@ -38,11 +42,11 @@ public class LinearSlides {
         slideMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        this.telemetry = telemetry;
+
         resetEncoder();
-
-
-
     }
+
     private boolean isItInThreshold(double desiredPosition) {
         return(slideMotor1.getCurrentPosition() > desiredPosition - THRESHOLD && slideMotor1.getCurrentPosition() < desiredPosition + THRESHOLD);
     }
@@ -50,15 +54,15 @@ public class LinearSlides {
     public void out(){
 
         slideMotor1.setPower(SLIDE_POWER);
-        //slideMotor2.setPower(SLIDE_POWER);
+
     }
     public void in(){
         slideMotor1.setPower(SLIDE_POWER);
-        //slideMotor2.setPower(-SLIDE_POWER);
+
     }
     public void stop(){
         slideMotor1.setPower(0);
-       // slideMotor2.setPower(0);
+
     }
 
     public int getMotorPosition(){
@@ -83,12 +87,37 @@ public class LinearSlides {
         }
         else out();
     }
-    public void slidesMid(){ currentPosition = MID_SLIDE_TICKS; arrayPos = 2; slideMotor1.setTargetPosition((int)currentPosition);
+    public void slidesMid(){
+        currentPosition = MID_SLIDE_TICKS;
+        slideMotor1.setTargetPosition((int)currentPosition);
         slideMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        out();
+        if(isItInThreshold(currentPosition)){
+            slideMotor1.setPower(0);
+
+        }
+        else out();
     }
-    public void slidesBottom(){currentPosition = BOTTOM_SLIDE_TICKS; arrayPos = 3;slideMotor1.setTargetPosition((int)currentPosition);
-        slideMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);}
+    public void slidesOutABit(){
+        currentPosition = OUT_A_BIT_SLIDE_TICKS;
+        slideMotor1.setTargetPosition((int)currentPosition);
+        slideMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        if(isItInThreshold(currentPosition)){
+            slideMotor1.setPower(0);
+
+        }
+        else out();
+    }
+
+    public void slidesBottom(){
+        currentPosition = BOTTOM_SLIDE_TICKS;
+        slideMotor1.setTargetPosition((int)currentPosition);
+        slideMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        if(isItInThreshold(currentPosition)){
+            slideMotor1.setPower(0);
+
+        }
+        else out();
+    }
 
     public void slidesGrab(){
         currentPosition = GRAB_SLIDE_TICKS;
@@ -101,6 +130,16 @@ public class LinearSlides {
         else out();
     }
 
+    public void relativeMove(int ticks) {
+        currentPosition += ticks;
+        slideMotor1.setTargetPosition((int) currentPosition);
+        slideMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if(isItInThreshold(currentPosition)){
+            slideMotor1.setPower(0);
+        }
+        out();
+    }
+
     public void slidesRelativeOut(int ticks) {
         slideMotor1.setTargetPosition(ticks);
         slideMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -108,7 +147,6 @@ public class LinearSlides {
     }
 
     public void slidesAbsoluteOut(){
-
         slideMotor1.setTargetPosition((int)GRAB_SLIDE_TICKS + 200);
         slideMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         if(isItInThreshold(currentPosition)){

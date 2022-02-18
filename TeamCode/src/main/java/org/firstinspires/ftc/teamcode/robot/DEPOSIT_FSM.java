@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.robot.controllers.ControllerState;
 
 public class DEPOSIT_FSM {
     enum DEPOSIT_STATE {
@@ -19,11 +18,27 @@ public class DEPOSIT_FSM {
         STATE_7,
         STATE_8
     }
+    enum MID_DEPOSIT_STATE {
+        INIT,
+        STATE_0,
+        STATE_1,
+        STATE_2,
+        STATE_3,
+        STATE_4,
+        STATE_5,
+        STATE_6,
+        STATE_7,
+        STATE_8
+    }
     private DEPOSIT_STATE deposit_state = DEPOSIT_STATE.INIT;
+    private MID_DEPOSIT_STATE mid_deposit_state = MID_DEPOSIT_STATE.INIT;
     private final Hardware Oscar;
     private final Gamepad gamepad1;
     private final Gamepad gamepad2;
-    private boolean busy = false;
+    private boolean topBusy = false;
+    private boolean midBusy = false;
+    private boolean midDeposited = false;
+
     private boolean deposited = false;
     private final Telemetry telemetry;
 
@@ -36,11 +51,11 @@ public class DEPOSIT_FSM {
 
     private final ElapsedTime time = new ElapsedTime();
 
-    public boolean isBusy() {return busy;}
+    public boolean isTopBusy() {return topBusy;}
     public boolean isDeposited() {return deposited;}
 
     public void reset() {
-        busy = false;
+        topBusy = false;
         deposited = false;
         deposit_state = DEPOSIT_STATE.INIT;
         time.reset();
@@ -51,16 +66,16 @@ public class DEPOSIT_FSM {
 //        telemetry.update();
         switch(deposit_state) {
             case INIT:
-                if(gamepad1.y || gamepad2.y) {
+                if((gamepad2.triangle || gamepad1.triangle) && !midBusy) {
                     deposit_state = DEPOSIT_STATE.STATE_0;
-                    busy = true;
+                    topBusy = true;
                     deposited = false;
                     time.reset();
                 }
                 else {
-                    busy = false;
+                    topBusy = false;
                     deposited = false;
-                    Oscar.slides.slidesGrab();
+                    if(topBusy) {}
                 }
                 break;
             case STATE_0:
@@ -88,7 +103,7 @@ public class DEPOSIT_FSM {
                 }
                 break;
             case STATE_2:
-                if(gamepad1.y || gamepad2.y) {
+                if(gamepad1.triangle || gamepad2.triangle) {
                     deposit_state = DEPOSIT_STATE.STATE_3;
                     time.reset();
                 }
@@ -140,6 +155,102 @@ public class DEPOSIT_FSM {
                 break;
             default:
                 deposit_state = DEPOSIT_STATE.INIT;
+                break;
+        }
+    }
+    public void doDepositMiddleAsync() {
+        telemetry.addData("DEPOSIT STATE (MIDDLE): ", mid_deposit_state);
+        switch(mid_deposit_state) {
+            case INIT:
+                if(gamepad2.square && !topBusy) {
+                    mid_deposit_state = MID_DEPOSIT_STATE.STATE_0;
+                    midBusy = true;
+                    midDeposited = false;
+                    time.reset();
+                }
+                else {
+                    midBusy = false;
+                    midDeposited = false;
+                }
+                break;
+            case STATE_0:
+                if(time.milliseconds() > 50) {
+                    mid_deposit_state = MID_DEPOSIT_STATE.STATE_1;
+                    time.reset();
+                }
+                else {
+                    Oscar.slides.slidesOutABit();
+                    Oscar.grabber.closeGrab();
+                    Oscar.grabber.goStart();
+                    Oscar.elbow.moveStart();
+                }
+                break;
+            case STATE_1:
+                if(time.milliseconds() > 700) {
+                    Oscar.slides.slidesMid();
+                    mid_deposit_state = MID_DEPOSIT_STATE.STATE_2;
+                    time.reset();
+                }
+                else {
+                    Oscar.slides.slidesOutABit();
+                    Oscar.elbow.moveMid();
+                    Oscar.grabber.goMiddle();
+                }
+                break;
+            case STATE_2:
+                if(gamepad2.square) {
+                    mid_deposit_state = MID_DEPOSIT_STATE.STATE_3;
+                    time.reset();
+                }
+                else {
+                    Oscar.slides.slidesMid();
+                }
+                break;
+            case STATE_3:
+                if(time.milliseconds() > 200) {
+                    mid_deposit_state = MID_DEPOSIT_STATE.STATE_4;
+                    midDeposited = true;
+                    time.reset();
+                }
+                else {
+                    Oscar.slides.slidesHold();
+                    Oscar.grabber.openGrab();
+                    Oscar.grabber.openGrabExtra();
+                }
+                break;
+            case STATE_4:
+                if(time.milliseconds() > 800) {
+                    mid_deposit_state = MID_DEPOSIT_STATE.STATE_5;
+                    time.reset();
+                }
+                else {
+                    Oscar.slides.slidesHold();
+                    Oscar.elbow.goToGrabPos();
+                    Oscar.grabber.closeGrabExtra();
+                    Oscar.slides.slidesOutABit();
+                }
+                break;
+            case STATE_5:
+                if(Oscar.slides.getMotorPosition() < 250) {
+                    mid_deposit_state = MID_DEPOSIT_STATE.STATE_6;
+                    Oscar.grabber.goStart();
+                    time.reset();
+                }
+                else {
+                    Oscar.slides.slidesGrab();
+                }
+                break;
+            case STATE_6:
+                if(time.milliseconds() > 500) {
+                    reset();
+                    mid_deposit_state = MID_DEPOSIT_STATE.INIT;
+                }
+                else {
+                    Oscar.slides.slidesGrab();
+                }
+                break;
+            default:
+                mid_deposit_state = MID_DEPOSIT_STATE.INIT;
                 break;
         }
     }

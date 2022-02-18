@@ -35,7 +35,7 @@ public class Grabber {
 
     //ABSOLUTE!!!
     private final double TOP_ANG = -214;
-    private final double MID_ANG = -230;
+    private final double MID_ANG = -260;
     private final double BOTTOM_ANG = -188;
     private final double GRAB_ANG = -90;
 

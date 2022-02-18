@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 
@@ -19,17 +20,21 @@ public class Hardware {
 
     public SampleMecanumDrive drive;
 
+    private Telemetry telemetry;
+
     private double poseHeading = 0;
     private double poseX = 0;
     private double poseY = 0;
 
-    public Hardware(HardwareMap hardwareMap){
+    public Hardware(HardwareMap hardwareMap, Telemetry telemetry){
+        this.telemetry = telemetry;
+
         hwMap = hardwareMap;
         dt = new Drivetrain(hwMap);
         intake = new Intake(hwMap);
         grabber = new Grabber(hwMap);
         elbow = new Elbow(hwMap);
-        slides = new LinearSlides(hwMap);
+        slides = new LinearSlides(hwMap, telemetry);
         flippers = new Flippers(hwMap);
 
 
@@ -56,7 +61,7 @@ public class Hardware {
         intake = new Intake(hwMap);
         grabber = new Grabber(hwMap);
         elbow = new Elbow(hwMap);
-        slides = new LinearSlides(hwMap);
+        slides = new LinearSlides(hwMap, telemetry);
         flippers = new Flippers(hwMap);
 
 

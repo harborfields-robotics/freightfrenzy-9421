@@ -55,7 +55,7 @@ public class INTAKE_FSM {
         telemetry.addData("FRONT FLIPPER STATE: ", front_state);
         switch(front_state) {
             case INIT:
-                if((gamepad1.dpad_down) && !backBusy) {
+                if((gamepad2.dpad_up || gamepad1.dpad_up) && !backBusy) {
                     front_state = FRONT_STATE.STATE_0;
                     frontBusy = true;
                     time.reset();
@@ -84,7 +84,7 @@ public class INTAKE_FSM {
                 }
                 break;
             case STATE_2:
-                if(time.milliseconds() > 400) {
+                if(time.milliseconds() > 800) {
                     front_state = FRONT_STATE.STATE_3;
                     Oscar.flippers.moveDown("front");
                     time.reset();
@@ -107,7 +107,7 @@ public class INTAKE_FSM {
         telemetry.addData("BACK FLIPPER STATE: ", back_state);
         switch(back_state) {
             case INIT:
-                if((gamepad1.dpad_up) && !frontBusy) {
+                if((gamepad2.dpad_down || gamepad1.dpad_down) && !frontBusy) {
                     back_state = BACK_STATE.STATE_0;
                     backBusy = true;
                     time.reset();

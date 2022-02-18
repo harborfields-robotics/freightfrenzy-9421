@@ -47,7 +47,7 @@ public class OdoFieldCentric extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        Hardware Oscar = new Hardware(hardwareMap);
+        Hardware Oscar = new Hardware(hardwareMap, telemetry);
 
         Oscar.drive.setPoseEstimate(new Pose2d(6, -48, 180));
 
