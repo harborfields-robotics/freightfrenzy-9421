@@ -80,6 +80,7 @@ public class TeleopODO extends LinearOpMode {
 
             deposit_fsm.doDepositTopAsync();
             deposit_fsm.doDepositMiddleAsync();
+            deposit_fsm.doDepositBottomAsync();
 
             intake_fsm.doFlipBackAsync();
             intake_fsm.doFlipFrontAsync();
