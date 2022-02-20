@@ -81,7 +81,7 @@ public class DEPOSIT_FSM {
 //        telemetry.update();
         switch(deposit_state) {
             case INIT:
-                if((gamepad2.triangle || gamepad1.triangle) && !midBusy) {
+                if((gamepad2.triangle || gamepad1.triangle) && !midBusy && !bottomBusy) {
                     deposit_state = DEPOSIT_STATE.STATE_0;
                     topBusy = true;
                     deposited = false;
@@ -90,7 +90,9 @@ public class DEPOSIT_FSM {
                 else {
                     topBusy = false;
                     deposited = false;
-                    if(topBusy) {}
+                    if(topBusy) {
+
+                    }
                 }
                 break;
             case STATE_0:
@@ -177,7 +179,7 @@ public class DEPOSIT_FSM {
         telemetry.addData("DEPOSIT STATE (MIDDLE): ", mid_deposit_state);
         switch(mid_deposit_state) {
             case INIT:
-                if(gamepad2.square && !topBusy) {
+                if(gamepad2.square && !topBusy && !bottomBusy) {
                     mid_deposit_state = MID_DEPOSIT_STATE.STATE_0;
                     midBusy = true;
                     midDeposited = false;
@@ -234,7 +236,7 @@ public class DEPOSIT_FSM {
                 }
                 break;
             case STATE_4:
-                if(time.milliseconds() > 800) {
+                if(time.milliseconds() > 580) {
                     mid_deposit_state = MID_DEPOSIT_STATE.STATE_5;
                     time.reset();
                 }
@@ -270,7 +272,7 @@ public class DEPOSIT_FSM {
         }
     }
     public void doDepositBottomAsync() {
-        telemetry.addData("DEPOSIT STATE (MIDDLE): ", mid_deposit_state);
+        telemetry.addData("DEPOSIT STATE (BOTTOM): ", bottom_deposit_state);
         switch(bottom_deposit_state) {
             case INIT:
                 if(gamepad2.cross && !topBusy && !midBusy) {
@@ -285,7 +287,7 @@ public class DEPOSIT_FSM {
                 }
                 break;
             case STATE_0:
-                if(time.milliseconds() > 50) {
+                if(time.milliseconds() > 100) {
                     bottom_deposit_state = BOTTOM_DEPOSIT_STATE.STATE_1;
                     time.reset();
                 }
@@ -298,15 +300,13 @@ public class DEPOSIT_FSM {
                 }
                 break;
             case STATE_1:
-                if(time.milliseconds() > 600) {
-                    //TODO: Change the value for slidesBottom
+                if(time.milliseconds() > 800) {
                     Oscar.slides.slidesBottom();
                     bottom_deposit_state = BOTTOM_DEPOSIT_STATE.STATE_2;
                     time.reset();
                 }
                 else {
                     Oscar.slides.slidesOutABit();
-                    //TODO: Change these values
                     Oscar.elbow.moveBottom();
                     Oscar.grabber.goBottom();
                 }
@@ -321,7 +321,7 @@ public class DEPOSIT_FSM {
                 }
                 break;
             case STATE_3:
-                if(time.milliseconds() > 175) {
+                if(time.milliseconds() > 230) {
                     bottom_deposit_state = BOTTOM_DEPOSIT_STATE.STATE_4;
                     bottomDeposited = true;
                     time.reset();
@@ -333,25 +333,27 @@ public class DEPOSIT_FSM {
                 }
                 break;
             case STATE_4:
-                if(time.milliseconds() > 800) {
+                if(time.milliseconds() > 300) {
                     bottom_deposit_state = BOTTOM_DEPOSIT_STATE.STATE_5;
                     time.reset();
                 }
                 else {
-                    Oscar.slides.slidesHold();
-                    Oscar.elbow.goToGrabPos();
-                    Oscar.grabber.closeGrabExtra();
                     Oscar.slides.slidesOutABit();
                 }
                 break;
             case STATE_5:
-                if(Oscar.slides.getMotorPosition() < 150) {
+                if(time.milliseconds() > 800) {
                     bottom_deposit_state = BOTTOM_DEPOSIT_STATE.STATE_6;
                     Oscar.grabber.goStart();
                     time.reset();
                 }
                 else {
-                    Oscar.slides.slidesGrab();
+                    if(time.milliseconds() > 500) {
+                        Oscar.grabber.goStart();
+                    }
+                    Oscar.grabber.closeGrabExtra();
+                    Oscar.elbow.goToGrabPos();
+                    Oscar.slides.slidesOutABit();
                 }
                 break;
             case STATE_6:

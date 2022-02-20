@@ -11,7 +11,7 @@ public class Flippers {
     private Servo f1;
 
     private double downPosition0 = .4;
-    private double downPosition1 = 1;
+    private double downPosition1 = .95;
 
     private double upPosition0 = .8;
     private double upPosition1 = .58;

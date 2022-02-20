@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.robot;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -17,6 +18,8 @@ public class Hardware {
     private Pose2d vel;
     public LinearSlides slides = null;
     public Flippers flippers = null;
+    public NormalizedColorSensor colorFront;
+    public NormalizedColorSensor colorBack;
 
     public SampleMecanumDrive drive;
 
@@ -37,6 +40,8 @@ public class Hardware {
         slides = new LinearSlides(hwMap, telemetry);
         flippers = new Flippers(hwMap);
 
+        colorFront = hardwareMap.get(NormalizedColorSensor.class, "color_front");
+        colorBack = hardwareMap.get(NormalizedColorSensor.class, "color_back");
 
         drive = new SampleMecanumDrive(hwMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -45,12 +50,9 @@ public class Hardware {
         elbow.moveStart();
         grabber.goStart();
         grabber.closeGrab();
-
     }
 
-
     public Hardware() {
-
     }
 
     //Inits hardware for opmode

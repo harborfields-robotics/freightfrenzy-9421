@@ -31,6 +31,9 @@ public class INTAKE_FSM {
     private boolean backBusy = false;
     private final Telemetry telemetry;
 
+    private boolean EXEC_BACK_FLIP = false;
+    private boolean EXEC_FRONT_FLIP = false;
+
     public INTAKE_FSM(Hardware hardware, Telemetry telemetry, Gamepad c1, Gamepad c2) {
         this.Oscar = hardware;
         this.telemetry = telemetry;
@@ -50,6 +53,9 @@ public class INTAKE_FSM {
         front_state = FRONT_STATE.INIT;
         time.reset();
     }
+
+    public void SET_EXEC_BACK_FLIP(boolean EXEC) {EXEC_BACK_FLIP = EXEC;}
+    public void SET_EXEC_FRONT_FLIP(boolean EXEC) {EXEC_FRONT_FLIP = EXEC;}
 
     public void doFlipFrontAsync() {
         telemetry.addData("FRONT FLIPPER STATE: ", front_state);
@@ -107,7 +113,8 @@ public class INTAKE_FSM {
         telemetry.addData("BACK FLIPPER STATE: ", back_state);
         switch(back_state) {
             case INIT:
-                if((gamepad2.dpad_down || gamepad1.dpad_down) && !frontBusy) {
+                if(((gamepad2.dpad_down || gamepad1.dpad_down) && !frontBusy) || EXEC_BACK_FLIP) {
+                    EXEC_BACK_FLIP = false;
                     back_state = BACK_STATE.STATE_0;
                     backBusy = true;
                     time.reset();
@@ -123,16 +130,16 @@ public class INTAKE_FSM {
                 }
                 else {
                     Oscar.flippers.moveUp("back");
+                    Oscar.intake.backOut();
                 }
                 break;
             case STATE_1:
                 if(time.milliseconds() > 200) {
                     back_state = BACK_STATE.STATE_2;
-                    Oscar.intake.off();
                     time.reset();
                 }
                 else {
-                    Oscar.intake.backIn();
+                    Oscar.intake.backOut();
                 }
                 break;
             case STATE_2:
@@ -141,10 +148,14 @@ public class INTAKE_FSM {
                     Oscar.flippers.moveDown("back");
                     time.reset();
                 }
+                else{
+                    Oscar.intake.backOut();
+                }
                 break;
             case STATE_3:
-                if(time.milliseconds() > 500) {
+                if(time.milliseconds() > 20) {
                     back_state = BACK_STATE.INIT;
+                    Oscar.intake.off();
                     reset();
                 }
                 break;
