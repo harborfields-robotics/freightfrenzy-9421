@@ -1,6 +1,8 @@
 package com.example.meepmeep;
 
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeBlueDark;
 import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeRedDark;
@@ -11,19 +13,24 @@ public class MeepMeepTesting {
     public static void main(String[] args) {
         System.setProperty("sun.java2d.opengl", "true");
 
-        MeepMeep meepMeep = new MeepMeep(800);
+        MeepMeep meepMeep = new MeepMeep(650);
 
         // Declare our first bot
+        Pose2d splineTest = new Pose2d(9.5,-55.2, Math.toRadians(210));
+        Vector2d vectorTest = new Vector2d(9.5,-55.2);
         RoadRunnerBotEntity myFirstBot = new DefaultBotBuilder(meepMeep)
                 // We set this bot to be blue
                 .setColorScheme(new ColorSchemeBlueDark())
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 12.6)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(6, -64, Math.toRadians(180)))
-                                .forward(30)
                                 .back(70)
+                                .forward(60)
+                                .lineToLinearHeading(splineTest)
                                 .build()
                 );
+
+
 
         // Declare out second bot
         RoadRunnerBotEntity mySecondBot = new DefaultBotBuilder(meepMeep)
