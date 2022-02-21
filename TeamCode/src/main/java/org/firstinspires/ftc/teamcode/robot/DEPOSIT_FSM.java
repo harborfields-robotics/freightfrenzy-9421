@@ -54,9 +54,9 @@ public class DEPOSIT_FSM {
     private boolean midDeposited = false;
     private boolean bottomDeposited = false;
 
-    private boolean startDeposittop = false;
-    private boolean startDepositmid = false;
-    private boolean startDepositbot = false;
+    public boolean startDeposittop = false;
+    public boolean startDepositmid = false;
+    public boolean startDepositbot = false;
 
 
     private boolean depositing = false;
@@ -75,9 +75,10 @@ public class DEPOSIT_FSM {
     }
     public DEPOSIT_FSM(Hardware hardware, Telemetry telemetry){
         this.Oscar = hardware;
-
         this.telemetry = telemetry;
 
+        gamepad1 = null;
+        gamepad2 = null;
     }
 
     private final ElapsedTime time = new ElapsedTime();
@@ -98,6 +99,7 @@ public class DEPOSIT_FSM {
         switch(deposit_state) {
             case INIT:
                 if((gamepad2.triangle || gamepad1.triangle || startDeposittop) && !midBusy && !bottomBusy) {
+                    startDeposittop = false;
                     deposit_state = DEPOSIT_STATE.STATE_0;
                     topBusy = true;
                     deposited = false;
@@ -206,6 +208,7 @@ public class DEPOSIT_FSM {
         switch(mid_deposit_state) {
             case INIT:
                 if((gamepad2.square || startDepositmid) && !topBusy && !bottomBusy) {
+                    startDepositmid = false;
                     mid_deposit_state = MID_DEPOSIT_STATE.STATE_0;
                     midBusy = true;
                     midDeposited = false;
@@ -302,6 +305,7 @@ public class DEPOSIT_FSM {
         switch(bottom_deposit_state) {
             case INIT:
                 if((gamepad2.cross || startDepositbot) && !topBusy && !midBusy) {
+                    startDepositbot = false;
                     bottom_deposit_state = BOTTOM_DEPOSIT_STATE.STATE_0;
                     bottomBusy = true;
                     bottomDeposited = false;

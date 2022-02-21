@@ -93,7 +93,7 @@ public class INTAKE_FSM {
                 }
                 break;
             case STATE_2:
-                if(time.milliseconds() > 800) {
+                if(time.milliseconds() > 1200) {
                     front_state = FRONT_STATE.STATE_3;
                     Oscar.flippers.moveDown("front");
                     time.reset();
@@ -156,7 +156,7 @@ public class INTAKE_FSM {
                 }
                 break;
             case STATE_2:
-                if(time.milliseconds() > 400) {
+                if(time.milliseconds() > 1200) {
                     back_state = BACK_STATE.STATE_3;
                     Oscar.flippers.moveDown("back");
                     time.reset();

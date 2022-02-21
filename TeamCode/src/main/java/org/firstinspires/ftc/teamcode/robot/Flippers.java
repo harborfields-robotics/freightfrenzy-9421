@@ -14,7 +14,7 @@ public class Flippers {
     private double downPosition1 = .95;
 
     private double upPosition0 = .84;
-    private double upPosition1 = .55;
+    private double upPosition1 = .59;
 
 
     public Flippers(HardwareMap ahwMap) {

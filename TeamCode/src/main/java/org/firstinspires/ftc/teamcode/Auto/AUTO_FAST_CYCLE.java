@@ -84,7 +84,7 @@ public class AUTO_FAST_CYCLE extends LinearOpMode {
             if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 2) {
                 intake_fsm.SET_EXEC_BACK_FLIP(true);
             }
-            if(((DistanceSensor) Oscar.colorFront).getDistance(DistanceUnit.CM) < 1.5) {
+            if(((DistanceSensor) Oscar.colorFront).getDistance(DistanceUnit.CM) < 2) {
                 intake_fsm.SET_EXEC_FRONT_FLIP(true);
             }
 
