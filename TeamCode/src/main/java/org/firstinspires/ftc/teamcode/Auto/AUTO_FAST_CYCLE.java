@@ -45,7 +45,7 @@ public class AUTO_FAST_CYCLE extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         Oscar.init(hardwareMap);
-
+// test
         Trajectory preloadTrajectory= Oscar.drive.trajectoryBuilder(startPR)
                 .lineToLinearHeading(splineCV)
                 .lineToLinearHeading(revertSpline)
