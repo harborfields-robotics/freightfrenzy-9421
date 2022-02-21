@@ -5,10 +5,15 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.robot.DEPOSIT_FSM;
 import org.firstinspires.ftc.teamcode.robot.Hardware;
+import org.firstinspires.ftc.teamcode.robot.INTAKE_FSM;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 
 import dashboard.RobotConstants;
 
@@ -27,9 +32,13 @@ public class AUTO_FAST_CYCLE extends LinearOpMode {
     private State currentState = State.CYCLE_0;
 
     public static Pose2d startPR = new Pose2d(RobotConstants.STARTX,RobotConstants.STARTY,Math.toRadians(RobotConstants.HEADING));
+    public static Pose2d depositSpline = new Pose2d( 9.5,-55.2, Math.toRadians(210));
+    public static Pose2d revertSpline = new  Pose2d(15.6,-63.2, Math.toRadians(180));
+    Hardware Oscar = new Hardware(hardwareMap, telemetry);
 
-    Hardware Oscar = new Hardware();
-    AUTO_HELPER_FSM helper = new AUTO_HELPER_FSM(Oscar, telemetry);
+
+    DEPOSIT_FSM deposit_fsm = new DEPOSIT_FSM(Oscar, telemetry, gamepad1, gamepad2);
+    INTAKE_FSM intake_fsm = new INTAKE_FSM(Oscar, telemetry, gamepad1, gamepad2);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -40,18 +49,19 @@ public class AUTO_FAST_CYCLE extends LinearOpMode {
                 .back(65)
                 .build();
 
-        Trajectory autoTrajectory1 = Oscar.drive.trajectoryBuilder(autoTrajectory0.end())
-                .forward(65)
+        TrajectorySequence autoTrajectory1 = Oscar.drive.trajectorySequenceBuilder(new Pose2d(6, -64, Math.toRadians(180)))
+                .forward(40)
+                .lineToLinearHeading(depositSpline)
                 .build();
 
-        Trajectory autoTrajectory2 = Oscar.drive.trajectoryBuilder(autoTrajectory1.end())
-                .back(65)
+        TrajectorySequence autoTrajectory2 = Oscar.drive.trajectorySequenceBuilder(autoTrajectory1.end())
+                .lineToLinearHeading(revertSpline)
                 .build();
         Trajectory autoTrajectory3 = Oscar.drive.trajectoryBuilder(autoTrajectory2.end())
-                .forward(65)
+                .back(35)
                 .build();
 
-        Trajectory autoTrajectory4 = Oscar.drive.trajectoryBuilder(autoTrajectory3.end())
+        TrajectorySequence autoTrajectory4 = Oscar.drive.trajectorySequenceBuilder(autoTrajectory3.end())
                 .back(65)
                 .build();
 
@@ -62,6 +72,17 @@ public class AUTO_FAST_CYCLE extends LinearOpMode {
         ElapsedTime time = new ElapsedTime();
 
         while(opModeIsActive() && !isStopRequested()) {
+
+            deposit_fsm.doDepositTopAsync();
+            deposit_fsm.doDepositMiddleAsync();
+            deposit_fsm.doDepositBottomAsync();
+
+            if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 2) {
+                intake_fsm.SET_EXEC_BACK_FLIP(true);
+            }
+            if(((DistanceSensor) Oscar.colorFront).getDistance(DistanceUnit.CM) < 1.5) {
+                intake_fsm.SET_EXEC_FRONT_FLIP(true);
+            }
 
             switch (currentState) {
 
@@ -89,11 +110,11 @@ public class AUTO_FAST_CYCLE extends LinearOpMode {
                         helper.doDepositTopAsync(time.milliseconds());
                     }
                     if(!helper.isDeposited()) {
-                        Oscar.drive.followTrajectoryAsync(autoTrajectory1);
+                        Oscar.drive.followTrajectorySequenceAsync(autoTrajectory1);
                     }
                     else if(helper.isDeposited()) {
                         Oscar.intake.forward();
-                        Oscar.drive.followTrajectoryAsync(autoTrajectory2);
+                        Oscar.drive.followTrajectorySequenceAsync(autoTrajectory2);
                     }
                     if(helper.isDeposited() && !Oscar.drive.isBusy()) {
                         currentState = State.CYCLE_2;
@@ -108,11 +129,11 @@ public class AUTO_FAST_CYCLE extends LinearOpMode {
                         helper.doDepositTopAsync(time.milliseconds());
                     }
                     if(!helper.isDeposited()) {
-                        Oscar.drive.followTrajectoryAsync(autoTrajectory1);
+                        Oscar.drive.followTrajectorySequenceAsync(autoTrajectory1);
                     }
                     else if(helper.isDeposited()) {
                         Oscar.intake.forward();
-                        Oscar.drive.followTrajectoryAsync(autoTrajectory2);
+                        Oscar.drive.followTrajectorySequenceAsync(autoTrajectory2);
                     }
                     if(helper.isDeposited() && !Oscar.drive.isBusy()) {
                         currentState = State.CYCLE_2;
@@ -127,11 +148,11 @@ public class AUTO_FAST_CYCLE extends LinearOpMode {
                         helper.doDepositTopAsync(time.milliseconds());
                     }
                     if(!helper.isDeposited()) {
-                        Oscar.drive.followTrajectoryAsync(autoTrajectory1);
+                        Oscar.drive.followTrajectorySequenceAsync(autoTrajectory1);
                     }
                     else if(helper.isDeposited()) {
                         Oscar.intake.forward();
-                        Oscar.drive.followTrajectoryAsync(autoTrajectory2);
+                        Oscar.drive.followTrajectorySequenceAsync(autoTrajectory2);
                     }
                     if(helper.isDeposited() && !Oscar.drive.isBusy()) {
                         currentState = State.CYCLE_2;

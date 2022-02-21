@@ -51,7 +51,20 @@ public class DEPOSIT_FSM {
     private boolean topBusy = false;
     private boolean midBusy = false;
     private boolean bottomBusy = false;
+    private boolean midDeposited = false;
+    private boolean bottomDeposited = false;
 
+    private boolean startDeposittop = false;
+    private boolean startDepositmid = false;
+    private boolean startDepositbot = false;
+
+
+    private boolean depositing = false;
+
+    private boolean restart = false;
+
+
+    private boolean deposited = false;
     private final Telemetry telemetry;
 
     public DEPOSIT_FSM(Hardware hardware, Telemetry telemetry, Gamepad c1, Gamepad c2) {
@@ -60,12 +73,21 @@ public class DEPOSIT_FSM {
         gamepad1 = c1;
         gamepad2 = c2;
     }
+    public DEPOSIT_FSM(Hardware hardware, Telemetry telemetry){
+        this.Oscar = hardware;
+
+        this.telemetry = telemetry;
+
+    }
 
     private final ElapsedTime time = new ElapsedTime();
 
     public boolean isTopBusy() {return topBusy;}
+    public boolean isDeposited() {return deposited;}
 
     public void reset() {
+        topBusy = false;
+        deposited = false;
         deposit_state = DEPOSIT_STATE.INIT;
         time.reset();
     }
@@ -75,13 +97,15 @@ public class DEPOSIT_FSM {
 //        telemetry.update();
         switch(deposit_state) {
             case INIT:
-                if((gamepad2.triangle || gamepad1.triangle) && !midBusy && !bottomBusy && LOGIC.IS_THING_IN_DA_ROBOT) {
+                if((gamepad2.triangle || gamepad1.triangle || startDeposittop) && !midBusy && !bottomBusy) {
                     deposit_state = DEPOSIT_STATE.STATE_0;
                     topBusy = true;
+                    deposited = false;
                     time.reset();
                 }
                 else {
                     topBusy = false;
+                    deposited = false;
                 }
                 break;
             case STATE_0:
@@ -110,7 +134,7 @@ public class DEPOSIT_FSM {
                 }
                 break;
             case STATE_2:
-                if(gamepad1.triangle || gamepad2.triangle) {
+                if(gamepad1.triangle || gamepad2.triangle || depositing) {
                     deposit_state = DEPOSIT_STATE.STATE_3;
                     time.reset();
                 }
@@ -133,6 +157,7 @@ public class DEPOSIT_FSM {
             case STATE_3:
                 if(time.milliseconds() > 300) {
                     deposit_state = DEPOSIT_STATE.STATE_4;
+                    deposited = true;
                     time.reset();
                 }
                 else {
@@ -165,7 +190,6 @@ public class DEPOSIT_FSM {
             case STATE_6:
                 if(time.milliseconds() > 500) {
                     reset();
-                    LOGIC.IS_THING_IN_DA_ROBOT = false;
                     deposit_state = DEPOSIT_STATE.INIT;
                 }
                 else {
@@ -181,13 +205,15 @@ public class DEPOSIT_FSM {
         telemetry.addData("DEPOSIT STATE (MIDDLE): ", mid_deposit_state);
         switch(mid_deposit_state) {
             case INIT:
-                if(gamepad2.square && !topBusy && !bottomBusy && LOGIC.IS_THING_IN_DA_ROBOT) {
+                if((gamepad2.square || startDepositmid) && !topBusy && !bottomBusy) {
                     mid_deposit_state = MID_DEPOSIT_STATE.STATE_0;
                     midBusy = true;
+                    midDeposited = false;
                     time.reset();
                 }
                 else {
                     midBusy = false;
+                    midDeposited = false;
                 }
                 break;
             case STATE_0:
@@ -215,7 +241,7 @@ public class DEPOSIT_FSM {
                 }
                 break;
             case STATE_2:
-                if(gamepad2.square) {
+                if(gamepad2.square || depositing) {
                     mid_deposit_state = MID_DEPOSIT_STATE.STATE_3;
                     time.reset();
                 }
@@ -226,6 +252,7 @@ public class DEPOSIT_FSM {
             case STATE_3:
                 if(time.milliseconds() > 200) {
                     mid_deposit_state = MID_DEPOSIT_STATE.STATE_4;
+                    midDeposited = true;
                     time.reset();
                 }
                 else {
@@ -259,7 +286,6 @@ public class DEPOSIT_FSM {
             case STATE_6:
                 if(time.milliseconds() > 500) {
                     reset();
-                    LOGIC.IS_THING_IN_DA_ROBOT = false;
                     mid_deposit_state = MID_DEPOSIT_STATE.INIT;
                 }
                 else {
@@ -275,13 +301,15 @@ public class DEPOSIT_FSM {
         telemetry.addData("DEPOSIT STATE (BOTTOM): ", bottom_deposit_state);
         switch(bottom_deposit_state) {
             case INIT:
-                if(gamepad2.cross && !topBusy && !midBusy && LOGIC.IS_THING_IN_DA_ROBOT) {
+                if((gamepad2.cross || startDepositbot) && !topBusy && !midBusy) {
                     bottom_deposit_state = BOTTOM_DEPOSIT_STATE.STATE_0;
                     bottomBusy = true;
+                    bottomDeposited = false;
                     time.reset();
                 }
                 else {
                     bottomBusy = false;
+                    bottomDeposited = false;
                 }
                 break;
             case STATE_0:
@@ -310,7 +338,7 @@ public class DEPOSIT_FSM {
                 }
                 break;
             case STATE_2:
-                if(gamepad2.cross) {
+                if(gamepad2.cross || depositing) {
                     bottom_deposit_state = BOTTOM_DEPOSIT_STATE.STATE_3;
                     time.reset();
                 }
@@ -321,6 +349,7 @@ public class DEPOSIT_FSM {
             case STATE_3:
                 if(time.milliseconds() > 230) {
                     bottom_deposit_state = BOTTOM_DEPOSIT_STATE.STATE_4;
+                    bottomDeposited = true;
                     time.reset();
                 }
                 else {
@@ -356,7 +385,6 @@ public class DEPOSIT_FSM {
             case STATE_6:
                 if(time.milliseconds() > 450) {
                     reset();
-                    LOGIC.IS_THING_IN_DA_ROBOT = false;
                     bottom_deposit_state = BOTTOM_DEPOSIT_STATE.INIT;
                 }
                 else {

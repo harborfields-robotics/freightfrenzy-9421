@@ -17,6 +17,7 @@ public class MeepMeepTesting {
 
         // Declare our first bot
         Pose2d splineTest = new Pose2d(9.5,-55.2, Math.toRadians(210));
+        Pose2d RevertTest = new Pose2d(15.6,-63.2, Math.toRadians(180));
         Vector2d vectorTest = new Vector2d(9.5,-55.2);
         RoadRunnerBotEntity myFirstBot = new DefaultBotBuilder(meepMeep)
                 // We set this bot to be blue
@@ -24,9 +25,10 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 12.6)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(6, -64, Math.toRadians(180)))
-                                .back(70)
-                                .forward(60)
+                                .back(65)
+                                .forward(45)
                                 .lineToLinearHeading(splineTest)
+                                .lineToLinearHeading(RevertTest)
                                 .build()
                 );
 
