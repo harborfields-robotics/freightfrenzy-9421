@@ -34,7 +34,7 @@ public class Grabber {
     private String position;
 
     //ABSOLUTE!!!
-    private final double TOP_ANG = -200;
+    private final double TOP_ANG = -270;
     private final double MID_ANG = -260;
     private final double BOTTOM_ANG = -270;
     private final double GRAB_ANG = -90;
@@ -74,11 +74,11 @@ public class Grabber {
 
     public void grabberGrabExtra() {
         if(!isGrabCurrentlyExtra) {
-            cur0 += .2;
+            cur0 += .4;
             isGrabCurrentlyExtra = true;
         }
         else {
-            cur0 -= .2;
+            cur0 -= .4;
             isGrabCurrentlyExtra = false;
         }
         grabberUpdatePositions(position);
@@ -86,7 +86,7 @@ public class Grabber {
 
     public void closeGrabExtra() {
         if(isGrabCurrentlyExtra) {
-            cur0 -= .2;
+            cur0 -= .4;
             isGrabCurrentlyExtra = false;
         }
         grabberUpdatePositions(position);
@@ -94,7 +94,7 @@ public class Grabber {
 
     public void openGrabExtra() {
         if(!isGrabCurrentlyExtra) {
-            cur0 += .2;
+            cur0 += .4;
             isGrabCurrentlyExtra = true;
         }
         grabberUpdatePositions(position);

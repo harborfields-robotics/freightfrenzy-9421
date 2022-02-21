@@ -13,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.robot.DEPOSIT_FSM;
 import org.firstinspires.ftc.teamcode.robot.Hardware;
 import org.firstinspires.ftc.teamcode.robot.INTAKE_FSM;
+import org.firstinspires.ftc.teamcode.robot.LOGIC;
 import org.firstinspires.ftc.teamcode.robot.controllers.AnalogCheck;
 import org.firstinspires.ftc.teamcode.robot.controllers.ButtonState;
 import org.firstinspires.ftc.teamcode.robot.controllers.ControllerState;
@@ -39,8 +40,7 @@ public class TeleopODO extends LinearOpMode {
         controller2.addEventListener("left_bumper", ButtonState.PRESSED,()-> {Oscar.slides.slidesHome();});
         controller2.addEventListener("right_bumper", ButtonState.PRESSED,()-> {Oscar.grabber.goTop(); Thread.sleep(200); Oscar.grabber.goStart();});
 
-        controller1.addEventListener("dpad_left", ButtonState.HELD, () -> Oscar.slides.relativeMove(-5));
-        controller1.addEventListener("dpad_right", ButtonState.HELD, () -> Oscar.slides.relativeMove(5));
+        controller1.addEventListener("dpad_left", ButtonState.HELD, () -> LOGIC.IS_THING_IN_DA_ROBOT = false);
 
         controller2.addEventListener("dpad_left", ButtonState.HELD, () -> Oscar.slides.relativeMove(-5));
         controller2.addEventListener("dpad_right", ButtonState.HELD, () -> Oscar.slides.relativeMove(5));
@@ -79,18 +79,20 @@ public class TeleopODO extends LinearOpMode {
             if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 2) {
                 intake_fsm.SET_EXEC_BACK_FLIP(true);
             }
-            if(((DistanceSensor) Oscar.colorFront).getDistance(DistanceUnit.CM) < 1.5) {
+            if(((DistanceSensor) Oscar.colorFront).getDistance(DistanceUnit.CM) < 2) {
                 intake_fsm.SET_EXEC_FRONT_FLIP(true);
             }
 
             intake_fsm.doFlipBackAsync();
             intake_fsm.doFlipFrontAsync();
 
-            if(Oscar.slides.getMotorPosition() <= 200 && !intake_fsm.isBackBusy()) {
+            if(Oscar.slides.getMotorPosition() <= 200 && !intake_fsm.isBackBusy() && !intake_fsm.isFrontBusy() && !LOGIC.IS_THING_IN_DA_ROBOT) {
                 if (gamepad2.left_trigger > .1 || gamepad1.left_trigger > .1) Oscar.intake.reverse();
                 else if (gamepad2.right_trigger > .1 || gamepad1.right_trigger > .1) Oscar.intake.forward();
                 else Oscar.intake.off();
             }
+
+            telemetry.addData("IS THING IN DA ROBOT? ", LOGIC.IS_THING_IN_DA_ROBOT);
 
             Oscar.drive.setWeightedDrivePower(new Pose2d(-gamepad1.left_stick_y * 1,-gamepad1.left_stick_x * 1,-gamepad1.right_stick_x * .5));
         }
