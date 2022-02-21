@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.robot.INTAKE_FSM;
 import org.firstinspires.ftc.teamcode.robot.LOGIC;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
+import org.firstinspires.ftc.teamcode.CV.BarcodePositionDetector;
 
 import dashboard.RobotConstants;
 
@@ -32,6 +33,7 @@ public class AUTO_TOP extends LinearOpMode {
 
     private State currentState = State.PRELOAD_CYCLE;
 
+
     public static Pose2d startPR = new Pose2d(RobotConstants.STARTX,RobotConstants.STARTY,Math.toRadians(RobotConstants.HEADING));
     public static Pose2d depositSpline = new Pose2d( 9.5,-55.2, Math.toRadians(210));
     public static Pose2d revertSpline = new  Pose2d(15.6,-63.2, Math.toRadians(180));
@@ -40,30 +42,34 @@ public class AUTO_TOP extends LinearOpMode {
     DEPOSIT_FSM deposit_fsm = new DEPOSIT_FSM(Oscar, telemetry, gamepad1, gamepad2);
     INTAKE_FSM intake_fsm = new INTAKE_FSM(Oscar, telemetry, gamepad1, gamepad2);
 
+    BarcodePositionDetector detector = new BarcodePositionDetector(telemetry);
+
+
+
     @Override
     public void runOpMode() throws InterruptedException {
 
         Oscar.init(hardwareMap);
 
+        detector.getBarcodePosition();
+        // test
         Trajectory autoTrajectory0 = Oscar.drive.trajectoryBuilder(startPR)
-                .back(65)
+                .back(30)
                 .build();
 
-        TrajectorySequence autoTrajectory1 = Oscar.drive.trajectorySequenceBuilder(new Pose2d(6, -64, Math.toRadians(180)))
+        TrajectorySequence CycleTrajectory = Oscar.drive.trajectorySequenceBuilder(new Pose2d(6, -64, Math.toRadians(180)))
                 .forward(40)
                 .lineToLinearHeading(depositSpline)
-                .build();
-
-        TrajectorySequence autoTrajectory2 = Oscar.drive.trajectorySequenceBuilder(autoTrajectory1.end())
                 .lineToLinearHeading(revertSpline)
                 .build();
-        Trajectory autoTrajectory3 = Oscar.drive.trajectoryBuilder(autoTrajectory2.end())
+        Trajectory autoTrajectory3 = Oscar.drive.trajectoryBuilder(CycleTrajectory.end())
                 .back(35)
                 .build();
 
         TrajectorySequence autoTrajectory4 = Oscar.drive.trajectorySequenceBuilder(autoTrajectory3.end())
                 .back(65)
                 .build();
+
 
         waitForStart();
 
