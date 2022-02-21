@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import org.firstinspires.ftc.teamcode.CV.*;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -14,6 +15,7 @@ public class Hardware {
     public Drivetrain dt = null;
     public Intake intake = null;
     public Grabber grabber = null;
+
     public Elbow elbow = null;
     private Pose2d vel;
     public LinearSlides slides = null;
