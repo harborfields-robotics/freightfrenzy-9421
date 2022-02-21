@@ -34,6 +34,7 @@ public class AUTO_FAST_CYCLE extends LinearOpMode {
     public static Pose2d startPR = new Pose2d(RobotConstants.STARTX,RobotConstants.STARTY,Math.toRadians(RobotConstants.HEADING));
     public static Pose2d depositSpline = new Pose2d( 9.5,-55.2, Math.toRadians(210));
     public static Pose2d revertSpline = new  Pose2d(15.6,-63.2, Math.toRadians(180));
+    public static Pose2d splineCV = new Pose2d(9.5,-55.2,Math.toRadians(210));
     Hardware Oscar = new Hardware(hardwareMap, telemetry);
 
 
@@ -45,20 +46,23 @@ public class AUTO_FAST_CYCLE extends LinearOpMode {
 
         Oscar.init(hardwareMap);
 
-        Trajectory autoTrajectory0 = Oscar.drive.trajectoryBuilder(startPR)
-                .back(65)
+        Trajectory preloadTrajectory= Oscar.drive.trajectoryBuilder(startPR)
+                .lineToLinearHeading(splineCV)
+                .lineToLinearHeading(revertSpline)
+                .back(30)
                 .build();
 
         TrajectorySequence autoTrajectory1 = Oscar.drive.trajectorySequenceBuilder(new Pose2d(6, -64, Math.toRadians(180)))
-                .forward(40)
+                .forward(30)
                 .lineToLinearHeading(depositSpline)
                 .build();
 
         TrajectorySequence autoTrajectory2 = Oscar.drive.trajectorySequenceBuilder(autoTrajectory1.end())
                 .lineToLinearHeading(revertSpline)
+                .back(30)
                 .build();
         Trajectory autoTrajectory3 = Oscar.drive.trajectoryBuilder(autoTrajectory2.end())
-                .back(35)
+                .back(30)
                 .build();
 
         TrajectorySequence autoTrajectory4 = Oscar.drive.trajectorySequenceBuilder(autoTrajectory3.end())
