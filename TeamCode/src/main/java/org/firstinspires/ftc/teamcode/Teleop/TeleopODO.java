@@ -58,6 +58,7 @@ public class TeleopODO extends LinearOpMode {
 
         Oscar.grabber.openGrab();
         Oscar.elbow.goToGrabPos();
+        Oscar.slides.slidesHome();
 
         waitForStart();//
 
@@ -75,9 +76,11 @@ public class TeleopODO extends LinearOpMode {
             deposit_fsm.doDepositMiddleAsync();
             deposit_fsm.doDepositBottomAsync();
 
-            telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM));
-            if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 1) {
+            if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 2) {
                 intake_fsm.SET_EXEC_BACK_FLIP(true);
+            }
+            if(((DistanceSensor) Oscar.colorFront).getDistance(DistanceUnit.CM) < 1.5) {
+                intake_fsm.SET_EXEC_FRONT_FLIP(true);
             }
 
             intake_fsm.doFlipBackAsync();

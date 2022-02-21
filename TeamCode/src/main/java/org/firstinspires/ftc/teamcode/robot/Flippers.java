@@ -10,11 +10,11 @@ public class Flippers {
     private Servo f0;
     private Servo f1;
 
-    private double downPosition0 = .4;
+    private double downPosition0 = .43;
     private double downPosition1 = .95;
 
-    private double upPosition0 = .8;
-    private double upPosition1 = .58;
+    private double upPosition0 = .84;
+    private double upPosition1 = .62;
 
 
     public Flippers(HardwareMap ahwMap) {

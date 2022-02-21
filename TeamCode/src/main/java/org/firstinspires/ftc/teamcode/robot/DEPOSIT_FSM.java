@@ -90,9 +90,6 @@ public class DEPOSIT_FSM {
                 else {
                     topBusy = false;
                     deposited = false;
-                    if(topBusy) {
-
-                    }
                 }
                 break;
             case STATE_0:
@@ -114,6 +111,7 @@ public class DEPOSIT_FSM {
                     Oscar.grabber.goTop();
                     deposit_state = DEPOSIT_STATE.STATE_2;
                     time.reset();
+                    Oscar.slides.RESET_ADJUSTABLE_TOP_TICKS();
                 }
                 else {
                     Oscar.slides.slidesTop();
@@ -125,7 +123,19 @@ public class DEPOSIT_FSM {
                     time.reset();
                 }
                 else {
-                    Oscar.slides.slidesTop();
+                    if(gamepad1.right_bumper && time.milliseconds() > 20){
+                        Oscar.slides.CHANGE_ADJUSTABLE_TOP_TICKS(3);
+                        Oscar.slides.GO_TO_ADJUSTABLE_TOP_POSITION();
+                        time.reset();
+                    }
+                    if(gamepad1.left_bumper && time.milliseconds() > 20){
+                        Oscar.slides.CHANGE_ADJUSTABLE_TOP_TICKS(-3);
+                        Oscar.slides.GO_TO_ADJUSTABLE_TOP_POSITION();
+                        time.reset();
+                    }
+                    else {
+                        Oscar.slides.GO_TO_ADJUSTABLE_TOP_POSITION();
+                    }
                 }
                 break;
             case STATE_3:

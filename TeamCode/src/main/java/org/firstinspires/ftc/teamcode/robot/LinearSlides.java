@@ -26,6 +26,8 @@ public class LinearSlides {
     private double BOTTOM_SLIDE_TICKS = 218;
     private double GRAB_SLIDE_TICKS = 15;
 
+    private double ADJUSTABLE_TOP_TICKS = TOP_SLIDE_TICKS;
+
     private Telemetry telemetry;
 
     private double THRESHOLD = 1;
@@ -63,6 +65,24 @@ public class LinearSlides {
     public void stop(){
         slideMotor1.setPower(0);
 
+    }
+
+    public void CHANGE_ADJUSTABLE_TOP_TICKS(double DELTA_TICKS) {
+        ADJUSTABLE_TOP_TICKS += DELTA_TICKS;
+    }
+
+    public void RESET_ADJUSTABLE_TOP_TICKS() {
+        ADJUSTABLE_TOP_TICKS = TOP_SLIDE_TICKS;
+    }
+
+    public void GO_TO_ADJUSTABLE_TOP_POSITION(){
+        currentPosition = ADJUSTABLE_TOP_TICKS;
+        slideMotor1.setTargetPosition((int)currentPosition);
+        slideMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        if(isItInThreshold(currentPosition)){
+            slideMotor1.setPower(0);
+        }
+        else out();
     }
 
     public int getMotorPosition(){
