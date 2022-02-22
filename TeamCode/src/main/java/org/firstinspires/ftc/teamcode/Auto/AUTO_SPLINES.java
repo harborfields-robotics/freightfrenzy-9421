@@ -178,7 +178,7 @@ public class AUTO_SPLINES extends LinearOpMode {
                     }
                     break;
                 case DRIVE_TO_DEPOSIT_AND_START_DEPOSIT:
-                    if(Oscar.drive.getPoseEstimate().getX() < 15 && !ENSURE_ONE_DEPOSIT) {
+                    if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) > 2 && ((DistanceSensor) Oscar.colorFront).getDistance(DistanceUnit.CM) > 2 && !ENSURE_ONE_DEPOSIT) {
                         deposit_fsm.startDeposittop = true;
                         ENSURE_ONE_DEPOSIT = true;
                     }
@@ -199,6 +199,7 @@ public class AUTO_SPLINES extends LinearOpMode {
                                 currentState = State.INTAKE_AND_ADJUST_UNTIL_THING_IN;
                             }
                             else {
+                                IT_DID_THE_FLIP = false;
                                 Oscar.drive.followTrajectoryAsync(WAREHOUSE_TO_DEPOSIT);
                                 currentState = State.DRIVE_TO_DEPOSIT_AND_START_DEPOSIT;
                             }
