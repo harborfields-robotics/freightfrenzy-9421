@@ -57,7 +57,7 @@ public class AUTO_SPLINES extends LinearOpMode {
 
     private final Pose2d warehousePosition = new Pose2d(42,-64,Math.toRadians(180));
 
-    private final Pose2d intakeExtraPosition = new Pose2d(52,-64,Math.toRadians(180));
+    private final Pose2d intakeExtraPosition = new Pose2d(54,-64,Math.toRadians(180));
 
     Hardware Oscar;
 
@@ -88,7 +88,7 @@ public class AUTO_SPLINES extends LinearOpMode {
         Trajectory WAREHOUSE_TO_INTAKE_EXTRA = Oscar.drive.trajectoryBuilder(warehousePosition)
                 .lineToLinearHeading(
                         intakeExtraPosition,
-                        SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
@@ -157,7 +157,12 @@ public class AUTO_SPLINES extends LinearOpMode {
 
             switch (currentState) {
                 case INTAKE_AND_ADJUST_UNTIL_THING_IN:
-                    Oscar.intake.forward();
+                    if(!IT_DID_THE_FLIP) {
+                        Oscar.intake.forward();
+                    }
+                    else {
+                        Oscar.intake.reverse();
+                    }
                     if(!Oscar.drive.isBusy()) {
                         if(IT_DID_THE_FLIP) {
                             IT_DID_THE_FLIP = false;
@@ -190,7 +195,12 @@ public class AUTO_SPLINES extends LinearOpMode {
                     }
                     break;
                 case AFTER_DEPOSIT_TO_WAREHOUSE:
-                    Oscar.intake.forward();
+                    if(!IT_DID_THE_FLIP) {
+                        Oscar.intake.forward();
+                    }
+                    else {
+                        Oscar.intake.reverse();
+                    }
                     if(!Oscar.drive.isBusy()) {
                         if(AUTO_RUNTIME.seconds() > 26) {currentState = State.IDLE_BECAUSE_NOT_ENOUGH_TIME;}
                         else {
