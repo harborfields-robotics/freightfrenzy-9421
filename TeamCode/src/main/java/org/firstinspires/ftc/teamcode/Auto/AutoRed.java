@@ -62,14 +62,14 @@ public class AutoRed extends LinearOpMode {
         waitForStart();
         Oscar.drive.setPoseEstimate(startPose);
 
-        Oscar.drive.followTrajectoryAsync(startCV);
+        Oscar.drive.followTrajectory(startCV);
 
-        Oscar.drive.followTrajectoryAsync(revertCV);
+        Oscar.drive.followTrajectory(revertCV);
 
-        Oscar.drive.followTrajectoryAsync(inWarehouse);
-        Oscar.drive.followTrajectoryAsync(outWarehouse);
-        Oscar.drive.followTrajectoryAsync(deposit);
-        Oscar.drive.followTrajectoryAsync(revert);
+        Oscar.drive.followTrajectory(inWarehouse);
+        Oscar.drive.followTrajectory(outWarehouse);
+        Oscar.drive.followTrajectory(deposit);
+        Oscar.drive.followTrajectory(revert);
 
 
 
