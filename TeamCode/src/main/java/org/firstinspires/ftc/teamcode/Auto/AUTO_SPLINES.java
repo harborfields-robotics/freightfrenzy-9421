@@ -56,6 +56,8 @@ public class AUTO_SPLINES extends LinearOpMode {
     private boolean IT_DID_THE_FLIP = false;
     private Pose2d startPose = new Pose2d(6.4, -64, Math.toRadians(180));
 
+    private Pose2d warehouse = new Pose2d(46.9,-64,Math.toRadians(180));
+
     private void CALIBRATE_WAREHOUSE_TO_DEPOSIT() {
         WAREHOUSE_TO_DEPOSIT = Oscar.drive.trajectorySequenceBuilder(Oscar.drive.getPoseEstimate())
                 .lineToLinearHeading(barrierPosition)
@@ -90,7 +92,7 @@ public class AUTO_SPLINES extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(46.9,-64,Math.toRadians(180)))
                 .build();
 
-        TrajectorySequence DEPOSIT_TO_WAREHOUSE = Oscar.drive.trajectorySequenceBuilder(PRELOAD_TRAJECTORY_SECOND.end())
+        TrajectorySequence DEPOSIT_TO_WAREHOUSE = Oscar.drive.trajectorySequenceBuilder(warehouse)
                 .lineTo(deposit)
                 .build();
 
