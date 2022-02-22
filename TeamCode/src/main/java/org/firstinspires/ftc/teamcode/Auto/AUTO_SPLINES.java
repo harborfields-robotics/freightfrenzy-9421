@@ -28,7 +28,7 @@ public class AUTO_SPLINES extends LinearOpMode {
         IDLE_BECAUSE_NOT_ENOUGH_TIME
     }
 
-    private State currentState = State.AFTER_DEPOSIT_TO_WAREHOUSE;
+    private State currentState = State.INTAKE_AND_ADJUST_UNTIL_THING_IN;
 
     private static final double Y_COORDINATE_FOR_BARRIER = -63.2;
     private static final double X_COORDINATE_FOR_BARRIER = 15.6;
@@ -81,11 +81,6 @@ public class AUTO_SPLINES extends LinearOpMode {
 
         TrajectorySequence PRELOAD_TRAJECTORY = Oscar.drive.trajectorySequenceBuilder(startPose)
                 .lineToLinearHeading(new Pose2d(6.4,-57,Math.toRadians(210)))
-                .build();
-
-        PRELOAD_TRAJECTORY = Oscar.drive.trajectorySequenceBuilder(startPR)
-                .strafeRight(5)
-                .lineToLinearHeading(depositPosition)
                 .build();
 
         DEPOSIT_TO_WAREHOUSE = Oscar.drive.trajectorySequenceBuilder(PRELOAD_TRAJECTORY.end())
