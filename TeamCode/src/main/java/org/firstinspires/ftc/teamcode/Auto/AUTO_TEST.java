@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.robot.Hardware;
 import org.firstinspires.ftc.teamcode.robot.INTAKE_FSM;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.CV.BarcodePositionDetector;
+import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.WaitSegment;
 
 @Config
 @Autonomous(group = "advanced")
@@ -77,19 +78,19 @@ public class AUTO_TEST extends LinearOpMode {
                 .lineToLinearHeading(depositPosition)
                 .build();
 
-        DEPOSIT_TO_WAREHOUSE = Oscar.drive.trajectorySequenceBuilder(depositPosition)
+        DEPOSIT_TO_WAREHOUSE = Oscar.drive.trajectorySequenceBuilder(PRELOAD_TRAJECTORY.end())
                 .lineToLinearHeading(parallelPosition)
                 .lineToLinearHeading(barrierPosition)
                 .lineToLinearHeading(new Pose2d(X_COORDINATE_FOR_BARRIER + DEFAULT_BACK_BY_HOW_MUCH_TO_WAREHOUSE, Y_COORDINATE_FOR_BARRIER, Math.toRadians(180)))
                 .build();
 
-        WAREHOUSE_TO_DEPOSIT = Oscar.drive.trajectorySequenceBuilder(Oscar.drive.getPoseEstimate())
+        WAREHOUSE_TO_DEPOSIT = Oscar.drive.trajectorySequenceBuilder(DEPOSIT_TO_WAREHOUSE.end())
                 .lineToLinearHeading(barrierPosition)
                 .lineToLinearHeading(parallelPosition)
                 .lineToLinearHeading(depositPosition)
                 .build();
 
-        BACK_EXTRA = Oscar.drive.trajectoryBuilder(Oscar.drive.getPoseEstimate())
+        BACK_EXTRA = Oscar.drive.trajectoryBuilder(WAREHOUSE_TO_DEPOSIT.end())
                 .back(EXTRA_BACK_BY_HOW_MUCH_IN_WAREHOUSE)
                 .build();
 

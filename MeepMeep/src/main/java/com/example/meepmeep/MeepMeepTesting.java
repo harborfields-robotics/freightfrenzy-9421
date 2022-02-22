@@ -21,7 +21,7 @@ public class MeepMeepTesting {
         // Declare our first bot
         Pose2d splineCV = new Pose2d(4.1,-55.2,Math.toRadians(210));
         Pose2d splineTest = new Pose2d(4.1,-55.2, Math.toRadians(210));
-        Pose2d RevertTest = new Pose2d(8.8,-63.2, Math.toRadians(180));
+        Pose2d RevertTest = new Pose2d(4.1,-63.2, Math.toRadians(180));
         Vector2d vectorTest = new Vector2d(9.5,-55.2);
         Vector2d returnVector = new Vector2d();
         RoadRunnerBotEntity myFirstBot = new DefaultBotBuilder(meepMeep)
@@ -32,9 +32,10 @@ public class MeepMeepTesting {
                         drive.trajectorySequenceBuilder(new Pose2d(6, -64, Math.toRadians(180)))
                                 .lineToLinearHeading(splineCV)
                                 .lineToLinearHeading(RevertTest)
-
                                 .back(30)
                                 .forward(30)
+                                .lineToLinearHeading(splineTest)
+                                .lineToLinearHeading(RevertTest)
                                 .build()
                 );
 
