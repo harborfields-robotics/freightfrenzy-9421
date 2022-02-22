@@ -4,10 +4,10 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
-import org.firstinspires.ftc.teamcode.CV.*;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.robot.CV.BarcodeUtil;
 
 
 public class Hardware {
@@ -22,6 +22,8 @@ public class Hardware {
     public Flippers flippers = null;
     public NormalizedColorSensor colorFront;
     public NormalizedColorSensor colorBack;
+
+    public BarcodeUtil cvUtil;
 
     public SampleMecanumDrive drive;
 
@@ -42,6 +44,8 @@ public class Hardware {
         slides = new LinearSlides(hwMap, telemetry);
         flippers = new Flippers(hwMap);
 
+        cvUtil = new BarcodeUtil(hwMap, "Webcam1",telemetry);
+
         colorFront = hardwareMap.get(NormalizedColorSensor.class, "color_front");
         colorBack = hardwareMap.get(NormalizedColorSensor.class, "color_back");
 
@@ -52,6 +56,7 @@ public class Hardware {
         elbow.moveStart();
         grabber.goStart();
         grabber.closeGrab();
+
     }
 
     //Inits hardware for opmode

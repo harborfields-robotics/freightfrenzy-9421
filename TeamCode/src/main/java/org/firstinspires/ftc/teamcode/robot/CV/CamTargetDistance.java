@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.CV;
+package org.firstinspires.ftc.teamcode.robot.CV;
 
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 

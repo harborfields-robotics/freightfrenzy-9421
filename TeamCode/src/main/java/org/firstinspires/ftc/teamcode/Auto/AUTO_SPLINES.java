@@ -2,14 +2,12 @@ package org.firstinspires.ftc.teamcode.Auto;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Predicate;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -17,7 +15,7 @@ import org.firstinspires.ftc.teamcode.robot.DEPOSIT_FSM;
 import org.firstinspires.ftc.teamcode.robot.Hardware;
 import org.firstinspires.ftc.teamcode.robot.INTAKE_FSM;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.CV.BarcodePositionDetector;
+import org.firstinspires.ftc.teamcode.robot.CV.BarcodePositionDetector;
 
 @Config
 @Autonomous(group = "advanced")
@@ -70,11 +68,14 @@ public class AUTO_SPLINES extends LinearOpMode {
         DEPOSIT_FSM deposit_fsm = new DEPOSIT_FSM(Oscar, telemetry, gamepad1, gamepad2);
         INTAKE_FSM intake_fsm = new INTAKE_FSM(Oscar, telemetry, gamepad1, gamepad2);
 
-        BarcodePositionDetector detector = new BarcodePositionDetector(telemetry);
+        //BarcodePositionDetector detector = new BarcodePositionDetector(telemetry);
 
-        BarcodePositionDetector.BarcodePosition position = detector.getBarcodePosition();
+        BarcodePositionDetector.BarcodePosition barcodePosition = Oscar.cvUtil.getBarcodePosition( );
 
-        telemetry.addData("position", position);
+        //BarcodePositionDetector.BarcodePosition position = detector.getBarcodePosition();
+        telemetry.addData( "Element position", Oscar.cvUtil.getBarcodePosition() );
+
+        //telemetry.addData("position", position);
 
 
 
