@@ -56,8 +56,15 @@ public class AUTO_SPLINES extends LinearOpMode {
     private boolean IT_DID_THE_FLIP = false;
     private Pose2d startPose = new Pose2d(6.4, -64, Math.toRadians(180));
 
+    private void CALIBRATE_WAREHOUSE_TO_DEPOSIT() {
+        WAREHOUSE_TO_DEPOSIT = Oscar.drive.trajectorySequenceBuilder(Oscar.drive.getPoseEstimate())
+                .lineToLinearHeading(barrierPosition)
+                .lineToLinearHeading(parallelPosition)
+                .lineToLinearHeading(depositPosition)
+                .build();
+    }
+
     Hardware Oscar;
-    
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -73,8 +80,9 @@ public class AUTO_SPLINES extends LinearOpMode {
         BarcodePositionDetector.BarcodePosition position = detector.getBarcodePosition();
 
         TrajectorySequence PRELOAD_TRAJECTORY = Oscar.drive.trajectorySequenceBuilder(startPose)
-                .strafeRight(7)
-                .turn(Math.toRadians(30))
+                .lineToLinearHeading(new Pose2d(6.4,-57,Math.toRadians(210)))
+                .build();
+
         PRELOAD_TRAJECTORY = Oscar.drive.trajectorySequenceBuilder(startPR)
                 .strafeRight(5)
                 .lineToLinearHeading(depositPosition)
@@ -87,10 +95,9 @@ public class AUTO_SPLINES extends LinearOpMode {
         WAREHOUSE_TO_DEPOSIT = Oscar.drive.trajectorySequenceBuilder(DEPOSIT_TO_WAREHOUSE.end())
                 .lineTo(revert)
                 .build();
-//46.9, -64
+
         TrajectorySequence PRELOAD_TRAJECTORY_SECOND = Oscar.drive.trajectorySequenceBuilder(PRELOAD_TRAJECTORY.end())
-                .turn(Math.toRadians(-30))
-                .strafeLeft(7)
+                .lineToLinearHeading(new Pose2d(6.4,-64, Math.toRadians(180)))
                 .lineToLinearHeading(new Pose2d(46.9,-64,Math.toRadians(180)))
                 .build();
 
@@ -101,81 +108,65 @@ public class AUTO_SPLINES extends LinearOpMode {
         ElapsedTime AUTO_RUNTIME = new ElapsedTime();
         ElapsedTime time = new ElapsedTime();
 
-        boolean RUN_PRELOAD = true;
-
-        while (RUN_PRELOAD) {
-            Oscar.drive.update();
+        Oscar.drive.followTrajectorySequence(PRELOAD_TRAJECTORY);
+        boolean RUN_DEPOSIT = true;
+        deposit_fsm.startDeposittop = true;
+        while(RUN_DEPOSIT) {
             deposit_fsm.doDepositTopAsync();
-            deposit_fsm.doDepositMiddleAsync();
-            deposit_fsm.doDepositBottomAsync();
-            if(!deposit_fsm.isAnyBusy()) {
-                if (position == BarcodePositionDetector.BarcodePosition.LEFT) {
-                    deposit_fsm.startDeposittop = true;
-                } else if (position == BarcodePositionDetector.BarcodePosition.MIDDLE) {
-                    deposit_fsm.startDepositmid = true;
-                } else {
-                    deposit_fsm.startDeposittop = true;
-                }
-            }
-            if(!deposit_fsm.isAnyDeposited()) {
-                Oscar.drive.followTrajectorySequenceAsync(PRELOAD_TRAJECTORY);
-            }
-            else {
-                Oscar.drive.followTrajectorySequenceAsync(PRELOAD_TRAJECTORY_SECOND);
-                if(!Oscar.drive.isBusy()) {
-                    RUN_PRELOAD = false;
-                }
-            }
             if(deposit_fsm.THE_THING_CAN_BE_DROPPED_NOW) {
                 deposit_fsm.DROP_THE_THING_NOW = true;
             }
+            if(!deposit_fsm.isAnyBusy()) {
+                RUN_DEPOSIT = false;
+            }
         }
+        Oscar.drive.followTrajectorySequence(PRELOAD_TRAJECTORY_SECOND);
+
         while(opModeIsActive() && !isStopRequested()) {
 
             switch (currentState) {
                 case AFTER_DEPOSIT_TO_WAREHOUSE:
                     Oscar.intake.backIn();
-                    if(IT_DID_THE_FLIP) {
+                    if (IT_DID_THE_FLIP) {
                         IT_DID_THE_FLIP = false;
                         CALIBRATE_WAREHOUSE_TO_DEPOSIT();
                         //moves to the warehouse to the deposit
                         Oscar.drive.followTrajectorySequenceAsync(WAREHOUSE_TO_DEPOSIT);
                         currentState = State.DRIVE_TO_DEPOSIT_AND_START_DEPOSIT;
                     }
-                    if(!Oscar.drive.isBusy()) {
+                    if (!Oscar.drive.isBusy()) {
                         time.reset();
                         currentState = State.INTAKE_AND_ADJUST_UNTIL_THING_IN;
                     }
                     break;
                 case INTAKE_AND_ADJUST_UNTIL_THING_IN:
-                    if(IT_DID_THE_FLIP) {
+                    if (IT_DID_THE_FLIP) {
                         IT_DID_THE_FLIP = false;
                         CALIBRATE_WAREHOUSE_TO_DEPOSIT();
                         Oscar.drive.followTrajectorySequenceAsync(WAREHOUSE_TO_DEPOSIT);
                         currentState = State.DRIVE_TO_DEPOSIT_AND_START_DEPOSIT;
                     }
-                    if(time.milliseconds() > 150) {
+                    if (time.milliseconds() > 150) {
                         Oscar.drive.followTrajectoryAsync(BACK_EXTRA);
                         time.reset();
                     }
                     break;
                 case DRIVE_TO_DEPOSIT_AND_START_DEPOSIT:
-                    if(Oscar.drive.getPoseEstimate().getX() < 20) {
+                    if (Oscar.drive.getPoseEstimate().getX() < 20) {
                         deposit_fsm.startDeposittop = true;
                     }
-                    if(deposit_fsm.THE_THING_CAN_BE_DROPPED_NOW) {
+                    if (deposit_fsm.THE_THING_CAN_BE_DROPPED_NOW) {
                         deposit_fsm.DROP_THE_THING_NOW = true;
                     }
-                    if(deposit_fsm.isAnyDeposited()) {
+                    if (deposit_fsm.isAnyDeposited()) {
                         Oscar.drive.followTrajectorySequenceAsync(DEPOSIT_TO_WAREHOUSE);
-                        if(AUTO_RUNTIME.seconds() > 25) {
+                        if (AUTO_RUNTIME.seconds() > 25) {
                             currentState = State.IDLE_BECAUSE_NOT_ENOUGH_TIME;
-                        }
-                        else {
+                        } else {
                             currentState = State.AFTER_DEPOSIT_TO_WAREHOUSE;
                         }
                     }
-
+            }
             Oscar.drive.update();
         }
     }

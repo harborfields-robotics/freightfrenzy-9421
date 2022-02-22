@@ -160,7 +160,7 @@ public class DEPOSIT_FSM {
                         Oscar.slides.GO_TO_ADJUSTABLE_TOP_POSITION();
                     }
                 }
-                if(time.milliseconds() > 500) {
+                if(time.milliseconds() > 750) {
                     THE_THING_CAN_BE_DROPPED_NOW = true;
                 }
                 break;
