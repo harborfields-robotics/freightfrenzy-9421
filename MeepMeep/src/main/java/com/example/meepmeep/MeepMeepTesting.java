@@ -10,29 +10,31 @@ import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequence;
 
+import java.util.Vector;
+
 public class MeepMeepTesting {
     public static void main(String[] args) {
         System.setProperty("sun.java2d.opengl", "true");
 
-        MeepMeep meepMeep = new MeepMeep(650);
+        MeepMeep meepMeep = new MeepMeep(800);
 
         // Declare our first bot
-        Pose2d splineCV = new Pose2d(9.5,-55.2,Math.toRadians(210));
-        Pose2d splineTest = new Pose2d(9.5,-55.2, Math.toRadians(210));
-        Pose2d RevertTest = new Pose2d(15.6,-63.2, Math.toRadians(180));
+        Pose2d splineCV = new Pose2d(4.1,-55.2,Math.toRadians(210));
+        Pose2d splineTest = new Pose2d(4.1,-55.2, Math.toRadians(210));
+        Pose2d RevertTest = new Pose2d(8.8,-63.2, Math.toRadians(180));
         Vector2d vectorTest = new Vector2d(9.5,-55.2);
+        Vector2d returnVector = new Vector2d();
         RoadRunnerBotEntity myFirstBot = new DefaultBotBuilder(meepMeep)
                 // We set this bot to be blue
                 .setColorScheme(new ColorSchemeBlueDark())
                 .setConstraints(140.63964888286645, 52.48291908330528, Math.toRadians(180), Math.toRadians(180), 12.6)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(6, -64, Math.toRadians(180)))
-                                .strafeRight(5)
                                 .lineToLinearHeading(splineCV)
                                 .lineToLinearHeading(RevertTest)
+
                                 .back(30)
                                 .forward(30)
-                                .lineToLinearHeading(splineTest)
                                 .build()
                 );
 
@@ -57,7 +59,7 @@ public class MeepMeepTesting {
                 );
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_FREIGHTFRENZY_ADI_DARK)
-                .setDarkMode(false)
+                .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
 
                 // Add both of our declared bot entities
