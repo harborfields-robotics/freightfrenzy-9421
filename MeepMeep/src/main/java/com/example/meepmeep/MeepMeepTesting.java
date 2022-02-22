@@ -33,9 +33,9 @@ public class MeepMeepTesting {
                                 .lineToLinearHeading(splineCV)
                                 .lineToLinearHeading(RevertTest)
                                 .back(30)
-                                .forward(30)
-                                .lineToLinearHeading(splineTest)
-                                .lineToLinearHeading(RevertTest)
+                                .forward(43.6)
+                                .back(43.6)
+
                                 .build()
                 );
 

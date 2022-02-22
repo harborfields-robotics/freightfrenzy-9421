@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Auto;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -42,6 +43,10 @@ public class AUTO_SPLINES extends LinearOpMode {
     public static Pose2d barrierPosition = new Pose2d(X_COORDINATE_FOR_DEPOSIT, Y_COORDINATE_FOR_DEPOSIT, Math.toRadians(180));
     public static Pose2d parallelPosition = new  Pose2d(X_COORDINATE_FOR_BARRIER, Y_COORDINATE_FOR_BARRIER, Math.toRadians(180));
 
+    //vectors for deposit
+
+    public static Vector2d deposit = new Vector2d(-9.3,-64);
+    public static Vector2d revert = new Vector2d(46.9,-64);
     private TrajectorySequence PRELOAD_TRAJECTORY;
     private TrajectorySequence DEPOSIT_TO_WAREHOUSE;
     private TrajectorySequence WAREHOUSE_TO_DEPOSIT;
@@ -77,16 +82,12 @@ public class AUTO_SPLINES extends LinearOpMode {
                 .lineToLinearHeading(depositPosition)
                 .build();
 
-        DEPOSIT_TO_WAREHOUSE = Oscar.drive.trajectorySequenceBuilder(depositPosition)
-                .lineToLinearHeading(parallelPosition)
-                .lineToLinearHeading(barrierPosition)
-                .lineToLinearHeading(new Pose2d(X_COORDINATE_FOR_BARRIER + DEFAULT_BACK_BY_HOW_MUCH_TO_WAREHOUSE, Y_COORDINATE_FOR_BARRIER, Math.toRadians(180)))
+        DEPOSIT_TO_WAREHOUSE = Oscar.drive.trajectorySequenceBuilder(PRELOAD_TRAJECTORY.end())
+                .lineTo(deposit)
                 .build();
 
-        WAREHOUSE_TO_DEPOSIT = Oscar.drive.trajectorySequenceBuilder(Oscar.drive.getPoseEstimate())
-                .lineToLinearHeading(barrierPosition)
-                .lineToLinearHeading(parallelPosition)
-                .lineToLinearHeading(depositPosition)
+        WAREHOUSE_TO_DEPOSIT = Oscar.drive.trajectorySequenceBuilder(DEPOSIT_TO_WAREHOUSE.end())
+                .lineTo(revert)
                 .build();
 
         BACK_EXTRA = Oscar.drive.trajectoryBuilder(Oscar.drive.getPoseEstimate())
@@ -146,6 +147,7 @@ public class AUTO_SPLINES extends LinearOpMode {
                     if(IT_DID_THE_FLIP) {
                         IT_DID_THE_FLIP = false;
                         CALIBRATE_WAREHOUSE_TO_DEPOSIT();
+                        //moves to the warehouse to the deposit
                         Oscar.drive.followTrajectorySequenceAsync(WAREHOUSE_TO_DEPOSIT);
                         currentState = State.DRIVE_TO_DEPOSIT_AND_START_DEPOSIT;
                     }
