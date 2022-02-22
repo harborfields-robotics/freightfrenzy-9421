@@ -22,7 +22,7 @@ public class Grabber {
 
     //how much each servo has to move in order to grab
     private final double grabOffset0 = -.15;
-    private final double grabOffset1 = .05;
+    private final double grabOffset1 = .15;
 
     //tracking position variables
     private boolean isGrab;

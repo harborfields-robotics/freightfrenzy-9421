@@ -29,7 +29,7 @@ public class AUTO_TEST extends LinearOpMode {
 
     private State currentState = State.AFTER_DEPOSIT_TO_WAREHOUSE;
 
-    private static final double Y_COORDINATE_FOR_BARRIER = -63.2;
+    private static final double Y_COORDINATE_FOR_BARRIER = -64;
     private static final double X_COORDINATE_FOR_BARRIER = 8.8;
     private static final double Y_COORDINATE_FOR_DEPOSIT = -55.2;
     private static final double X_COORDINATE_FOR_DEPOSIT = 4.1;
@@ -78,13 +78,12 @@ public class AUTO_TEST extends LinearOpMode {
                 .lineToLinearHeading(depositPosition)
                 .build();
 
-        DEPOSIT_TO_WAREHOUSE = Oscar.drive.trajectorySequenceBuilder(PRELOAD_TRAJECTORY.end())
-                .lineToLinearHeading(parallelPosition)
+        DEPOSIT_TO_WAREHOUSE = Oscar.drive.trajectorySequenceBuilder(depositPosition)
                 .lineToLinearHeading(barrierPosition)
                 .lineToLinearHeading(new Pose2d(X_COORDINATE_FOR_BARRIER + DEFAULT_BACK_BY_HOW_MUCH_TO_WAREHOUSE, Y_COORDINATE_FOR_BARRIER, Math.toRadians(180)))
                 .build();
 
-        WAREHOUSE_TO_DEPOSIT = Oscar.drive.trajectorySequenceBuilder(DEPOSIT_TO_WAREHOUSE.end())
+        WAREHOUSE_TO_DEPOSIT = Oscar.drive.trajectorySequenceBuilder(barrierPosition)
                 .lineToLinearHeading(barrierPosition)
                 .lineToLinearHeading(parallelPosition)
                 .lineToLinearHeading(depositPosition)

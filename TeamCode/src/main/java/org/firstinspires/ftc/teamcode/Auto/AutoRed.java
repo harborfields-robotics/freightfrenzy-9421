@@ -24,13 +24,13 @@ public class AutoRed extends LinearOpMode {
     public static Pose2d RevertTest = new Pose2d(4.1,-63.2, Math.toRadians(180));
     public static Vector2d vectorTest = new Vector2d(9.5,-55.2);
     public static Vector2d returnVector = new Vector2d();
-    Hardware Oscar = new Hardware(null, null);
+    Hardware Oscar;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
         Pose2d startPose = new Pose2d(6.4, -64, Math.toRadians(180));
-        Oscar.init(hardwareMap);
+        Oscar = new Hardware(hardwareMap, telemetry);
         Trajectory startCV = Oscar.drive.trajectoryBuilder(startPose)
                 .lineToLinearHeading(splineCV)
                 .build();
@@ -62,15 +62,16 @@ public class AutoRed extends LinearOpMode {
         waitForStart();
         Oscar.drive.setPoseEstimate(startPose);
 
-        Oscar.drive.followTrajectoryAsync(startCV);
+        Oscar.drive.followTrajectory(startCV);
 
-        Oscar.drive.followTrajectoryAsync(revertCV);
+        Oscar.drive.followTrajectory(revertCV);
 
-        Oscar.drive.followTrajectoryAsync(inWarehouse);
-        Oscar.drive.followTrajectoryAsync(outWarehouse);
-        Oscar.drive.followTrajectoryAsync(deposit);
-        Oscar.drive.followTrajectoryAsync(revert);
-
+        while(opModeIsActive() && !isStopRequested()) {
+            Oscar.drive.followTrajectoryAsync(inWarehouse);
+            Oscar.drive.followTrajectoryAsync(outWarehouse);
+            Oscar.drive.followTrajectoryAsync(deposit);
+            Oscar.drive.followTrajectoryAsync(revert);
+        }
 
 
 
