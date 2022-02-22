@@ -83,17 +83,19 @@ public class AUTO_SPLINES extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(6.4,-57,Math.toRadians(210)))
                 .build();
 
-        DEPOSIT_TO_WAREHOUSE = Oscar.drive.trajectorySequenceBuilder(PRELOAD_TRAJECTORY.end())
-                .lineTo(deposit)
-                .build();
 
-        WAREHOUSE_TO_DEPOSIT = Oscar.drive.trajectorySequenceBuilder(DEPOSIT_TO_WAREHOUSE.end())
-                .lineTo(revert)
-                .build();
 
         TrajectorySequence PRELOAD_TRAJECTORY_SECOND = Oscar.drive.trajectorySequenceBuilder(PRELOAD_TRAJECTORY.end())
                 .lineToLinearHeading(new Pose2d(6.4,-64, Math.toRadians(180)))
                 .lineToLinearHeading(new Pose2d(46.9,-64,Math.toRadians(180)))
+                .build();
+
+        TrajectorySequence DEPOSIT_TO_WAREHOUSE = Oscar.drive.trajectorySequenceBuilder(PRELOAD_TRAJECTORY_SECOND.end())
+                .lineTo(deposit)
+                .build();
+
+        TrajectorySequence WAREHOUSE_TO_DEPOSIT = Oscar.drive.trajectorySequenceBuilder(DEPOSIT_TO_WAREHOUSE.end())
+                .lineTo(revert)
                 .build();
 
         waitForStart();
