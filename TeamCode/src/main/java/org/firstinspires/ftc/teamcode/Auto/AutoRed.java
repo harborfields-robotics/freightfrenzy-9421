@@ -28,7 +28,7 @@ public class AutoRed extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-//
+
         Pose2d startPose = new Pose2d(6.4, -64, Math.toRadians(180));
         Oscar = new Hardware(hardwareMap, telemetry);
         Trajectory startCV = Oscar.drive.trajectoryBuilder(startPose)
@@ -66,21 +66,37 @@ public class AutoRed extends LinearOpMode {
 
         Oscar.drive.followTrajectory(revertCV);
 
-        while(opModeIsActive() && !isStopRequested()) {
-            Oscar.drive.followTrajectoryAsync(inWarehouse);
-            Oscar.drive.followTrajectoryAsync(outWarehouse);
-            Oscar.drive.followTrajectoryAsync(deposit);
-            Oscar.drive.followTrajectoryAsync(revert);
-        }
-
+        Oscar.drive.followTrajectory(inWarehouse);
+        Oscar.drive.followTrajectory(outWarehouse);
+        Oscar.drive.followTrajectory(deposit);
+        Oscar.drive.followTrajectory(revert);
 
         //
 
+        Oscar.drive.followTrajectory(inWarehouse);
+        Oscar.drive.followTrajectory(outWarehouse);
+        Oscar.drive.followTrajectory(deposit);
+        Oscar.drive.followTrajectory(revert);
+
+        Oscar.drive.followTrajectory(inWarehouse);
+        Oscar.drive.followTrajectory(outWarehouse);
+        Oscar.drive.followTrajectory(deposit);
+        Oscar.drive.followTrajectory(revert);
+
+        Oscar.drive.followTrajectory(inWarehouse);
+        Oscar.drive.followTrajectory(outWarehouse);
+        Oscar.drive.followTrajectory(deposit);
+        Oscar.drive.followTrajectory(revert);
+
+        Oscar.drive.followTrajectory(inWarehouse);
+        Oscar.drive.followTrajectory(outWarehouse);
+        Oscar.drive.followTrajectory(deposit);
+        Oscar.drive.followTrajectory(revert);
 
 
-
-
-
-
+        Oscar.drive.followTrajectory(inWarehouse);
+        Oscar.drive.followTrajectory(outWarehouse);
+        Oscar.drive.followTrajectory(deposit);
+        Oscar.drive.followTrajectory(revert);
     }
 }
