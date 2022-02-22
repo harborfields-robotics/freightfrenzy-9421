@@ -52,8 +52,12 @@ public class TeleopODO extends LinearOpMode {
             Oscar.slides.slidesHome();
         });
 
-        Oscar.grabber.openGrab();
         Oscar.elbow.goToGrabPos();
+        Oscar.grabber.goStart();
+        Oscar.grabber.openGrab();
+        Oscar.grabber.moveByAngle(-90, "start");
+        Thread.sleep(1800);
+        Oscar.grabber.moveByAngle(90,"start");
         Oscar.slides.slidesHome();
 
         waitForStart();//

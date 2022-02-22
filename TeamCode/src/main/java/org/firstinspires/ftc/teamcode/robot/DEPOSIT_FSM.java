@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import android.system.Os;
+
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -215,7 +217,7 @@ public class DEPOSIT_FSM {
         telemetry.addData("DEPOSIT STATE (MIDDLE): ", mid_deposit_state);
         switch(mid_deposit_state) {
             case INIT:
-                if((gamepad2.square || startDepositmid) && !topBusy && !bottomBusy) {
+                if((gamepad2.square || startDepositmid || gamepad1.circle) && !topBusy && !bottomBusy) {
                     startDepositmid = false;
                     mid_deposit_state = MID_DEPOSIT_STATE.STATE_0;
                     midBusy = true;
@@ -252,7 +254,7 @@ public class DEPOSIT_FSM {
                 }
                 break;
             case STATE_2:
-                if(gamepad2.square || DROP_THE_THING_NOW) {
+                if(gamepad2.square || DROP_THE_THING_NOW || gamepad1.circle) {
                     DROP_THE_THING_NOW = false;
                     THE_THING_CAN_BE_DROPPED_NOW = false;
                     mid_deposit_state = MID_DEPOSIT_STATE.STATE_3;
@@ -293,16 +295,21 @@ public class DEPOSIT_FSM {
                 if(Oscar.slides.getMotorPosition() < 250) {
                     mid_deposit_state = MID_DEPOSIT_STATE.STATE_6;
                     Oscar.grabber.goStart();
+                    Oscar.grabber.moveByAngle(-90,"start");
                     time.reset();
                 }
                 else {
-                    Oscar.slides.slidesGrab();
+                    Oscar.slides.slidesOutABit();
                 }
                 break;
             case STATE_6:
-                if(time.milliseconds() > 500) {
+                if(time.milliseconds() > 750) {
                     reset();
+                    Oscar.grabber.moveByAngle(90,"start");
                     mid_deposit_state = MID_DEPOSIT_STATE.INIT;
+                }
+                else if(time.milliseconds() < 400) {
+                    Oscar.slides.slidesOutABit();
                 }
                 else {
                     Oscar.slides.slidesGrab();
@@ -405,9 +412,12 @@ public class DEPOSIT_FSM {
                 }
                 break;
             case STATE_6:
-                if(time.milliseconds() > 450) {
+                if(time.milliseconds() > 750) {
                     reset();
                     bottom_deposit_state = BOTTOM_DEPOSIT_STATE.INIT;
+                }
+                else if(time.milliseconds() < 400) {
+                    Oscar.slides.slidesOutABit();
                 }
                 else {
                     Oscar.slides.slidesGrab();
