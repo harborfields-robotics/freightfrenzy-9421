@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Auto;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -18,32 +19,41 @@ public class AutoRed extends LinearOpMode {
     private FtcDashboard dashboard;
     public static Pose2d startPR = new Pose2d(RobotConstants.STARTX,RobotConstants.STARTY,Math.toRadians(RobotConstants.HEADING));
     public static Pose2d deliverPos = new Pose2d(RobotConstants.DELIVERPOSX,RobotConstants.DELIVERPOSY,RobotConstants.DELIVERPOSANG);
+    public static Pose2d splineCV = new Pose2d(4.1,-55.2,Math.toRadians(210));
+    public static Pose2d splineTest = new Pose2d(4.1,-55.2, Math.toRadians(210));
+    public static Pose2d RevertTest = new Pose2d(4.1,-63.2, Math.toRadians(180));
+    public static Vector2d vectorTest = new Vector2d(9.5,-55.2);
+    public static Vector2d returnVector = new Vector2d();
     Hardware Oscar = new Hardware(null, null);
 
     @Override
     public void runOpMode() throws InterruptedException {
 
-        Pose2d startPose = new Pose2d(RobotConstants.STARTPOSEX, RobotConstants.STARTPOSEY, RobotConstants.STARTPOSEANG);
+        Pose2d startPose = new Pose2d(6.4, -64, Math.toRadians(180));
         Oscar.init(hardwareMap);
-        Trajectory straitPark = Oscar.drive.trajectoryBuilder(startPR)
-                .back(70)
+        Trajectory startCV = Oscar.drive.trajectoryBuilder(startPose)
+                .lineToLinearHeading(splineCV)
                 .build();
 
-        Trajectory hitWall = Oscar.drive.trajectoryBuilder(new Pose2d())
-                .strafeLeft(2)
+        Trajectory revertCV = Oscar.drive.trajectoryBuilder(startCV.end())
+                .lineToLinearHeading(RevertTest)
                 .build();
 
-        Trajectory finishPark = Oscar.drive.trajectoryBuilder(new Pose2d())
-                .back(20)
+        Trajectory inWarehouse = Oscar.drive.trajectoryBuilder(revertCV.end())
+                .back(30)
                 .build();
 
-        Trajectory carousell2 = Oscar.drive.trajectoryBuilder(new Pose2d())
-                .forward(39)
-                //.strafeRight(4)
+        Trajectory outWarehouse = Oscar.drive.trajectoryBuilder(inWarehouse.end())
+                .forward(30)
+
                 .build();
 
-        Trajectory carousell1 = Oscar.drive.trajectoryBuilder(startPR)
-                .strafeRight(4)
+        Trajectory deposit = Oscar.drive.trajectoryBuilder(outWarehouse.end())
+                .lineToLinearHeading(splineTest)
+                .build();
+
+        Trajectory revert = Oscar.drive.trajectoryBuilder(deposit.end())
+                .lineToLinearHeading(RevertTest)
                 .build();
 
 
@@ -52,53 +62,14 @@ public class AutoRed extends LinearOpMode {
         waitForStart();
         Oscar.drive.setPoseEstimate(startPose);
 
-        // When auto starts
-        Oscar.elbow.goToGrabPos();
-        Thread.sleep(1000);
+        Oscar.drive.followTrajectoryAsync(startCV);
 
-        Oscar.grabber.grab();
-        Thread.sleep(200);
+        Oscar.drive.followTrajectoryAsync(revertCV);
 
-        Oscar.elbow.moveStart();
-
-        Thread.sleep(500);
-        Oscar.slides.slidesTop();
-
-        Thread.sleep(1500);
-        Oscar.elbow.moveTop();
-
-        Oscar.grabber.goTop();
-
-        Oscar.grabber.grabberGrabExtra();
-
-        Thread.sleep(1200);
-        Oscar.grabber.grab();
-
-        Thread.sleep(500);
-
-
-        Oscar.elbow.moveStart();
-        Thread.sleep(500);
-        Oscar.grabber.goStart();
-        Oscar.grabber.grabberGrabExtra();
-
-        Oscar.slides.slidesHome();
-
-        Oscar.drive.followTrajectory(carousell1);
-
-        Oscar.grabber.carousellOn();
-
-
-        Oscar.drive.followTrajectory(carousell2);
-        Thread.sleep(5000);
-
-
-        Oscar.drive.followTrajectory(straitPark);
-
-        Oscar.drive.followTrajectory(hitWall);
-
-        Oscar.drive.followTrajectory(finishPark);
-
+        Oscar.drive.followTrajectoryAsync(inWarehouse);
+        Oscar.drive.followTrajectoryAsync(outWarehouse);
+        Oscar.drive.followTrajectoryAsync(deposit);
+        Oscar.drive.followTrajectoryAsync(revert);
 
 
 
