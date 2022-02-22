@@ -42,6 +42,9 @@ public class AUTO_TEST extends LinearOpMode {
     public static Pose2d depositPosition = new Pose2d( X_COORDINATE_FOR_DEPOSIT,Y_COORDINATE_FOR_DEPOSIT, HEADING_FOR_DEPOSIT);
     public static Pose2d barrierPosition = new Pose2d(X_COORDINATE_FOR_DEPOSIT, Y_COORDINATE_FOR_DEPOSIT, Math.toRadians(180));
     public static Pose2d parallelPosition = new  Pose2d(X_COORDINATE_FOR_BARRIER, Y_COORDINATE_FOR_BARRIER, Math.toRadians(180));
+    public static Pose2d splineCV = new Pose2d(4.1,-55.2,Math.toRadians(210));
+    public static Pose2d splineTest = new Pose2d(4.1,-55.2, Math.toRadians(210));
+    public static Pose2d RevertTest = new Pose2d(4.1,-63.2, Math.toRadians(180));
 
     private TrajectorySequence PRELOAD_TRAJECTORY;
     private TrajectorySequence DEPOSIT_TO_WAREHOUSE;
@@ -74,20 +77,22 @@ public class AUTO_TEST extends LinearOpMode {
         BarcodePositionDetector.BarcodePosition position = detector.getBarcodePosition();
 
         PRELOAD_TRAJECTORY = Oscar.drive.trajectorySequenceBuilder(startPR)
-                .lineToLinearHeading(parallelPosition)
-                .lineToLinearHeading(depositPosition)
+                .lineToLinearHeading(splineCV)
+                .lineToLinearHeading(RevertTest)
                 .build();
 
-        DEPOSIT_TO_WAREHOUSE = Oscar.drive.trajectorySequenceBuilder(depositPosition)
-                .lineToLinearHeading(barrierPosition)
-                .lineToLinearHeading(new Pose2d(X_COORDINATE_FOR_BARRIER + DEFAULT_BACK_BY_HOW_MUCH_TO_WAREHOUSE, Y_COORDINATE_FOR_BARRIER, Math.toRadians(180)))
+        DEPOSIT_TO_WAREHOUSE = Oscar.drive.trajectorySequenceBuilder(PRELOAD_TRAJECTORY.end())
+                .back(30)
+                .forward(30)
                 .build();
 
-        WAREHOUSE_TO_DEPOSIT = Oscar.drive.trajectorySequenceBuilder(barrierPosition)
-                .lineToLinearHeading(barrierPosition)
-                .lineToLinearHeading(parallelPosition)
-                .lineToLinearHeading(depositPosition)
+        WAREHOUSE_TO_DEPOSIT = Oscar.drive.trajectorySequenceBuilder(DEPOSIT_TO_WAREHOUSE.end())
+                .lineToLinearHeading(splineTest)
+                .lineToLinearHeading(RevertTest)
                 .build();
+
+
+
 
         BACK_EXTRA = Oscar.drive.trajectoryBuilder(WAREHOUSE_TO_DEPOSIT.end())
                 .back(EXTRA_BACK_BY_HOW_MUCH_IN_WAREHOUSE)
