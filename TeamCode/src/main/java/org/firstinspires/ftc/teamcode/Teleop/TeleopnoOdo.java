@@ -12,7 +12,7 @@ import java.util.Arrays;
 public class TeleopnoOdo extends OpMode {
 
     // makes and instance of the Hardware class
-    Hardware robot = new Hardware();
+    Hardware robot = new Hardware(null, null);
 
 
     ElapsedTime timer = new ElapsedTime();

@@ -63,7 +63,7 @@ public class INTAKE_FSM {
         telemetry.addData("FRONT FLIPPER STATE: ", front_state);
         switch(front_state) {
             case INIT:
-                if((((gamepad2.dpad_up || gamepad1.dpad_up) && !backBusy) || EXEC_FRONT_FLIP) && !LOGIC.IS_THING_IN_DA_ROBOT) {                    EXEC_FRONT_FLIP = false;
+                if(((gamepad2.dpad_up || gamepad1.dpad_up) && !backBusy) || EXEC_FRONT_FLIP) {
                     EXEC_FRONT_FLIP = false;
                     front_state = FRONT_STATE.STATE_0;
                     frontBusy = true;
@@ -126,7 +126,7 @@ public class INTAKE_FSM {
         telemetry.addData("BACK FLIPPER STATE: ", back_state);
         switch(back_state) {
             case INIT:
-                if(EXEC_BACK_FLIP && !LOGIC.IS_THING_IN_DA_ROBOT) {
+                if(EXEC_BACK_FLIP) {
                     EXEC_BACK_FLIP = false;
                     back_state = BACK_STATE.STATE_0;
                     backBusy = true;

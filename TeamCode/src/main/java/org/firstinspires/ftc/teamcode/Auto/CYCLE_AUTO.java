@@ -17,7 +17,7 @@ public class CYCLE_AUTO extends LinearOpMode {
     private FtcDashboard dashboard;
     public static Pose2d startPR = new Pose2d(RobotConstants.STARTX,RobotConstants.STARTY,Math.toRadians(RobotConstants.HEADING));
     public static Pose2d deliverPos = new Pose2d(RobotConstants.DELIVERPOSX,RobotConstants.DELIVERPOSY,RobotConstants.DELIVERPOSANG);
-    Hardware Oscar = new Hardware();
+    Hardware Oscar = new Hardware(null, null);
     AUTO_HELPER helper = new AUTO_HELPER(Oscar, telemetry);
 
     @Override

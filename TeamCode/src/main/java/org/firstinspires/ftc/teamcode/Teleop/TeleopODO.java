@@ -48,10 +48,6 @@ public class TeleopODO extends LinearOpMode {
         DEPOSIT_FSM deposit_fsm = new DEPOSIT_FSM(Oscar, telemetry, gamepad1, gamepad2);
         INTAKE_FSM intake_fsm = new INTAKE_FSM(Oscar, telemetry, gamepad1, gamepad2);
 
-       // controller2.addEventListener("x", ButtonState.PRESSED, () -> {
-           // Oscar.grabber.grab();
-       // });
-
         controller2.addEventListener("left_bumper", ButtonState.PRESSED, () -> {
             Oscar.slides.slidesHome();
         });
@@ -86,7 +82,7 @@ public class TeleopODO extends LinearOpMode {
             intake_fsm.doFlipBackAsync();
             intake_fsm.doFlipFrontAsync();
 
-            if(Oscar.slides.getMotorPosition() <= 200 && !intake_fsm.isBackBusy() && !intake_fsm.isFrontBusy() && !LOGIC.IS_THING_IN_DA_ROBOT) {
+            if(Oscar.slides.getMotorPosition() <= 200 && !intake_fsm.isBackBusy() && !intake_fsm.isFrontBusy()) {
                 if (gamepad2.left_trigger > .1 || gamepad1.left_trigger > .1) Oscar.intake.reverse();
                 else if (gamepad2.right_trigger > .1 || gamepad1.right_trigger > .1) Oscar.intake.forward();
                 else Oscar.intake.off();

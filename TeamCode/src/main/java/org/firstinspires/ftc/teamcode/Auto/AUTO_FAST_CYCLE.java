@@ -76,97 +76,97 @@ public class AUTO_FAST_CYCLE extends LinearOpMode {
         ElapsedTime time = new ElapsedTime();
 
         while(opModeIsActive() && !isStopRequested()) {
-
-            deposit_fsm.doDepositTopAsync();
-            deposit_fsm.doDepositMiddleAsync();
-            deposit_fsm.doDepositBottomAsync();
-
-            if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 2) {
-                intake_fsm.SET_EXEC_BACK_FLIP(true);
-            }
-            if(((DistanceSensor) Oscar.colorFront).getDistance(DistanceUnit.CM) < 2) {
-                intake_fsm.SET_EXEC_FRONT_FLIP(true);
-            }
-
-            switch (currentState) {
-
-                case CYCLE_0:
-                    telemetry.addData("CYCLE 0", currentState);
-                    if(helper.isBusy()) {
-                        helper.doDepositTopAsync(time.milliseconds());
-                    }
-                    //After finishes deposit
-                    else if(helper.isDeposited()) {
-                        Oscar.intake.forward();
-                        Oscar.drive.followTrajectoryAsync(autoTrajectory0);
-                    }
-                    if(!helper.isBusy() && !Oscar.drive.isBusy()) {
-                        currentState = State.CYCLE_1;
-                        helper.reset();
-                        time.reset();
-                    }
-                    telemetry.update();
-                    break;
-                case CYCLE_1:
-                    telemetry.addData("CYCLE 1", currentState);
-                    if(time.milliseconds() > 600) {
-                        Oscar.intake.reverse();
-                        helper.doDepositTopAsync(time.milliseconds());
-                    }
-                    if(!helper.isDeposited()) {
-                        Oscar.drive.followTrajectorySequenceAsync(autoTrajectory1);
-                    }
-                    else if(helper.isDeposited()) {
-                        Oscar.intake.forward();
-                        Oscar.drive.followTrajectorySequenceAsync(autoTrajectory2);
-                    }
-                    if(helper.isDeposited() && !Oscar.drive.isBusy()) {
-                        currentState = State.CYCLE_2;
-                        helper.reset();
-                        time.reset();
-                    }
-                    break;
-                case CYCLE_2:
-                    telemetry.addLine("CYCLE 2");
-                    if(time.milliseconds() > 600) {
-                        Oscar.intake.reverse();
-                        helper.doDepositTopAsync(time.milliseconds());
-                    }
-                    if(!helper.isDeposited()) {
-                        Oscar.drive.followTrajectorySequenceAsync(autoTrajectory1);
-                    }
-                    else if(helper.isDeposited()) {
-                        Oscar.intake.forward();
-                        Oscar.drive.followTrajectorySequenceAsync(autoTrajectory2);
-                    }
-                    if(helper.isDeposited() && !Oscar.drive.isBusy()) {
-                        currentState = State.CYCLE_2;
-                        helper.reset();
-                        time.reset();
-                    }
-                    break;
-                case CYCLE_3:
-                    telemetry.addLine("CYCLE 3");
-                    if(time.milliseconds() > 600) {
-                        Oscar.intake.reverse();
-                        helper.doDepositTopAsync(time.milliseconds());
-                    }
-                    if(!helper.isDeposited()) {
-                        Oscar.drive.followTrajectorySequenceAsync(autoTrajectory1);
-                    }
-                    else if(helper.isDeposited()) {
-                        Oscar.intake.forward();
-                        Oscar.drive.followTrajectorySequenceAsync(autoTrajectory2);
-                    }
-                    if(helper.isDeposited() && !Oscar.drive.isBusy()) {
-                        currentState = State.CYCLE_2;
-                        helper.reset();
-                        time.reset();
-                    }
-                    break;
-                case IDLE:
-                    break;
-            }
+//
+//            deposit_fsm.doDepositTopAsync();
+//            deposit_fsm.doDepositMiddleAsync();
+//            deposit_fsm.doDepositBottomAsync();
+//
+//            if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 2) {
+//                intake_fsm.SET_EXEC_BACK_FLIP(true);
+//            }
+//            if(((DistanceSensor) Oscar.colorFront).getDistance(DistanceUnit.CM) < 2) {
+//                intake_fsm.SET_EXEC_FRONT_FLIP(true);
+//            }
+//
+//            switch (currentState) {
+//
+//                case CYCLE_0:
+//                    telemetry.addData("CYCLE 0", currentState);
+//                    if(helper.isBusy()) {
+//                        helper.doDepositTopAsync(time.milliseconds());
+//                    }
+//                    //After finishes deposit
+//                    else if(helper.isDeposited()) {
+//                        Oscar.intake.forward();
+//                        Oscar.drive.followTrajectoryAsync(autoTrajectory0);
+//                    }
+//                    if(!helper.isBusy() && !Oscar.drive.isBusy()) {
+//                        currentState = State.CYCLE_1;
+//                        helper.reset();
+//                        time.reset();
+//                    }
+//                    telemetry.update();
+//                    break;
+//                case CYCLE_1:
+//                    telemetry.addData("CYCLE 1", currentState);
+//                    if(time.milliseconds() > 600) {
+//                        Oscar.intake.reverse();
+//                        helper.doDepositTopAsync(time.milliseconds());
+//                    }
+//                    if(!helper.isDeposited()) {
+//                        Oscar.drive.followTrajectorySequenceAsync(autoTrajectory1);
+//                    }
+//                    else if(helper.isDeposited()) {
+//                        Oscar.intake.forward();
+//                        Oscar.drive.followTrajectorySequenceAsync(autoTrajectory2);
+//                    }
+//                    if(helper.isDeposited() && !Oscar.drive.isBusy()) {
+//                        currentState = State.CYCLE_2;
+//                        helper.reset();
+//                        time.reset();
+//                    }
+//                    break;
+//                case CYCLE_2:
+//                    telemetry.addLine("CYCLE 2");
+//                    if(time.milliseconds() > 600) {
+//                        Oscar.intake.reverse();
+//                        helper.doDepositTopAsync(time.milliseconds());
+//                    }
+//                    if(!helper.isDeposited()) {
+//                        Oscar.drive.followTrajectorySequenceAsync(autoTrajectory1);
+//                    }
+//                    else if(helper.isDeposited()) {
+//                        Oscar.intake.forward();
+//                        Oscar.drive.followTrajectorySequenceAsync(autoTrajectory2);
+//                    }
+//                    if(helper.isDeposited() && !Oscar.drive.isBusy()) {
+//                        currentState = State.CYCLE_2;
+//                        helper.reset();
+//                        time.reset();
+//                    }
+//                    break;
+//                case CYCLE_3:
+//                    telemetry.addLine("CYCLE 3");
+//                    if(time.milliseconds() > 600) {
+//                        Oscar.intake.reverse();
+//                        helper.doDepositTopAsync(time.milliseconds());
+//                    }
+//                    if(!helper.isDeposited()) {
+//                        Oscar.drive.followTrajectorySequenceAsync(autoTrajectory1);
+//                    }
+//                    else if(helper.isDeposited()) {
+//                        Oscar.intake.forward();
+//                        Oscar.drive.followTrajectorySequenceAsync(autoTrajectory2);
+//                    }
+//                    if(helper.isDeposited() && !Oscar.drive.isBusy()) {
+//                        currentState = State.CYCLE_2;
+//                        helper.reset();
+//                        time.reset();
+//                    }
+//                    break;
+//                case IDLE:
+//                    break;
+//            }
         }
         Oscar.drive.update();
     }

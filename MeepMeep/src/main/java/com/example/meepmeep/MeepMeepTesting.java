@@ -8,6 +8,7 @@ import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeBlueDark;
 import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeRedDark;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
+import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequence;
 
 public class MeepMeepTesting {
     public static void main(String[] args) {
@@ -26,29 +27,12 @@ public class MeepMeepTesting {
                 .setConstraints(140.63964888286645, 52.48291908330528, Math.toRadians(180), Math.toRadians(180), 12.6)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(6, -64, Math.toRadians(180)))
+                                .strafeRight(5)
                                 .lineToLinearHeading(splineCV)
                                 .lineToLinearHeading(RevertTest)
                                 .back(30)
                                 .forward(30)
                                 .lineToLinearHeading(splineTest)
-                                .lineToLinearHeading(RevertTest)
-                                .back(30)
-                                .forward(30)
-                                .lineToLinearHeading(splineTest)
-                                .lineToLinearHeading(RevertTest)
-                                .back(30)
-                                .forward(30)
-                                .lineToLinearHeading(splineTest)
-                                .lineToLinearHeading(RevertTest)
-                                .back(30)
-                                .forward(30)
-                                .lineToLinearHeading(splineTest)
-                                .lineToLinearHeading(RevertTest)
-                                .back(30)
-                                .forward(30)
-                                .lineToLinearHeading(splineTest)
-                                .lineToLinearHeading(RevertTest)
-                                .back(40)
                                 .build()
                 );
 

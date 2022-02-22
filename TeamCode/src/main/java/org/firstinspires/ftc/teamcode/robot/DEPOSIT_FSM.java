@@ -53,19 +53,22 @@ public class DEPOSIT_FSM {
     private boolean bottomBusy = false;
     private boolean midDeposited = false;
     private boolean bottomDeposited = false;
+    private boolean topDeposited = false;
 
     public boolean startDeposittop = false;
     public boolean startDepositmid = false;
     public boolean startDepositbot = false;
 
+    public boolean DROP_THE_THING_NOW = false;
 
-    private boolean depositing = false;
+    public boolean THE_THING_CAN_BE_DROPPED_NOW = false;
 
-    private boolean restart = false;
-
-
-    private boolean deposited = false;
     private final Telemetry telemetry;
+
+    public boolean isAnyDeposited() {
+        return(midDeposited || bottomDeposited || topDeposited);
+    }
+    public boolean isAnyBusy() {return(midBusy || bottomBusy || topBusy);}
 
     public DEPOSIT_FSM(Hardware hardware, Telemetry telemetry, Gamepad c1, Gamepad c2) {
         this.Oscar = hardware;
@@ -84,11 +87,11 @@ public class DEPOSIT_FSM {
     private final ElapsedTime time = new ElapsedTime();
 
     public boolean isTopBusy() {return topBusy;}
-    public boolean isDeposited() {return deposited;}
+    public boolean isTopDeposited() {return topDeposited;}
 
     public void reset() {
         topBusy = false;
-        deposited = false;
+        topDeposited = false;
         deposit_state = DEPOSIT_STATE.INIT;
         time.reset();
     }
@@ -102,12 +105,12 @@ public class DEPOSIT_FSM {
                     startDeposittop = false;
                     deposit_state = DEPOSIT_STATE.STATE_0;
                     topBusy = true;
-                    deposited = false;
+                    topDeposited = false;
                     time.reset();
                 }
                 else {
                     topBusy = false;
-                    deposited = false;
+                    topDeposited = false;
                 }
                 break;
             case STATE_0:
@@ -136,7 +139,9 @@ public class DEPOSIT_FSM {
                 }
                 break;
             case STATE_2:
-                if(gamepad1.triangle || gamepad2.triangle || depositing) {
+                if(gamepad1.triangle || gamepad2.triangle || DROP_THE_THING_NOW) {
+                    DROP_THE_THING_NOW = false;
+                    THE_THING_CAN_BE_DROPPED_NOW = false;
                     deposit_state = DEPOSIT_STATE.STATE_3;
                     time.reset();
                 }
@@ -155,11 +160,14 @@ public class DEPOSIT_FSM {
                         Oscar.slides.GO_TO_ADJUSTABLE_TOP_POSITION();
                     }
                 }
+                if(time.milliseconds() > 500) {
+                    THE_THING_CAN_BE_DROPPED_NOW = true;
+                }
                 break;
             case STATE_3:
                 if(time.milliseconds() > 300) {
                     deposit_state = DEPOSIT_STATE.STATE_4;
-                    deposited = true;
+                    topDeposited = true;
                     time.reset();
                 }
                 else {
@@ -244,12 +252,17 @@ public class DEPOSIT_FSM {
                 }
                 break;
             case STATE_2:
-                if(gamepad2.square || depositing) {
+                if(gamepad2.square || DROP_THE_THING_NOW) {
+                    DROP_THE_THING_NOW = false;
+                    THE_THING_CAN_BE_DROPPED_NOW = false;
                     mid_deposit_state = MID_DEPOSIT_STATE.STATE_3;
                     time.reset();
                 }
                 else {
                     Oscar.slides.slidesMid();
+                }
+                if(time.milliseconds() > 800) {
+                    THE_THING_CAN_BE_DROPPED_NOW = true;
                 }
                 break;
             case STATE_3:
@@ -342,12 +355,17 @@ public class DEPOSIT_FSM {
                 }
                 break;
             case STATE_2:
-                if(gamepad2.cross || depositing) {
+                if(gamepad2.cross || DROP_THE_THING_NOW) {
+                    DROP_THE_THING_NOW = false;
+                    THE_THING_CAN_BE_DROPPED_NOW = false;
                     bottom_deposit_state = BOTTOM_DEPOSIT_STATE.STATE_3;
                     time.reset();
                 }
                 else {
                     Oscar.slides.slidesBottom();
+                }
+                if(time.milliseconds() > 1000) {
+                    THE_THING_CAN_BE_DROPPED_NOW = true;
                 }
                 break;
             case STATE_3:

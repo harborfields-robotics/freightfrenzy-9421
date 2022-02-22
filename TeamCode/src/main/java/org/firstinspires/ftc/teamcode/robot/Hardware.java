@@ -54,9 +54,6 @@ public class Hardware {
         grabber.closeGrab();
     }
 
-    public Hardware() {
-    }
-
     //Inits hardware for opmode
     public void init(HardwareMap ahwMap){
         //ahwMap is hwMap

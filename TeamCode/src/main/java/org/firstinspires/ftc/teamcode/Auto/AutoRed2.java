@@ -19,7 +19,7 @@ import dashboard.RobotConstants;
         private FtcDashboard dashboard;
         public static Pose2d startPR = new Pose2d(RobotConstants.STARTX,RobotConstants.STARTY,Math.toRadians(RobotConstants.HEADING));
         public static Pose2d deliverPos = new Pose2d(RobotConstants.DELIVERPOSX,RobotConstants.DELIVERPOSY,RobotConstants.DELIVERPOSANG);
-        Hardware Oscar = new Hardware();
+        Hardware Oscar = new Hardware(null, null);
 
         @Override
         public void runOpMode() throws InterruptedException {
