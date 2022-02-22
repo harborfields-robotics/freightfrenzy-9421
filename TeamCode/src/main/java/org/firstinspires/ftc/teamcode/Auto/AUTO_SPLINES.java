@@ -74,6 +74,8 @@ public class AUTO_SPLINES extends LinearOpMode {
 
         BarcodePositionDetector.BarcodePosition position = detector.getBarcodePosition();
 
+        telemetry.addData("position", position);
+
 
 
 
