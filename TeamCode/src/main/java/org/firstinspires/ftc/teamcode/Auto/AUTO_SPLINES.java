@@ -79,6 +79,7 @@ public class AUTO_SPLINES extends LinearOpMode {
 
 
         while( !isStopRequested( ) && !isStarted( ) ) {
+            Oscar.drive.update();
             telemetry.addData("Barcode position", cvUtil.getBarcodePosition());
             telemetry.update();
 
