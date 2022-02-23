@@ -84,6 +84,7 @@ public class BarcodePositionDetector extends OpenCvPipeline {
         }
         Imgproc.cvtColor( mat, mat, Imgproc.COLOR_GRAY2RGB );
 
+
         Scalar elementColor = new Scalar( 255, 0, 0 );
         Scalar notElement = new Scalar( 0, 255, 0 );
 
