@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -60,6 +61,7 @@ public class AUTO_SPLINES extends LinearOpMode {
 
     Hardware Oscar;
 
+
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -73,10 +75,12 @@ public class AUTO_SPLINES extends LinearOpMode {
         DEPOSIT_FSM deposit_fsm = new DEPOSIT_FSM(Oscar, telemetry, gamepad1, gamepad2);
         INTAKE_FSM intake_fsm = new INTAKE_FSM(Oscar, telemetry, gamepad1, gamepad2);
 
+        BarcodePositionDetector.BarcodePosition barcodePosition = Oscar.cvUtil.getBarcodePosition();
+
 
         while (!isStopRequested() && !opModeIsActive()) {
             Oscar.drive.update();
-            telemetry.addData("Barcode position", Oscar.cvUtil.getBarcodePosition());
+            telemetry.addData("Barcode position", barcodePosition);
             telemetry.update();
         }
 
@@ -116,7 +120,7 @@ public class AUTO_SPLINES extends LinearOpMode {
 
             waitForStart();
 
-            BarcodePositionDetector.BarcodePosition barcodePosition = Oscar.cvUtil.getBarcodePosition();
+
 
             Oscar.cvUtil.stopCamera();
 

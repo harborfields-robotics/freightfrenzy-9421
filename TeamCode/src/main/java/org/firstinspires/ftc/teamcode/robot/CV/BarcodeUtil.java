@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.robot.CV;
 import android.util.Log;
 
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -25,13 +26,6 @@ public class BarcodeUtil {
         webcam.setPipeline( pipeline );
     }
 
-    public void setup(HardwareMap hardwareMap, String webcamName ) {
-
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier( "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        webcam = OpenCvCameraFactory.getInstance().createWebcam( hardwareMap.get( WebcamName.class, webcamName ), cameraMonitorViewId );
-        pipeline = new BarcodePositionDetector( telemetry );
-        webcam.setPipeline( pipeline );
-    }
 
     public void init( ) {
         openCameraDevice( );
