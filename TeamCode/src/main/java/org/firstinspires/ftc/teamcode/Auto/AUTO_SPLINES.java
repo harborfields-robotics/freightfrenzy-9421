@@ -121,7 +121,6 @@ public class AUTO_SPLINES extends LinearOpMode {
             waitForStart();
 
 
-            Oscar.cvUtil.stopCamera();
 
             ElapsedTime AUTO_RUNTIME = new ElapsedTime();
             ElapsedTime time = new ElapsedTime();
