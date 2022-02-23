@@ -13,13 +13,16 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 public class BarcodeUtil {
-    Telemetry telemetry;
+    private Telemetry telemetry;
     private OpenCvWebcam webcam;
     private BarcodePositionDetector pipeline;
 
     public BarcodeUtil(HardwareMap hardwareMap, String webcamName, Telemetry telemetry ) {
         this.telemetry = telemetry;
-        setup( hardwareMap, webcamName );
+        int cameraMonitorViewId = hardwareMap.appContext.getResources( ).getIdentifier( "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName( ) );
+        webcam = OpenCvCameraFactory.getInstance().createWebcam( hardwareMap.get( WebcamName.class, webcamName ), cameraMonitorViewId );
+        pipeline = new BarcodePositionDetector( telemetry );
+        webcam.setPipeline( pipeline );
     }
 
     public void setup(HardwareMap hardwareMap, String webcamName ) {

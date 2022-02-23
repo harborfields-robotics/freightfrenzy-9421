@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 //hardware
@@ -52,6 +53,14 @@ public class TeleopODO extends LinearOpMode {
             Oscar.slides.slidesHome();
         });
 
+        Gamepad.RumbleEffect customRumbleEffect = new Gamepad.RumbleEffect.Builder()
+                .addStep(0.0, 1.0, 50)  //  Rumble right motor 100% for 500 mSec
+                .addStep(0.0, 0.0, 50)  //  Pause for 300 mSec
+                .addStep(1.0, 0.0, 50)  //  Rumble left motor 100% for 250 mSec
+                .addStep(0.0, 0.0, 50)  //  Pause for 250 mSec
+                .addStep(1.0, 0.0, 50)  //  Rumble left motor 100% for 250 mSec
+                .build();
+
         Oscar.elbow.goToGrabPos();
         Oscar.grabber.goStart();
         Oscar.grabber.openGrab();
@@ -78,9 +87,11 @@ public class TeleopODO extends LinearOpMode {
 
             if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 2) {
                 intake_fsm.SET_EXEC_BACK_FLIP(true);
+                gamepad1.runRumbleEffect(customRumbleEffect);
             }
             if(((DistanceSensor) Oscar.colorFront).getDistance(DistanceUnit.CM) < 2) {
                 intake_fsm.SET_EXEC_FRONT_FLIP(true);
+                gamepad1.runRumbleEffect(customRumbleEffect);
             }
 
             intake_fsm.doFlipBackAsync();
