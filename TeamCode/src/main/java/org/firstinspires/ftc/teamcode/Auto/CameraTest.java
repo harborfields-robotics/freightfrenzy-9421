@@ -28,7 +28,7 @@ public class CameraTest extends LinearOpMode {
 
         waitForStart();
 
-        Oscar.cvUtil.stopCamera();
+
 
     }
 }

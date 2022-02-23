@@ -10,6 +10,7 @@ import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 public class BarcodePositionDetector extends OpenCvPipeline {
+
     Telemetry telemetry;
     Mat mat = new Mat( );
 
@@ -24,13 +25,13 @@ public class BarcodePositionDetector extends OpenCvPipeline {
 
     static final Rect LEFT_ROI = new Rect(
             new Point( 0, 0 ),
-            new Point( 426, 720 ) );
+            new Point( 106, 240 ) );
     static final Rect MIDDLE_ROI = new Rect(
-            new Point( 426, 0 ),
-            new Point( 852, 720 ) );
+            new Point( 106, 0 ),
+            new Point( 224, 240 ) );
     static final Rect RIGHT_ROI = new Rect(
-            new Point( 852, 0 ),
-            new Point( 1278, 720 ) );
+            new Point( 224, 0 ),
+            new Point( 320, 240 ) );
 
     static double PERCENT_COLOR_THRESHOLD = 0.02;
 
@@ -38,8 +39,8 @@ public class BarcodePositionDetector extends OpenCvPipeline {
         telemetry = t;
     }
 
-    public Mat processFrame(Mat input, String type ) {
-//TODO: Check color values to make sure they are right(This value is based on the color that seems closest to it)
+    public Mat processFrame( Mat input, String type ) {
+
         Imgproc.cvtColor( input, mat, Imgproc.COLOR_RGB2HSV );
         Scalar lowHSV;
         Scalar highHSV;
@@ -84,12 +85,8 @@ public class BarcodePositionDetector extends OpenCvPipeline {
         }
         Imgproc.cvtColor( mat, mat, Imgproc.COLOR_GRAY2RGB );
 
-
         Scalar elementColor = new Scalar( 255, 0, 0 );
         Scalar notElement = new Scalar( 0, 255, 0 );
-
-        //hopefully this is the way to use these LOL
-        //? for the test maybe
 
         Imgproc.rectangle( mat, LEFT_ROI, barcodePosition == BarcodePosition.LEFT ? notElement : elementColor );
         Imgproc.rectangle( mat, RIGHT_ROI, barcodePosition == BarcodePosition.RIGHT ? notElement : elementColor );
@@ -97,21 +94,18 @@ public class BarcodePositionDetector extends OpenCvPipeline {
         return mat;
     }
 
-// MAT THE DUNKIN BUYER
+    @Override
     public Mat processFrame( Mat input ) {
 
         Mat elementImage = processFrame( input, "element" );
         Mat duckImage = processFrame( input, "duck" );
-        double elementValue = Core.sumElems( elementImage ).val[0] / (elementImage.rows( ) * elementImage.cols( )) / 255;
+        double eleValue = Core.sumElems( elementImage ).val[0] / (elementImage.rows( ) * elementImage.cols( )) / 255;
         double duckValue = Core.sumElems( duckImage ).val[0] / (duckImage.rows( ) * duckImage.cols( )) / 255;
         telemetry.update( );
-        if( elementValue < duckValue )
+        if( eleValue < duckValue )
             return duckImage;
         return elementImage;
     }
-// this will return the barcode position that we will use in for auto
-    // example if pos is mid go mid etc
-
 
     public BarcodePosition getBarcodePosition( ) {
         return barcodePosition;
