@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.robot.CV.BarcodeUtil;
 import org.firstinspires.ftc.teamcode.robot.DEPOSIT_FSM;
 import org.firstinspires.ftc.teamcode.robot.Hardware;
 import org.firstinspires.ftc.teamcode.robot.INTAKE_FSM;
@@ -59,6 +60,8 @@ public class AUTO_SPLINES extends LinearOpMode {
 
     Hardware Oscar;
 
+    BarcodeUtil cvUtil = new BarcodeUtil(hardwareMap,"Webcam1",telemetry);
+
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -76,7 +79,7 @@ public class AUTO_SPLINES extends LinearOpMode {
 
 
         while( !isStopRequested( ) && !isStarted( ) ) {
-            telemetry.addData("Barcode position", Oscar.cvUtil.getBarcodePosition());
+            telemetry.addData("Barcode position", cvUtil.getBarcodePosition());
             telemetry.update();
 
         }
