@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.robot.Hardware;
 public class CameraTest extends LinearOpMode {
 
     Hardware Oscar;
+
     @Override
     public void runOpMode() throws InterruptedException {
 
