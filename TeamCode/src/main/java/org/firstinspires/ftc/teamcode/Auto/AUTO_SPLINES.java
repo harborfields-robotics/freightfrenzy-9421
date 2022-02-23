@@ -73,10 +73,11 @@ public class AUTO_SPLINES extends LinearOpMode {
 
 
 
-        BarcodePositionDetector.BarcodePosition barcodePosition = Oscar.cvUtil.getBarcodePosition( );
+
 
         while( !isStopRequested( ) && !isStarted( ) ) {
             telemetry.addData("Element position", Oscar.cvUtil.getBarcodePosition());
+            telemetry.update();
 
         }
 
@@ -121,6 +122,8 @@ public class AUTO_SPLINES extends LinearOpMode {
                 .build();
 
         waitForStart();
+
+        BarcodePositionDetector.BarcodePosition barcodePosition = Oscar.cvUtil.getBarcodePosition( );
 
         Oscar.cvUtil.stopCamera( );
 
