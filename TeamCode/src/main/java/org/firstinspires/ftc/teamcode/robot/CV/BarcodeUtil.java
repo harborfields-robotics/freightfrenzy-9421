@@ -24,7 +24,7 @@ public class BarcodeUtil {
 
     public void setup(HardwareMap hardwareMap, String webcamName ) {
 
-        int cameraMonitorViewId = hardwareMap.appContext.getResources( ).getIdentifier( "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName( ) );
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier( "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName( ) );
         webcam = OpenCvCameraFactory.getInstance().createWebcam( hardwareMap.get( WebcamName.class, webcamName ), cameraMonitorViewId );
         pipeline = new BarcodePositionDetector( telemetry );
         webcam.setPipeline( pipeline );
