@@ -69,7 +69,7 @@ public class Hardware {
         elbow = new Elbow(hwMap);
         slides = new LinearSlides(hwMap, telemetry);
         flippers = new Flippers(hwMap);
-        cvUtil = new BarcodeUtil(hwMap,"Webcam1",telemetry);
+        //cvUtil = new BarcodeUtil(hwMap,"Webcam1",telemetry);
 
 
 

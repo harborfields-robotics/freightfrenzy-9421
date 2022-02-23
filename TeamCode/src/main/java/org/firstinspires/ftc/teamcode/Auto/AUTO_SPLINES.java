@@ -65,7 +65,7 @@ public class AUTO_SPLINES extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        Oscar.cvUtil.init();
+        cvUtil.init();
 
         Oscar = new Hardware(hardwareMap, telemetry);
 
@@ -126,9 +126,9 @@ public class AUTO_SPLINES extends LinearOpMode {
 
         waitForStart();
 
-        BarcodePositionDetector.BarcodePosition barcodePosition = Oscar.cvUtil.getBarcodePosition( );
+        BarcodePositionDetector.BarcodePosition barcodePosition = cvUtil.getBarcodePosition( );
 
-        Oscar.cvUtil.stopCamera( );
+        cvUtil.stopCamera( );
 
         if (isStopRequested()) return;
 
