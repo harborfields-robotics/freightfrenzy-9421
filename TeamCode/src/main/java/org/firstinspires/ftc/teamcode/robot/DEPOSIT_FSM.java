@@ -44,18 +44,33 @@ public class DEPOSIT_FSM {
         STATE_7,
         STATE_8
     }
+    enum SHARED_DEPOSIT_STATE {
+        INIT,
+        STATE_0,
+        STATE_1,
+        STATE_2,
+        STATE_3,
+        STATE_4,
+        STATE_5,
+        STATE_6,
+        STATE_7,
+        STATE_8
+    }
     private DEPOSIT_STATE deposit_state = DEPOSIT_STATE.INIT;
     private MID_DEPOSIT_STATE mid_deposit_state = MID_DEPOSIT_STATE.INIT;
     private BOTTOM_DEPOSIT_STATE bottom_deposit_state = BOTTOM_DEPOSIT_STATE.INIT;
+    private SHARED_DEPOSIT_STATE shared_deposit_state = SHARED_DEPOSIT_STATE.INIT;
     private final Hardware Oscar;
     private final Gamepad gamepad1;
     private final Gamepad gamepad2;
     private boolean topBusy = false;
     private boolean midBusy = false;
     private boolean bottomBusy = false;
+    private boolean sharedBusy = false;
     private boolean midDeposited = false;
     private boolean bottomDeposited = false;
     private boolean topDeposited = false;
+    private boolean sharedDeposited = false;
 
     public boolean startDeposittop = false;
     public boolean startDepositmid = false;

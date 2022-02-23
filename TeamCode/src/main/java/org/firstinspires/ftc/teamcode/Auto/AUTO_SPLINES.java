@@ -85,42 +85,46 @@ public class AUTO_SPLINES extends LinearOpMode {
         }
 
 
-            Trajectory DEPOSIT_TO_WAREHOUSE = Oscar.drive.trajectoryBuilder(parallelDepositPosition)
-                    .lineToLinearHeading(warehousePosition)
-                    .build();
+        Trajectory DEPOSIT_TO_WAREHOUSE = Oscar.drive.trajectoryBuilder(parallelDepositPosition)
+                .lineToLinearHeading(warehousePosition)
+                .build();
 
-            Trajectory WAREHOUSE_TO_DEPOSIT = Oscar.drive.trajectoryBuilder(warehousePosition)
-                    .lineToLinearHeading(parallelDepositPosition)
-                    .build();
+        Trajectory WAREHOUSE_TO_DEPOSIT = Oscar.drive.trajectoryBuilder(warehousePosition)
+                .lineToLinearHeading(parallelDepositPosition)
+                .build();
 
-            Trajectory WAREHOUSE_TO_INTAKE_EXTRA = Oscar.drive.trajectoryBuilder(warehousePosition)
-                    .lineToLinearHeading(
-                            intakeExtraPosition,
-                            SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                    .build();
+        Trajectory WAREHOUSE_TO_INTAKE_EXTRA = Oscar.drive.trajectoryBuilder(warehousePosition)
+                .lineToLinearHeading(
+                        intakeExtraPosition,
+                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
 
-            Trajectory INTAKE_EXTRA_TO_DEPOSIT = Oscar.drive.trajectoryBuilder(intakeExtraPosition)
-                    .lineToLinearHeading(parallelDepositPosition)
-                    .build();
+        Trajectory INTAKE_EXTRA_TO_DEPOSIT = Oscar.drive.trajectoryBuilder(intakeExtraPosition)
+                .lineToLinearHeading(parallelDepositPosition)
+                .build();
 
-            Trajectory INTAKE_EXTRA_TO_WAREHOUSE = Oscar.drive.trajectoryBuilder(intakeExtraPosition)
-                    .lineToLinearHeading(warehousePosition)
-                    .build();
+        Trajectory INTAKE_EXTRA_TO_WAREHOUSE = Oscar.drive.trajectoryBuilder(intakeExtraPosition)
+                .lineToLinearHeading(warehousePosition)
+                .build();
 
 
-            TrajectorySequence PRELOAD_TRAJECTORY = Oscar.drive.trajectorySequenceBuilder(startPose)
-                    .lineToLinearHeading(new Pose2d(6.4, -57, Math.toRadians(210)))
-                    .build();
+        TrajectorySequence PRELOAD_TRAJECTORY = Oscar.drive.trajectorySequenceBuilder(startPose)
+                .lineToLinearHeading(new Pose2d(6.4, -57, Math.toRadians(210)))
+                .build();
 
-            TrajectorySequence PRELOAD_TRAJECTORY_SECOND = Oscar.drive.trajectorySequenceBuilder(PRELOAD_TRAJECTORY.end())
-                    .lineToLinearHeading(new Pose2d(6.4, -64, Math.toRadians(180)))
-                    .lineToLinearHeading(warehousePosition)
-                    .build();
+        TrajectorySequence PRELOAD_TRAJECTORY_SECOND = Oscar.drive.trajectorySequenceBuilder(PRELOAD_TRAJECTORY.end())
+                .lineToLinearHeading(new Pose2d(6.4, -64, Math.toRadians(180)))
+                .lineToLinearHeading(warehousePosition)
+                .build();
 
             waitForStart();
 
-
+        while (!opModeIsActive() && !isStarted()) {
+            Oscar.drive.update();
+            telemetry.addData("Barcode position", Oscar.cvUtil.getBarcodePosition());
+            telemetry.update();
+        }
 
             Oscar.cvUtil.stopCamera();
 
