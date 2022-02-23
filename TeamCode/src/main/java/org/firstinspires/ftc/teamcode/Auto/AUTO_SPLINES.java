@@ -121,6 +121,7 @@ public class AUTO_SPLINES extends LinearOpMode {
                 .build();
 
         waitForStart();
+
         Oscar.cvUtil.stopCamera( );
 
         if (isStopRequested()) return;
