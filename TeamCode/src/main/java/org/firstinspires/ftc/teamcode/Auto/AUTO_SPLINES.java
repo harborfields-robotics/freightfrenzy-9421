@@ -74,7 +74,7 @@ public class AUTO_SPLINES extends LinearOpMode {
         INTAKE_FSM intake_fsm = new INTAKE_FSM(Oscar, telemetry, gamepad1, gamepad2);
 
 
-        while (!opModeIsActive() && !isStarted()) {
+        while (!isStopRequested() && !opModeIsActive()) {
             Oscar.drive.update();
             telemetry.addData("Barcode position", Oscar.cvUtil.getBarcodePosition());
             telemetry.update();
