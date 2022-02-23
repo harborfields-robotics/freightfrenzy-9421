@@ -21,7 +21,6 @@ public class CameraTest extends LinearOpMode {
 
 
         while (!isStopRequested() && !opModeIsActive()) {
-            Oscar.drive.update();
             telemetry.addData("Barcode position", barcodePosition);
             telemetry.update();
         }
