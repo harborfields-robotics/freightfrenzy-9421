@@ -44,7 +44,7 @@ public class Hardware {
         slides = new LinearSlides(hwMap, telemetry);
         flippers = new Flippers(hwMap);
 
-        cvUtil = new BarcodeUtil(hwMap, "Webcam1",telemetry);
+        cvUtil = new BarcodeUtil(hwMap, "Webcam1", telemetry);
 
         colorFront = hardwareMap.get(NormalizedColorSensor.class, "color_front");
         colorBack = hardwareMap.get(NormalizedColorSensor.class, "color_back");

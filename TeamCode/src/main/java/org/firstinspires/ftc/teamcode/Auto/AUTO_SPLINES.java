@@ -61,6 +61,9 @@ public class AUTO_SPLINES extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+
+        Oscar.cvUtil.init();
+
         Oscar = new Hardware(hardwareMap, telemetry);
 
         Oscar.drive.setPoseEstimate(startPose);
@@ -68,14 +71,16 @@ public class AUTO_SPLINES extends LinearOpMode {
         DEPOSIT_FSM deposit_fsm = new DEPOSIT_FSM(Oscar, telemetry, gamepad1, gamepad2);
         INTAKE_FSM intake_fsm = new INTAKE_FSM(Oscar, telemetry, gamepad1, gamepad2);
 
-        //BarcodePositionDetector detector = new BarcodePositionDetector(telemetry);
+
 
         BarcodePositionDetector.BarcodePosition barcodePosition = Oscar.cvUtil.getBarcodePosition( );
 
-        //BarcodePositionDetector.BarcodePosition position = detector.getBarcodePosition();
-        telemetry.addData( "Element position", Oscar.cvUtil.getBarcodePosition() );
+        while( !isStopRequested( ) && !isStarted( ) ) {
+            telemetry.addData("Element position", Oscar.cvUtil.getBarcodePosition());
 
-        //telemetry.addData("position", position);
+        }
+
+
 
 
 
@@ -116,6 +121,7 @@ public class AUTO_SPLINES extends LinearOpMode {
                 .build();
 
         waitForStart();
+        Oscar.cvUtil.stopCamera( );
 
         if (isStopRequested()) return;
 
