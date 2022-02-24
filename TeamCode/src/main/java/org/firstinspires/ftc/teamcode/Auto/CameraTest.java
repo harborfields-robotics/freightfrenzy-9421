@@ -52,8 +52,10 @@ public class CameraTest extends LinearOpMode {
         if (counterTop > counterBottom && counterTop > counterMid){
             barcodePosition = BarcodePositionDetector.BarcodePosition.RIGHT;
         }
-
-        telemetry.addData("WHAT IS DETECTED", barcodePosition);
+        while(opModeIsActive() && !isStopRequested()) {
+            telemetry.addData("WHAT IS DETECTED", barcodePosition);
+            telemetry.update();
+        }
         //test
 
 
