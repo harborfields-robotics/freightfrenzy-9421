@@ -26,40 +26,43 @@ public class MeepMeepTesting {
         Pose2d StoragePark = new Pose2d(-58.7, -34.7, Math.toRadians((90)));
         Pose2d MoveRight1 = new Pose2d(-55.0, -53.7, Math.toRadians(130));
 
-        Vector2d vectorTest = new Vector2d(9.5,-55.2);
-        Vector2d returnVector = new Vector2d();
+        Vector2d WarehouseSpline = new Vector2d(48,-55.8);
+
+        Vector2d vectorTest = new Vector2d(37,-64);
+        Vector2d returnVector = new Vector2d(37,-64);
         RoadRunnerBotEntity myFirstBot = new DefaultBotBuilder(meepMeep)
                 // We set this bot to be blue
                 .setColorScheme(new ColorSchemeBlueDark())
                 .setConstraints(140.63964888286645, 52.48291908330528, Math.toRadians(180), Math.toRadians(180), 12.6)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(-39.1, -64, Math.toRadians(180)))
-                                .forward(5)
-                                .splineToLinearHeading(DuckRedCycle,Math.toRadians(140))
-                                .splineToLinearHeading(MoveRight1,Math.toRadians(140))
-                                .splineToSplineHeading(StoragePark,Math.toRadians(90))
+                        drive.trajectorySequenceBuilder(new Pose2d(19, -64, Math.toRadians(180)))
+                                .back(18)
+                                .splineToConstantHeading(WarehouseSpline,Math.toRadians(180))
+                                .splineToConstantHeading(returnVector,Math.toRadians(180))
+                                .forward(18)
+
                                 .build()
                 );
 
 
 
-        // Declare out second bot
-        RoadRunnerBotEntity mySecondBot = new DefaultBotBuilder(meepMeep)
-                // We set this bot to be red
-                .setColorScheme(new ColorSchemeRedDark())
-                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 12.6)
-                .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(30, 30, Math.toRadians(180)))
-                                .forward(30)
-                                .turn(Math.toRadians(90))
-                                .forward(30)
-                                .turn(Math.toRadians(90))
-                                .forward(30)
-                                .turn(Math.toRadians(90))
-                                .forward(30)
-                                .turn(Math.toRadians(90))
-                                .build()
-                );
+//        // Declare out second bot
+//        RoadRunnerBotEntity mySecondBot = new DefaultBotBuilder(meepMeep)
+//                // We set this bot to be red
+//                .setColorScheme(new ColorSchemeRedDark())
+//                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 12.6)
+//                .followTrajectorySequence(drive ->
+//                        drive.trajectorySequenceBuilder(new Pose2d(30, 30, Math.toRadians(180)))
+//                                .forward(30)
+//                                .turn(Math.toRadians(90))
+//                                .forward(30)
+//                                .turn(Math.toRadians(90))
+//                                .forward(30)
+//                                .turn(Math.toRadians(90))
+//                                .forward(30)
+//                                .turn(Math.toRadians(90))
+//                                .build()
+//                );
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_FREIGHTFRENZY_ADI_DARK)
                 .setDarkMode(true)
@@ -67,7 +70,7 @@ public class MeepMeepTesting {
 
                 // Add both of our declared bot entities
                 .addEntity(myFirstBot)
-                .addEntity(mySecondBot)
+                //.addEntity(mySecondBot)
                 .start();
     }
 
