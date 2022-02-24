@@ -18,12 +18,12 @@ import org.firstinspires.ftc.teamcode.robot.INTAKE_FSM;
 
 @Config
 @Autonomous(group = "advanced")
-public class ASYNC_AUTO_TEST extends LinearOpMode {
+public class CYCLE_MIDDLE_PRELOAD_RED extends LinearOpMode {
     Hardware Oscar;
 
     double adjustableWarehouseX = 54;
     //How much further back it goes each cycle, because minerals get pushed around
-    double amountIncreaseWarehouseX = 2.5;
+    double amountIncreaseWarehouseX = 2;
 
     double AMOUNT_ITERATE_Y = 2;
 
@@ -99,7 +99,7 @@ public class ASYNC_AUTO_TEST extends LinearOpMode {
             switch (state) {
                 case INIT:
                     if(!ENSURE_ONE_DEPOSIT && time.milliseconds() > 500) {
-                        deposit_fsm.startDeposittop = true;
+                        deposit_fsm.startDepositmid = true;
                         ENSURE_ONE_DEPOSIT = true;
                     }
                     else if(deposit_fsm.THE_THING_CAN_BE_DROPPED_NOW) {

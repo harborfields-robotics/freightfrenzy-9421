@@ -12,6 +12,8 @@ public class Flippers {
 
     private double downPosition0 = .43;
     private double downPosition1 = .95;
+    private double wigglePosition0 = .7;
+    private double wigglePosition1 = .42;
 
     private double upPosition0 = .84;
     private double upPosition1 = .59;
@@ -28,5 +30,9 @@ public class Flippers {
     public void moveUp(String frontOrBack) {
         if(frontOrBack.equals("front")) f0.setPosition(upPosition0);
         else f1.setPosition(upPosition1);
+    }
+    public void moveWiggle(String frontOrBack) {
+        if(frontOrBack.equals("front")) f0.setPosition(wigglePosition0);
+        else f1.setPosition(wigglePosition1);
     }
 }
