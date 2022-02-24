@@ -50,6 +50,7 @@ public class INTAKE_FSM {
     }
 
     private final ElapsedTime time = new ElapsedTime();
+    private final ElapsedTime wiggleTime = new ElapsedTime();
 
     public boolean isBackBusy() {return backBusy;}
     public boolean isFrontBusy() {return frontBusy;}
@@ -80,9 +81,14 @@ public class INTAKE_FSM {
                 }
                 break;
             case STATE_0:
-                if(time.milliseconds() > 100) {
-                    front_state = FRONT_STATE.STATE_1;
+                if(time.milliseconds() > 1200) {
+                    front_state = FRONT_STATE.STATE_2;
+                    Oscar.flippers.moveUp("front");
                     time.reset();
+                }
+                if(wiggleTime.milliseconds() > 200) {
+                    front_state = FRONT_STATE.STATE_1;
+                    wiggleTime.reset();
                 }
                 else {
                     Oscar.flippers.moveUp("front");
@@ -90,16 +96,17 @@ public class INTAKE_FSM {
                 }
                 break;
             case STATE_1:
-                if(time.milliseconds() > 200) {
-                    front_state = FRONT_STATE.STATE_2;
-                    time.reset();
+                if(wiggleTime.milliseconds() > 200) {
+                    front_state = FRONT_STATE.STATE_0;
+                    wiggleTime.reset();
                 }
                 else {
+                    Oscar.flippers.moveWiggle("front");
                     Oscar.intake.frontOut();
                 }
                 break;
             case STATE_2:
-                if(time.milliseconds() > 1200) {
+                if(time.milliseconds() > 100) {
                     front_state = FRONT_STATE.STATE_3;
                     Oscar.flippers.moveDown("front");
                     time.reset();
@@ -143,9 +150,14 @@ public class INTAKE_FSM {
                 }
                 break;
             case STATE_0:
-                if(time.milliseconds() > 100) {
-                    back_state = BACK_STATE.STATE_1;
+                if(time.milliseconds() > 1200) {
+                    back_state = BACK_STATE.STATE_2;
+                    Oscar.flippers.moveUp("back");
                     time.reset();
+                }
+                if(wiggleTime.milliseconds() > 200) {
+                    back_state = BACK_STATE.STATE_1;
+                    wiggleTime.reset();
                 }
                 else {
                     Oscar.flippers.moveUp("back");
@@ -153,11 +165,12 @@ public class INTAKE_FSM {
                 }
                 break;
             case STATE_1:
-                if(time.milliseconds() > 200) {
-                    back_state = BACK_STATE.STATE_2;
-                    time.reset();
+                if(wiggleTime.milliseconds() > 200) {
+                    back_state = BACK_STATE.STATE_0;
+                    wiggleTime.reset();
                 }
                 else {
+                    Oscar.flippers.moveWiggle("back");
                     Oscar.intake.backOut();
                 }
                 break;

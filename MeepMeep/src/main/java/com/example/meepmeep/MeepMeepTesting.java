@@ -21,11 +21,13 @@ public class MeepMeepTesting {
         // Declare our first bot
         Pose2d splineCV = new Pose2d(4.1,-55.2,Math.toRadians(210));
         Pose2d splineTest = new Pose2d(4.1,-55.2, Math.toRadians(210));
-        Pose2d RevertTest = new Pose2d(-39.1, -64, Math.toRadians(180));
+        Pose2d RevertTest = new Pose2d(4.1,-63.2, Math.toRadians(180));
         Pose2d DuckRedCycle = new Pose2d(-57.2,-53.7, Math.toRadians(130));
-        Pose2d driveToWarehouse = new Pose2d(44.8,-64,Math.toRadians(180));
+        Pose2d StoragePark = new Pose2d(-58.7, -34.7, Math.toRadians((90)));
+        Pose2d MoveRight1 = new Pose2d(-55.0, -53.7, Math.toRadians(130));
+
         Vector2d vectorTest = new Vector2d(9.5,-55.2);
-        Vector2d returnVector = new Vector2d(44.8,-64);
+        Vector2d returnVector = new Vector2d();
         RoadRunnerBotEntity myFirstBot = new DefaultBotBuilder(meepMeep)
                 // We set this bot to be blue
                 .setColorScheme(new ColorSchemeBlueDark())
@@ -34,10 +36,8 @@ public class MeepMeepTesting {
                         drive.trajectorySequenceBuilder(new Pose2d(-39.1, -64, Math.toRadians(180)))
                                 .forward(5)
                                 .splineToLinearHeading(DuckRedCycle,Math.toRadians(140))
-                                .lineToLinearHeading(RevertTest)
-                                .lineToLinearHeading(driveToWarehouse)
-
-
+                                .splineToLinearHeading(MoveRight1,Math.toRadians(140))
+                                .splineToSplineHeading(StoragePark,Math.toRadians(90))
                                 .build()
                 );
 

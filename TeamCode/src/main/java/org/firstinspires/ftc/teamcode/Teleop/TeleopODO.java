@@ -110,7 +110,7 @@ public class TeleopODO extends LinearOpMode {
 
             telemetry.addData("IS THING IN DA ROBOT? ", LOGIC.IS_THING_IN_DA_ROBOT);
 
-            Oscar.drive.setWeightedDrivePower(new Pose2d(-gamepad1.left_stick_y * 1,-gamepad1.left_stick_x * 1,-gamepad1.right_stick_x * .5));
+            Oscar.drive.setWeightedDrivePower(new Pose2d(-gamepad1.left_stick_x * 1,gamepad1.left_stick_y * 1,-gamepad1.right_stick_x * .5));
         }
     }
 }
