@@ -15,6 +15,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 
 public class BarcodeUtil {
     private Telemetry telemetry;
+
     private OpenCvWebcam webcam;
     private BarcodePositionDetector pipeline;
 
