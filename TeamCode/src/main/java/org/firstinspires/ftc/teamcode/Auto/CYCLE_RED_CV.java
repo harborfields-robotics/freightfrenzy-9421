@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.robot.INTAKE_FSM;
 
 @Config
 @Autonomous(group = "advanced")
-public class CYCLE_BOTTOM_PRELOAD_RED extends LinearOpMode {
+public class CYCLE_RED_CV extends LinearOpMode {
     Hardware Oscar;
 
     double adjustableWarehouseX = 54;

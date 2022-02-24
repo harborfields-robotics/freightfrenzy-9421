@@ -23,7 +23,7 @@ public class LinearSlides {
     public double TOP_SLIDE_TICKS = 420;
     private final double MID_SLIDE_TICKS = 222;
     private final double OUT_A_BIT_SLIDE_TICKS = 100;
-    private final double BOTTOM_SLIDE_TICKS = 218;
+    private final double BOTTOM_SLIDE_TICKS = 235;
     private final double SHARED_SLIDE_TICKS = 300;
     private final double GRAB_SLIDE_TICKS = 15;
 

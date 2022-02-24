@@ -84,7 +84,7 @@ public class ASYNC_AUTO_TEST extends LinearOpMode {
 
         boolean ENSURE_ONE_DEPOSIT = false;
 
-        double STOP_CYCLING_TIMEOUT = 27;
+        double STOP_CYCLING_TIMEOUT = 26;
 
         Oscar.flippers.moveUp("front");
         Oscar.flippers.moveDown("back");
