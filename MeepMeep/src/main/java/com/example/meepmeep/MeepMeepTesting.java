@@ -22,6 +22,8 @@ public class MeepMeepTesting {
         Pose2d splineCV = new Pose2d(4.1,-55.2,Math.toRadians(210));
         Pose2d splineTest = new Pose2d(4.1,-55.2, Math.toRadians(210));
         Pose2d RevertTest = new Pose2d(4.1,-63.2, Math.toRadians(180));
+        Pose2d DuckRedCycle = new Pose2d(-57.2,-53.7, Math.toRadians(130));
+
         Vector2d vectorTest = new Vector2d(9.5,-55.2);
         Vector2d returnVector = new Vector2d();
         RoadRunnerBotEntity myFirstBot = new DefaultBotBuilder(meepMeep)
@@ -29,12 +31,10 @@ public class MeepMeepTesting {
                 .setColorScheme(new ColorSchemeBlueDark())
                 .setConstraints(140.63964888286645, 52.48291908330528, Math.toRadians(180), Math.toRadians(180), 12.6)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(6, -64, Math.toRadians(180)))
-                                .lineToLinearHeading(splineCV)
-                                .lineToLinearHeading(RevertTest)
-                                .back(30)
-                                .forward(43.6)
-                                .back(43.6)
+                        drive.trajectorySequenceBuilder(new Pose2d(-39.1, -64, Math.toRadians(180)))
+                                .forward(5)
+                                .splineToLinearHeading(DuckRedCycle,Math.toRadians(140))
+
 
                                 .build()
                 );
