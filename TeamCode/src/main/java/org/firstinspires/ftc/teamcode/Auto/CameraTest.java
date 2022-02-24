@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robot.CV.BarcodePositionDetector;
 import org.firstinspires.ftc.teamcode.robot.Hardware;
 
 @Autonomous(group = "drive")
+@Disabled
 public class CameraTest extends LinearOpMode {
 
     Hardware Oscar;

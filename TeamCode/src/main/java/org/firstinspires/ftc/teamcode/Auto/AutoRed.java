@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.robot.Robot;
 
@@ -14,6 +15,7 @@ import org.firstinspires.ftc.teamcode.robot.Hardware;
 import dashboard.RobotConstants;
 
 @Config
+@Disabled
 @Autonomous(group = "drive")
 public class AutoRed extends LinearOpMode {
     private FtcDashboard dashboard;

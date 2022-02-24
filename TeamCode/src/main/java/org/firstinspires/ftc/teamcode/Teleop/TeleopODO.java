@@ -65,7 +65,11 @@ public class TeleopODO extends LinearOpMode {
         Oscar.grabber.goStart();
         Oscar.grabber.openGrab();
         Oscar.grabber.moveByAngle(-90, "start");
+        Oscar.flippers.moveUp("front");
+        Oscar.flippers.moveUp("back");
         Thread.sleep(1800);
+        Oscar.flippers.moveDown("front");
+        Oscar.flippers.moveDown("back");
         Oscar.grabber.moveByAngle(90,"start");
         Oscar.slides.slidesHome();
 
@@ -84,6 +88,7 @@ public class TeleopODO extends LinearOpMode {
             deposit_fsm.doDepositTopAsync();
             deposit_fsm.doDepositMiddleAsync();
             deposit_fsm.doDepositBottomAsync();
+            deposit_fsm.doDepositSharedAsync();
 
             if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 2) {
                 intake_fsm.SET_EXEC_BACK_FLIP(true);

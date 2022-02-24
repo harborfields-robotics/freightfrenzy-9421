@@ -42,6 +42,12 @@ public class INTAKE_FSM {
         gamepad1 = c1;
         gamepad2 = c2;
     }
+    public INTAKE_FSM(Hardware hardware, Telemetry telemetry) {
+        this.Oscar = hardware;
+        this.telemetry = telemetry;
+        gamepad1 = null;
+        gamepad2 = null;
+    }
 
     private final ElapsedTime time = new ElapsedTime();
 

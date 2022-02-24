@@ -49,12 +49,7 @@ public class DEPOSIT_FSM {
         STATE_0,
         STATE_1,
         STATE_2,
-        STATE_3,
-        STATE_4,
-        STATE_5,
-        STATE_6,
-        STATE_7,
-        STATE_8
+        STATE_3
     }
     private DEPOSIT_STATE deposit_state = DEPOSIT_STATE.INIT;
     private MID_DEPOSIT_STATE mid_deposit_state = MID_DEPOSIT_STATE.INIT;
@@ -75,6 +70,7 @@ public class DEPOSIT_FSM {
     public boolean startDeposittop = false;
     public boolean startDepositmid = false;
     public boolean startDepositbot = false;
+    public boolean startDepositShared = false;
 
     public boolean DROP_THE_THING_NOW = false;
 
@@ -83,9 +79,9 @@ public class DEPOSIT_FSM {
     private final Telemetry telemetry;
 
     public boolean isAnyDeposited() {
-        return(midDeposited || bottomDeposited || topDeposited);
+        return(midDeposited || bottomDeposited || topDeposited || sharedDeposited);
     }
-    public boolean isAnyBusy() {return(midBusy || bottomBusy || topBusy);}
+    public boolean isAnyBusy() {return(midBusy || bottomBusy || topBusy || sharedBusy);}
 
     public DEPOSIT_FSM(Hardware hardware, Telemetry telemetry, Gamepad c1, Gamepad c2) {
         this.Oscar = hardware;
@@ -103,9 +99,6 @@ public class DEPOSIT_FSM {
 
     private final ElapsedTime time = new ElapsedTime();
 
-    public boolean isTopBusy() {return topBusy;}
-    public boolean isTopDeposited() {return topDeposited;}
-
     public void reset() {
         topBusy = false;
         topDeposited = false;
@@ -115,10 +108,9 @@ public class DEPOSIT_FSM {
 
     public void doDepositTopAsync() {
         telemetry.addData("DEPOSIT STATE: ", deposit_state);
-//        telemetry.update();
         switch(deposit_state) {
             case INIT:
-                if((gamepad2.triangle || gamepad1.triangle || startDeposittop) && !midBusy && !bottomBusy) {
+                if((gamepad2.triangle || gamepad1.triangle || startDeposittop) && !midBusy && !bottomBusy && !sharedBusy) {
                     startDeposittop = false;
                     deposit_state = DEPOSIT_STATE.STATE_0;
                     topBusy = true;
@@ -177,7 +169,7 @@ public class DEPOSIT_FSM {
                         Oscar.slides.GO_TO_ADJUSTABLE_TOP_POSITION();
                     }
                 }
-                if(time.milliseconds() > 750) {
+                if(time.milliseconds() > 450) {
                     THE_THING_CAN_BE_DROPPED_NOW = true;
                 }
                 break;
@@ -440,6 +432,81 @@ public class DEPOSIT_FSM {
                 break;
             default:
                 bottom_deposit_state = BOTTOM_DEPOSIT_STATE.INIT;
+                break;
+        }
+    }
+    public void doDepositSharedAsync() {
+        telemetry.addData("Shared State: ", shared_deposit_state);
+        switch (shared_deposit_state) {
+            case INIT:
+                if(gamepad1.dpad_right) {
+                    sharedBusy = true;
+                    sharedDeposited = false;
+                    time.reset();
+                    shared_deposit_state = SHARED_DEPOSIT_STATE.STATE_0;
+                }
+                else {
+                    sharedBusy = false;
+                    sharedDeposited = false;
+                }
+                break;
+            case STATE_0:
+                if(time.milliseconds() > 500) {
+                    shared_deposit_state = SHARED_DEPOSIT_STATE.STATE_1;
+                    time.reset();
+                }
+                else {
+                    Oscar.elbow.moveStart();
+                    Oscar.slides.slidesShared();
+                }
+                break;
+            case STATE_1:
+                if(gamepad1.dpad_right) {
+                    shared_deposit_state = SHARED_DEPOSIT_STATE.STATE_2;
+                    Oscar.slides.RESET_ADJUSTABLE_SHARED_TICKS();
+                    time.reset();
+                }
+                else {
+                    if(gamepad1.right_bumper && time.milliseconds() > 5){
+                        Oscar.slides.CHANGE_ADJUSTABLE_SHARED_TICKS(3);
+                        Oscar.slides.GO_TO_ADJUSTABLE_SHARED_POSITION();
+                        time.reset();
+                    }
+                    if(gamepad1.left_bumper && time.milliseconds() > 5){
+                        Oscar.slides.CHANGE_ADJUSTABLE_SHARED_TICKS(-3);
+                        Oscar.slides.GO_TO_ADJUSTABLE_SHARED_POSITION();
+                        time.reset();
+                    }
+                    else {
+                        Oscar.slides.GO_TO_ADJUSTABLE_SHARED_POSITION();
+                    }
+                }
+                break;
+            case STATE_2:
+                if(time.milliseconds() > 500) {
+                    shared_deposit_state = SHARED_DEPOSIT_STATE.STATE_3;
+                    Oscar.grabber.g1.setPosition(.015);
+                    Oscar.grabber.moveByAngle(-90, "start");
+                    time.reset();
+                }
+                else {
+                    Oscar.slides.slidesHold();
+                    Oscar.grabber.g1.setPosition(.5);
+                }
+                break;
+            case STATE_3:
+                if(time.milliseconds() > 500) {
+                    shared_deposit_state = SHARED_DEPOSIT_STATE.INIT;
+                    Oscar.grabber.moveByAngle(90,"start");
+                    time.reset();
+                    Oscar.elbow.goToGrabPos();
+                }
+                else {
+                    Oscar.slides.slidesGrab();
+                }
+                break;
+            default:
+                shared_deposit_state = SHARED_DEPOSIT_STATE.INIT;
                 break;
         }
     }

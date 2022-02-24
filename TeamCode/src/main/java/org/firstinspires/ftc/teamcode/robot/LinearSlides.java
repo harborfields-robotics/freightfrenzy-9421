@@ -21,12 +21,14 @@ public class LinearSlides {
     //Max length
     public static double MAX_LENGTH = RobotConstants.SLIDE_MAX_LENGTH;
     public double TOP_SLIDE_TICKS = 420;
-    private double MID_SLIDE_TICKS = 222;
-    private double OUT_A_BIT_SLIDE_TICKS = 100;
-    private double BOTTOM_SLIDE_TICKS = 218;
-    private double GRAB_SLIDE_TICKS = 15;
+    private final double MID_SLIDE_TICKS = 222;
+    private final double OUT_A_BIT_SLIDE_TICKS = 100;
+    private final double BOTTOM_SLIDE_TICKS = 218;
+    private final double SHARED_SLIDE_TICKS = 300;
+    private final double GRAB_SLIDE_TICKS = 15;
 
     private double ADJUSTABLE_TOP_TICKS = TOP_SLIDE_TICKS;
+    private double ADJUSTABLE_SHARED_TICKS = SHARED_SLIDE_TICKS;
 
     private Telemetry telemetry;
 
@@ -71,12 +73,30 @@ public class LinearSlides {
         ADJUSTABLE_TOP_TICKS += DELTA_TICKS;
     }
 
+    public void CHANGE_ADJUSTABLE_SHARED_TICKS(double DELTA_TICKS) {
+        ADJUSTABLE_SHARED_TICKS += DELTA_TICKS;
+    }
+
     public void RESET_ADJUSTABLE_TOP_TICKS() {
         ADJUSTABLE_TOP_TICKS = TOP_SLIDE_TICKS;
     }
+    public void RESET_ADJUSTABLE_SHARED_TICKS() {
+        ADJUSTABLE_SHARED_TICKS = SHARED_SLIDE_TICKS;
+    }
+
 
     public void GO_TO_ADJUSTABLE_TOP_POSITION(){
         currentPosition = ADJUSTABLE_TOP_TICKS;
+        slideMotor1.setTargetPosition((int)currentPosition);
+        slideMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        if(isItInThreshold(currentPosition)){
+            slideMotor1.setPower(0);
+        }
+        else out();
+    }
+
+    public void GO_TO_ADJUSTABLE_SHARED_POSITION(){
+        currentPosition = ADJUSTABLE_SHARED_TICKS;
         slideMotor1.setTargetPosition((int)currentPosition);
         slideMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         if(isItInThreshold(currentPosition)){
@@ -130,6 +150,17 @@ public class LinearSlides {
 
     public void slidesBottom(){
         currentPosition = BOTTOM_SLIDE_TICKS;
+        slideMotor1.setTargetPosition((int)currentPosition);
+        slideMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        if(isItInThreshold(currentPosition)){
+            slideMotor1.setPower(0);
+
+        }
+        else out();
+    }
+
+    public void slidesShared(){
+        currentPosition = SHARED_SLIDE_TICKS;
         slideMotor1.setTargetPosition((int)currentPosition);
         slideMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         if(isItInThreshold(currentPosition)){
