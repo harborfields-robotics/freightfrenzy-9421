@@ -21,7 +21,7 @@ import dashboard.RobotConstants;
         private FtcDashboard dashboard;
         public static Pose2d startPR = new Pose2d(-39.1, -64, Math.toRadians(180));
         public static Pose2d DuckRed = new Pose2d(-57.2,-53.7, Math.toRadians(130));
-        Hardware Oscar = new Hardware(null, null);
+        Hardware Oscar = new Hardware(hardwareMap, telemetry);
 
         @Override
         public void runOpMode() throws InterruptedException {
