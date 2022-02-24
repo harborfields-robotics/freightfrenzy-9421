@@ -20,9 +20,9 @@ import dashboard.RobotConstants;
     public class AutoRed2 extends LinearOpMode {
         private FtcDashboard dashboard;
         public static Pose2d startPR = new Pose2d(-39.1, -64, Math.toRadians(180));
-        public static Pose2d DuckRed = new Pose2d(-58.3,-55.5, Math.toRadians(130));
-        public static Pose2d returnToPos = new Pose2d(-39.1, -64, Math.toRadians(180));
-        public static Pose2d driveToWarehouse = new Pose2d(44.8,-64,Math.toRadians(180));
+        public static Pose2d DuckRed = new Pose2d(-60.3,-55.5, Math.toRadians(110));
+        public static Pose2d returnToPos = new Pose2d(-39.1, -69, Math.toRadians(180));
+        public static Pose2d driveToWarehouse = new Pose2d(44.8,-69,Math.toRadians(180));
         //Hardware Oscar = new Hardware(hardwareMap, telemetry);
 
         @Override
