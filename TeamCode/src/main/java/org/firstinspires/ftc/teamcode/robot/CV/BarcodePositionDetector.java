@@ -40,7 +40,7 @@ public class BarcodePositionDetector extends OpenCvPipeline {
     }
 
     public Mat processFrame( Mat input, String type ) {
-
+        //chNgwe
         Imgproc.cvtColor( input, mat,  Imgproc.COLOR_RGB2HSV_FULL);
         Scalar lowHSV;
         Scalar highHSV;
