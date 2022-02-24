@@ -21,6 +21,7 @@ import dashboard.RobotConstants;
         private FtcDashboard dashboard;
         public static Pose2d startPR = new Pose2d(-39.1, -64, Math.toRadians(180));
         public static Pose2d DuckRed = new Pose2d(-58.3,-55.5, Math.toRadians(130));
+        public static Pose2d returnToPos = new Pose2d(-39.1, -64, Math.toRadians(180));
         public static Pose2d driveToWarehouse = new Pose2d(44.8,-64,Math.toRadians(180));
         //Hardware Oscar = new Hardware(hardwareMap, telemetry);
 
@@ -40,7 +41,12 @@ import dashboard.RobotConstants;
                     .splineToLinearHeading(DuckRed, 140)
                     .build();
             TrajectorySequence autoTrajectory2 = Oscar.drive.trajectorySequenceBuilder(autoTrajectory1.end())
-                    .splineToLinearHeading()
+                    .lineToLinearHeading(returnToPos)
+                    .build();
+
+
+            TrajectorySequence rerunToWarehouse = Oscar.drive.trajectorySequenceBuilder(autoTrajectory2.end())
+                    .lineToLinearHeading(driveToWarehouse)
                     .build();
 
             waitForStart();
@@ -52,6 +58,7 @@ import dashboard.RobotConstants;
             Thread.sleep(5000);
 
             Oscar.drive.followTrajectorySequence(autoTrajectory2);
+            Oscar.drive.followTrajectorySequence(rerunToWarehouse);
 
 
         }
