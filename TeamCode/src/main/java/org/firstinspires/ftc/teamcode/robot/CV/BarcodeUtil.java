@@ -37,6 +37,7 @@ public class BarcodeUtil {
     }
 
     public void openCameraDevice( ) {
+        //testr
 
         webcam.openCameraDeviceAsync( new OpenCvCamera.AsyncCameraOpenListener( ) {
             @Override
