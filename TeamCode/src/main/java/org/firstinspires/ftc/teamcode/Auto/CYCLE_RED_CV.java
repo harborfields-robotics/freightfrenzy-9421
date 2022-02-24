@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.robot.CV.BarcodePositionDetector;
 import org.firstinspires.ftc.teamcode.robot.DEPOSIT_FSM;
 import org.firstinspires.ftc.teamcode.robot.DEPOSIT_LINEAR;
 import org.firstinspires.ftc.teamcode.robot.Hardware;
@@ -57,8 +58,12 @@ public class CYCLE_RED_CV extends LinearOpMode {
         IDLE
     }
 
+
+
     @Override
     public void runOpMode() throws InterruptedException {
+
+
         Oscar = new Hardware(hardwareMap, telemetry);
         DEPOSIT_FSM deposit_fsm = new DEPOSIT_FSM(Oscar, telemetry, gamepad1, gamepad2);
         INTAKE_FSM intake_fsm = new INTAKE_FSM(Oscar, telemetry, gamepad1, gamepad2);
@@ -97,6 +102,17 @@ public class CYCLE_RED_CV extends LinearOpMode {
 
         Oscar.flippers.moveUp("front");
         Oscar.flippers.moveDown("back");
+
+        Oscar.cvUtil.init();
+
+        while (!isStopRequested() && !opModeIsActive()) {
+            telemetry.addData("Barcode position", Oscar.cvUtil.getBarcodePosition());
+
+            telemetry.update();
+        }
+
+        BarcodePositionDetector.BarcodePosition Position =  Oscar.cvUtil.getBarcodePosition();
+
 
         waitForStart();
 
