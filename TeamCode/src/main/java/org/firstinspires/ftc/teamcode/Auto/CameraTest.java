@@ -54,6 +54,7 @@ public class CameraTest extends LinearOpMode {
         }
 
         telemetry.addData("WHAT IS DETECTED", barcodePosition);
+        //test
 
 
     }
