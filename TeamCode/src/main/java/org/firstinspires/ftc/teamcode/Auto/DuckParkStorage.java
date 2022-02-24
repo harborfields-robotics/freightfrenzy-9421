@@ -16,11 +16,11 @@ public class DuckParkStorage extends LinearOpMode {
     public static Pose2d DuckRed = new Pose2d(-57.2, -53.7, Math.toRadians(130));
     public static Pose2d StoragePark = new Pose2d(-58.7, -34.7, Math.toRadians((90)));
     public static Pose2d MoveRight1 = new Pose2d(-55.0, -53.7, Math.toRadians(130));
-    Hardware Oscar = new Hardware(hardwareMap, telemetry);
+
 
     @Override
     public void runOpMode() throws InterruptedException {
-
+        Hardware Oscar = new Hardware(hardwareMap, telemetry);
 
         Oscar.init(hardwareMap);
 
