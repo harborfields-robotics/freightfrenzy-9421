@@ -13,6 +13,7 @@ public class INTAKE_FSM {
     enum BACK_STATE {
         INIT,
         STATE_0,
+        STATE_01,
         STATE_1,
         STATE_2,
         STATE_3
@@ -20,6 +21,7 @@ public class INTAKE_FSM {
     enum FRONT_STATE {
         INIT,
         STATE_0,
+        STATE_01,
         STATE_1,
         STATE_2,
         STATE_3
@@ -72,7 +74,7 @@ public class INTAKE_FSM {
             case INIT:
                 if(((gamepad2.dpad_up || gamepad1.dpad_up) && !backBusy) || EXEC_FRONT_FLIP) {
                     EXEC_FRONT_FLIP = false;
-                    front_state = FRONT_STATE.STATE_0;
+                    front_state = FRONT_STATE.STATE_01;
                     frontBusy = true;
                     time.reset();
                 }
@@ -80,10 +82,20 @@ public class INTAKE_FSM {
                     frontBusy = false;
                 }
                 break;
+            case STATE_01:
+                if(time.milliseconds() > 500) {
+                    front_state = FRONT_STATE.STATE_0;
+                    Oscar.slides.START_STOP_WIGGLE = true;
+                }
+                else {
+                    Oscar.intake.frontOut();
+                }
+                break;
             case STATE_0:
                 if(time.milliseconds() > 1200) {
                     front_state = FRONT_STATE.STATE_2;
                     Oscar.flippers.moveUp("front");
+                    Oscar.slides.START_STOP_WIGGLE = false;
                     time.reset();
                 }
                 if(wiggleTime.milliseconds() > 200) {
@@ -133,6 +145,7 @@ public class INTAKE_FSM {
                 front_state = FRONT_STATE.INIT;
                 break;
         }
+        Oscar.slides.doWiggleAsync();
     }
 
     public void doFlipBackAsync() {
@@ -141,7 +154,7 @@ public class INTAKE_FSM {
             case INIT:
                 if(EXEC_BACK_FLIP) {
                     EXEC_BACK_FLIP = false;
-                    back_state = BACK_STATE.STATE_0;
+                    back_state = BACK_STATE.STATE_01;
                     backBusy = true;
                     time.reset();
                 }
@@ -149,10 +162,20 @@ public class INTAKE_FSM {
                     backBusy = false;
                 }
                 break;
+            case STATE_01:
+                if(time.milliseconds() > 500) {
+                    back_state = BACK_STATE.STATE_0;
+                    Oscar.slides.START_STOP_WIGGLE = true;
+                }
+                else {
+                    Oscar.intake.backOut();
+                }
+                break;
             case STATE_0:
                 if(time.milliseconds() > 1200) {
                     back_state = BACK_STATE.STATE_2;
                     Oscar.flippers.moveUp("back");
+                    Oscar.slides.START_STOP_WIGGLE = false;
                     time.reset();
                 }
                 if(wiggleTime.milliseconds() > 200) {
@@ -202,5 +225,6 @@ public class INTAKE_FSM {
                 back_state = BACK_STATE.INIT;
                 break;
         }
+        Oscar.slides.doWiggleAsync();
     }
 }

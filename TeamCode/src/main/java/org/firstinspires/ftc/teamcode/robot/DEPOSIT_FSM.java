@@ -123,7 +123,7 @@ public class DEPOSIT_FSM {
                 }
                 break;
             case STATE_0:
-                if(time.milliseconds() > 50) {
+                if(time.milliseconds() > 150) {
                     deposit_state = DEPOSIT_STATE.STATE_1;
                     time.reset();
                 }
@@ -155,12 +155,12 @@ public class DEPOSIT_FSM {
                     time.reset();
                 }
                 else {
-                    if(gamepad1.right_bumper && time.milliseconds() > 20){
+                    if(gamepad1.right_bumper && time.milliseconds() > 5){
                         Oscar.slides.CHANGE_ADJUSTABLE_TOP_TICKS(3);
                         Oscar.slides.GO_TO_ADJUSTABLE_TOP_POSITION();
                         time.reset();
                     }
-                    if(gamepad1.left_bumper && time.milliseconds() > 20){
+                    if(gamepad1.left_bumper && time.milliseconds() > 5){
                         Oscar.slides.CHANGE_ADJUSTABLE_TOP_TICKS(-3);
                         Oscar.slides.GO_TO_ADJUSTABLE_TOP_POSITION();
                         time.reset();
@@ -237,7 +237,7 @@ public class DEPOSIT_FSM {
                 }
                 break;
             case STATE_0:
-                if(time.milliseconds() > 50) {
+                if(time.milliseconds() > 150) {
                     mid_deposit_state = MID_DEPOSIT_STATE.STATE_1;
                     time.reset();
                 }
@@ -315,7 +315,7 @@ public class DEPOSIT_FSM {
                     Oscar.grabber.moveByAngle(90,"start");
                     mid_deposit_state = MID_DEPOSIT_STATE.INIT;
                 }
-                else if(time.milliseconds() < 400) {
+                else if(time.milliseconds() < 650) {
                     Oscar.slides.slidesOutABit();
                 }
                 else {
@@ -344,7 +344,7 @@ public class DEPOSIT_FSM {
                 }
                 break;
             case STATE_0:
-                if(time.milliseconds() > 100) {
+                if(time.milliseconds() > 150) {
                     bottom_deposit_state = BOTTOM_DEPOSIT_STATE.STATE_1;
                     time.reset();
                 }
@@ -378,7 +378,7 @@ public class DEPOSIT_FSM {
                 else {
                     Oscar.slides.slidesBottom();
                 }
-                if(time.milliseconds() > 1000) {
+                if(time.milliseconds() > 800) {
                     THE_THING_CAN_BE_DROPPED_NOW = true;
                 }
                 break;
@@ -439,7 +439,7 @@ public class DEPOSIT_FSM {
         telemetry.addData("Shared State: ", shared_deposit_state);
         switch (shared_deposit_state) {
             case INIT:
-                if(gamepad1.dpad_right) {
+                if(gamepad1.dpad_right || gamepad2.dpad_right) {
                     sharedBusy = true;
                     sharedDeposited = false;
                     time.reset();
@@ -461,7 +461,7 @@ public class DEPOSIT_FSM {
                 }
                 break;
             case STATE_1:
-                if(gamepad1.dpad_right) {
+                if(gamepad1.dpad_right || gamepad2.dpad_right) {
                     shared_deposit_state = SHARED_DEPOSIT_STATE.STATE_2;
                     Oscar.slides.RESET_ADJUSTABLE_SHARED_TICKS();
                     time.reset();

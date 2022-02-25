@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.robot;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -20,12 +20,20 @@ public class LinearSlides {
     public static double SLIDE_POWER = -1;
     //Max length
     public static double MAX_LENGTH = RobotConstants.SLIDE_MAX_LENGTH;
-    public double TOP_SLIDE_TICKS = 420;
-    private final double MID_SLIDE_TICKS = 222;
+    public double TOP_SLIDE_TICKS = 420-20;
+    private final double MID_SLIDE_TICKS = 238;
     private final double OUT_A_BIT_SLIDE_TICKS = 100;
-    private final double BOTTOM_SLIDE_TICKS = 235;
+    private final double BOTTOM_SLIDE_TICKS = 270;
     private final double SHARED_SLIDE_TICKS = 300;
     private final double GRAB_SLIDE_TICKS = 15;
+    private final double WIGGLE_DOWN_POWER = -.4;
+    private final double WIGGLE_UP_POWER = .4;
+    private final double WIGGLE_FREQUENCY = 50;
+
+    public boolean START_STOP_WIGGLE = false;
+
+    private WIGGLE_STATE wiggle_state = WIGGLE_STATE.OFF;
+    private ElapsedTime time = new ElapsedTime();
 
     private double ADJUSTABLE_TOP_TICKS = TOP_SLIDE_TICKS;
     private double ADJUSTABLE_SHARED_TICKS = SHARED_SLIDE_TICKS;
@@ -36,6 +44,50 @@ public class LinearSlides {
 
     private double currentPosition = 0.0;
     private int arrayPos = 0;
+
+    enum WIGGLE_STATE {
+        OFF,
+        UP,
+        DOWN
+    }
+
+    public void doWiggleAsync () {
+        telemetry.addData("SLIDES WIGGLE STATE: ", wiggle_state);
+        switch (wiggle_state) {
+            case OFF:
+                if(START_STOP_WIGGLE) {
+                    wiggle_state = WIGGLE_STATE.DOWN;
+                    slideMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    time.reset();
+                }
+                break;
+            case UP:
+                slideMotor1.setPower(WIGGLE_UP_POWER);
+                if(time.milliseconds() > WIGGLE_FREQUENCY) {
+                    wiggle_state = WIGGLE_STATE.DOWN;
+                    time.reset();
+                }
+                if(!START_STOP_WIGGLE) {
+                    wiggle_state = WIGGLE_STATE.OFF;
+                    slideMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    slidesGrab();
+                }
+                break;
+            case DOWN:
+                slideMotor1.setPower(WIGGLE_DOWN_POWER);
+                if(time.milliseconds() > WIGGLE_FREQUENCY) {
+                    wiggle_state = WIGGLE_STATE.UP;
+                    time.reset();
+                }
+                if(!START_STOP_WIGGLE) {
+                    wiggle_state = WIGGLE_STATE.OFF;
+                    slideMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    slidesGrab();
+                }
+                break;
+        }
+
+    }
 
     public LinearSlides(HardwareMap ahwMap, Telemetry telemetry){
         slideMotor1 = ahwMap.get(DcMotor.class, "slideMotor1");

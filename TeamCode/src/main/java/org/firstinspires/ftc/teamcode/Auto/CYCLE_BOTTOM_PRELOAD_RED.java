@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -17,11 +18,12 @@ import org.firstinspires.ftc.teamcode.robot.Hardware;
 import org.firstinspires.ftc.teamcode.robot.INTAKE_FSM;
 
 @Config
+@Disabled
 @Autonomous(group = "advanced")
 public class CYCLE_BOTTOM_PRELOAD_RED extends LinearOpMode {
     Hardware Oscar;
 
-    double adjustableWarehouseX = 54;
+    double adjustableWarehouseX = 48;
     //How much further back it goes each cycle, because minerals get pushed around
     double amountIncreaseWarehouseX = 2;
 
@@ -29,7 +31,7 @@ public class CYCLE_BOTTOM_PRELOAD_RED extends LinearOpMode {
 
     Pose2d startPose = new Pose2d(19, -64, Math.toRadians(180));
     Pose2d depositPose = new Pose2d(-4, -69, Math.toRadians(180));
-    Pose2d bottomDepositPose = new Pose2d(0, -69, Math.toRadians(180));
+    Pose2d bottomDepositPose = new Pose2d(-.8, -69, Math.toRadians(180));
     Pose2d warehousePose = new Pose2d(adjustableWarehouseX, -69, Math.toRadians(180));
 
     Trajectory START_TO_DEPOSIT;
@@ -130,7 +132,7 @@ public class CYCLE_BOTTOM_PRELOAD_RED extends LinearOpMode {
                     break;
                 case INTAKE:
                     Oscar.drive.setWeightedDrivePower(new Pose2d(-.4,.2,0));
-                    if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 1.5) {
+                    if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 1.5 && !deposit_fsm.isAnyBusy()) {
                         intake_fsm.SET_EXEC_BACK_FLIP(true);
                         Oscar.drive.setWeightedDrivePower(new Pose2d(0,0,0));
                         Oscar.drive.followTrajectoryAsync(WAREHOUSE_TO_DEPOSIT);

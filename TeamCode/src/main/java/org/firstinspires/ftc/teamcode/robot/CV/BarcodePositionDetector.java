@@ -24,14 +24,14 @@ public class BarcodePositionDetector extends OpenCvPipeline {
     private BarcodePosition barcodePosition;
 
     static final Rect LEFT_ROI = new Rect(
-            new Point( 0, 0 ),
-            new Point( 106, 240 ) );
+            new Point( 0, 70 ),
+            new Point( 125, 160 ) );
     static final Rect MIDDLE_ROI = new Rect(
-            new Point( 106, 0 ),
-            new Point( 224, 240 ) );
+            new Point( 125, 70 ),
+            new Point( 250, 160 ) );
     static final Rect RIGHT_ROI = new Rect(
-            new Point( 224, 0 ),
-            new Point( 320, 240 ) );
+            new Point( 250, 70 ),
+            new Point( 320, 160 ) );
 
     static double PERCENT_COLOR_THRESHOLD = 0.02;
 

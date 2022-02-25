@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.robot.CV.BarcodePositionDetector;
 import org.firstinspires.ftc.teamcode.robot.Hardware;
 
 @Autonomous(group = "drive")
+@Disabled
 
 public class CameraTest extends LinearOpMode {
 
@@ -24,10 +25,11 @@ public class CameraTest extends LinearOpMode {
         Oscar.cvUtil.init();
 
         BarcodePositionDetector.BarcodePosition barcodePosition = Oscar.cvUtil.getBarcodePosition();
-
+        String position = "";
 
         while (!isStopRequested() && !opModeIsActive()) {
-            telemetry.addData("Barcode position", Oscar.cvUtil.getBarcodePosition());
+            barcodePosition = Oscar.cvUtil.getBarcodePosition();
+            telemetry.addData("Barcode position", barcodePosition);
             if(barcodePosition == BarcodePositionDetector.BarcodePosition.LEFT){
                 counterBottom++;
             }
@@ -43,17 +45,20 @@ public class CameraTest extends LinearOpMode {
 
         waitForStart();
         if (counterBottom > counterMid && counterBottom > counterTop){
-            barcodePosition = BarcodePositionDetector.BarcodePosition.LEFT;
+            position = "LEFT";
         }
         if(counterMid > counterTop && counterMid > counterBottom){
-            barcodePosition = BarcodePositionDetector.BarcodePosition.MIDDLE;
+            position = "MID";
 
         }
         if (counterTop > counterBottom && counterTop > counterMid){
-            barcodePosition = BarcodePositionDetector.BarcodePosition.RIGHT;
+            position = "RIGHT";
         }
         while(opModeIsActive() && !isStopRequested()) {
-            telemetry.addData("WHAT IS DETECTED", barcodePosition);
+            telemetry.addData("WHAT IS DETECTED", position);
+            telemetry.addData("TOP COUNT", counterTop);
+            telemetry.addData("MID COUNT", counterMid);
+            telemetry.addData("BOT COUNT", counterBottom);
             telemetry.update();
         }
         //test

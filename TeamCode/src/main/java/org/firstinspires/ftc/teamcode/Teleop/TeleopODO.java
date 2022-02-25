@@ -43,9 +43,6 @@ public class TeleopODO extends LinearOpMode {
 
         controller1.addEventListener("dpad_left", ButtonState.HELD, () -> LOGIC.IS_THING_IN_DA_ROBOT = false);
 
-        controller2.addEventListener("dpad_left", ButtonState.HELD, () -> Oscar.slides.relativeMove(-5));
-        controller2.addEventListener("dpad_right", ButtonState.HELD, () -> Oscar.slides.relativeMove(5));
-
         DEPOSIT_FSM deposit_fsm = new DEPOSIT_FSM(Oscar, telemetry, gamepad1, gamepad2);
         INTAKE_FSM intake_fsm = new INTAKE_FSM(Oscar, telemetry, gamepad1, gamepad2);
 
@@ -65,8 +62,8 @@ public class TeleopODO extends LinearOpMode {
         Oscar.grabber.goStart();
         Oscar.grabber.openGrab();
         Oscar.grabber.moveByAngle(-90, "start");
-        Oscar.flippers.moveUp("front");
-        Oscar.flippers.moveUp("back");
+        Oscar.flippers.moveDown("front");
+        Oscar.flippers.moveDown("back");
         Thread.sleep(1800);
         Oscar.flippers.moveDown("front");
         Oscar.flippers.moveDown("back");
@@ -93,10 +90,12 @@ public class TeleopODO extends LinearOpMode {
             if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 2) {
                 intake_fsm.SET_EXEC_BACK_FLIP(true);
                 gamepad1.runRumbleEffect(customRumbleEffect);
+//                gamepad2.runRumbleEffect(customRumbleEffect);
             }
             if(((DistanceSensor) Oscar.colorFront).getDistance(DistanceUnit.CM) < 2) {
                 intake_fsm.SET_EXEC_FRONT_FLIP(true);
                 gamepad1.runRumbleEffect(customRumbleEffect);
+//                gamepad2.runRumbleEffect(customRumbleEffect);
             }
 
             intake_fsm.doFlipBackAsync();
@@ -109,6 +108,7 @@ public class TeleopODO extends LinearOpMode {
             }
 
             telemetry.addData("IS THING IN DA ROBOT? ", LOGIC.IS_THING_IN_DA_ROBOT);
+            telemetry.addData("IS THE ENCODER OK", Oscar.slides.getMotorPosition());
 
             Oscar.drive.setWeightedDrivePower(new Pose2d(-gamepad1.left_stick_x * 1,gamepad1.left_stick_y * 1,-gamepad1.right_stick_x * .5));
         }
