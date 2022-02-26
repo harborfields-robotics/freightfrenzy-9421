@@ -50,14 +50,6 @@ public class TeleopODO extends LinearOpMode {
             Oscar.slides.slidesHome();
         });
 
-        Gamepad.RumbleEffect customRumbleEffect = new Gamepad.RumbleEffect.Builder()
-                .addStep(0.0, 1.0, 50)  //  Rumble right motor 100% for 500 mSec
-                .addStep(0.0, 0.0, 50)  //  Pause for 300 mSec
-                .addStep(1.0, 0.0, 50)  //  Rumble left motor 100% for 250 mSec
-                .addStep(0.0, 0.0, 50)  //  Pause for 250 mSec
-                .addStep(1.0, 0.0, 50)  //  Rumble left motor 100% for 250 mSec
-                .build();
-
         Oscar.elbow.goToGrabPos();
         Oscar.grabber.goStart();
         Oscar.grabber.openGrab();
@@ -87,19 +79,7 @@ public class TeleopODO extends LinearOpMode {
             deposit_fsm.doDepositBottomAsync();
             deposit_fsm.doDepositSharedAsync();
 
-            if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 2) {
-                intake_fsm.SET_EXEC_BACK_FLIP(true);
-                gamepad1.runRumbleEffect(customRumbleEffect);
-//                gamepad2.runRumbleEffect(customRumbleEffect);
-            }
-            if(((DistanceSensor) Oscar.colorFront).getDistance(DistanceUnit.CM) < 2) {
-                intake_fsm.SET_EXEC_FRONT_FLIP(true);
-                gamepad1.runRumbleEffect(customRumbleEffect);
-//                gamepad2.runRumbleEffect(customRumbleEffect);
-            }
-
-            intake_fsm.doFlipBackAsync();
-            intake_fsm.doFlipFrontAsync();
+            intake_fsm.handleEvents();
 
             if(Oscar.slides.getMotorPosition() <= 200 && !intake_fsm.isBackBusy() && !intake_fsm.isFrontBusy()) {
                 if (gamepad2.left_trigger > .1 || gamepad1.left_trigger > .1) Oscar.intake.reverse();
