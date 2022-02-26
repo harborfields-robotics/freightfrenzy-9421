@@ -20,13 +20,19 @@ public class MeepMeepTesting {
 
         // Declare our first bot
         Pose2d splineCV = new Pose2d(4.1,-55.2,Math.toRadians(210));
-        Pose2d splineTest = new Pose2d(4.1,-55.2, Math.toRadians(210));
+        Pose2d splineTest = new Pose2d(8.6,-58.2, Math.toRadians(210));
         Pose2d RevertTest = new Pose2d(4.1,-63.2, Math.toRadians(180));
         Pose2d DuckRedCycle = new Pose2d(-57.2,-53.7, Math.toRadians(130));
         Pose2d StoragePark = new Pose2d(-58.7, -34.7, Math.toRadians((90)));
         Pose2d MoveRight1 = new Pose2d(-55.0, -53.7, Math.toRadians(130));
+        Pose2d depositPose = new Pose2d(20.4, -69, Math.toRadians(180));
+        Pose2d bottomDepositPose = new Pose2d(-1, -69, Math.toRadians(180));
+        Pose2d warehousePose = new Pose2d(36, -69, Math.toRadians(180));
+        Pose2d intakePose = new Pose2d(34, -62, Math.toRadians(180));
+        Vector2d intakeVector = new Vector2d(34, -62);
+        Vector2d warehouseVector = new Vector2d(36, -69);
 
-        Vector2d WarehouseSpline = new Vector2d(48,-55.8);
+        Vector2d WarehouseSpline = new Vector2d(7.8,-52.8);
 
         Vector2d vectorTest = new Vector2d(37,-64);
         Vector2d returnVector = new Vector2d(37,-64);
@@ -36,11 +42,15 @@ public class MeepMeepTesting {
                 .setConstraints(140.63964888286645, 52.48291908330528, Math.toRadians(180), Math.toRadians(180), 12.6)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(19, -64, Math.toRadians(180)))
-                                .back(18)
-                                .splineToConstantHeading(WarehouseSpline,Math.toRadians(180))
-                                .splineToConstantHeading(returnVector,Math.toRadians(180))
-                                .forward(18)
-
+                                .lineToLinearHeading(depositPose)
+                                .lineToLinearHeading(bottomDepositPose)
+                                .lineToLinearHeading(warehousePose)
+                                .splineToConstantHeading(intakeVector, Math.toRadians(180))
+                                .lineToLinearHeading(warehousePose)
+                                .splineToConstantHeading(intakeVector, Math.toRadians(180))
+                                .splineToConstantHeading(warehouseVector, Math.toRadians(180))
+                                .lineToLinearHeading(depositPose)
+                                .splineToLinearHeading(splineTest,Math.toRadians(210))
                                 .build()
                 );
 
