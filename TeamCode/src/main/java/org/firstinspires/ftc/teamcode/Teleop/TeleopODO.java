@@ -25,6 +25,11 @@ public class TeleopODO extends LinearOpMode {
 
     private FtcDashboard dashboard;
 
+    enum CONTROLLER_MODE {
+        SHARED,
+        REGULAR,
+    }
+
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -64,6 +69,10 @@ public class TeleopODO extends LinearOpMode {
 
         waitForStart();//
 
+        CONTROLLER_MODE controller_mode = CONTROLLER_MODE.SHARED;
+
+        ElapsedTime controllerModeTime = new ElapsedTime();
+
         while (opModeIsActive()) {
 
             telemetry.update();
@@ -95,7 +104,27 @@ public class TeleopODO extends LinearOpMode {
             telemetry.addData("IS THING IN DA ROBOT? ", LOGIC.IS_THING_IN_DA_ROBOT);
             telemetry.addData("IS THE ENCODER OK", Oscar.slides.getMotorPosition());
 
-            Oscar.drive.setWeightedDrivePower(new Pose2d(-gamepad1.left_stick_x * 1,gamepad1.left_stick_y * 1,-gamepad1.right_stick_x * .5));
+            switch (controller_mode) {
+                case SHARED:
+                    if(gamepad1.guide && controllerModeTime.milliseconds() > 500) {
+                        controller_mode = CONTROLLER_MODE.REGULAR;
+                        controllerModeTime.reset();
+                    }
+                    break;
+                case REGULAR:
+                    if(gamepad1.guide && controllerModeTime.milliseconds() > 500) {
+                        controller_mode = CONTROLLER_MODE.SHARED;
+                        controllerModeTime.reset();
+                    }
+                    break;
+            }
+
+            if(controller_mode == CONTROLLER_MODE.SHARED) {
+                Oscar.drive.setWeightedDrivePower(new Pose2d(-gamepad1.left_stick_x * 1,gamepad1.left_stick_y * 1,-gamepad1.right_stick_x * .5));
+            }
+            else if(controller_mode == CONTROLLER_MODE.REGULAR) {
+                Oscar.drive.setWeightedDrivePower(new Pose2d(-gamepad1.left_stick_y * 1,-gamepad1.left_stick_x * 1,-gamepad1.right_stick_x * .5));
+            }
         }
     }
 }

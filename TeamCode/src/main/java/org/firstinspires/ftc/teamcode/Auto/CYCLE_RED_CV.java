@@ -33,7 +33,7 @@ public class CYCLE_RED_CV extends LinearOpMode {
 
     Pose2d startPose = new Pose2d(19, -64, Math.toRadians(180));
     Pose2d depositPose = new Pose2d(-3.5, -69, Math.toRadians(180));
-    Pose2d bottomDepositPose = new Pose2d(-2.5, -69, Math.toRadians(180));
+    Pose2d bottomDepositPose = new Pose2d(-.5, -69, Math.toRadians(180));
     Pose2d warehousePose = new Pose2d(36, -69, Math.toRadians(180));
     Pose2d intakePose = new Pose2d(ADJUSTABLE_INTAKE_X, -62, Math.toRadians(180));
     Vector2d intakeVector = new Vector2d(ADJUSTABLE_INTAKE_X, -62);
@@ -219,12 +219,12 @@ public class CYCLE_RED_CV extends LinearOpMode {
                         Oscar.drive.followTrajectorySequenceAsync(DEPOSIT_TO_WAREHOUSE);
                         WAIT_FOR_PRELOAD_FINISH = false;
                     }
-                    if((((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 2 || Oscar.drive.getPoseEstimate().getX() >= ADJUSTABLE_INTAKE_X || !Oscar.drive.isBusy()) && position != BarcodePositionDetector.BarcodePosition.LEFT) {
+                    if((((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 3 || Oscar.drive.getPoseEstimate().getX() >= ADJUSTABLE_INTAKE_X || !Oscar.drive.isBusy()) && position != BarcodePositionDetector.BarcodePosition.LEFT) {
                         state = STATE.INTAKE;
                         Oscar.drive.breakFollowing();
                         time.reset();
                     }
-                    if(time.milliseconds() > 500 && position == BarcodePositionDetector.BarcodePosition.LEFT && (((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 2 || !Oscar.drive.isBusy())) {
+                    if(time.milliseconds() > 500 && position == BarcodePositionDetector.BarcodePosition.LEFT && (((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 3 || !Oscar.drive.isBusy())) {
                         Oscar.drive.followTrajectorySequenceAsync(DEPOSIT_TO_WAREHOUSE);
                         WAIT_FOR_PRELOAD_FINISH = false;
                     }
@@ -232,7 +232,7 @@ public class CYCLE_RED_CV extends LinearOpMode {
                     break;
                 case INTAKE:
                     Oscar.drive.setWeightedDrivePower(new Pose2d(-.2,0,0));
-                    if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 2) {
+                    if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 3) {
                         intake_fsm.SET_EXEC_BACK_FLIP(true);
                         Oscar.drive.setWeightedDrivePower(new Pose2d(0,0,0));
                         Oscar.drive.setPoseEstimate(new Pose2d(Oscar.drive.getPoseEstimate().getX(), Oscar.drive.getPoseEstimate().getY() + AMOUNT_ITERATE_Y, Oscar.drive.getPoseEstimate().getHeading()));

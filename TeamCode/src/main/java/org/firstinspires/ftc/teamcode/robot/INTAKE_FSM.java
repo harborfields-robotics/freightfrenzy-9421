@@ -75,8 +75,8 @@ public class INTAKE_FSM {
     public void SET_EXEC_FRONT_FLIP(boolean EXEC) {EXEC_FRONT_FLIP = EXEC;}
 
     public void handleEvents(boolean isDepositBusy) {
-        FRONT_DETECTED = ((DistanceSensor) Oscar.colorFront).getDistance(DistanceUnit.CM) < 2;
-        BACK_DETECTED = ((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 2;
+        FRONT_DETECTED = ((DistanceSensor) Oscar.colorFront).getDistance(DistanceUnit.CM) < 3;
+        BACK_DETECTED = ((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 3;
         if(!frontBusy && !backBusy) {
             Oscar.flippers.moveDown("front");
             Oscar.flippers.moveDown("back");
@@ -187,7 +187,7 @@ public class INTAKE_FSM {
             case STATE_3:
                 if(time.milliseconds() > 20) {
                     front_state = FRONT_STATE.INIT;
-                    if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 2) {
+                    if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 3) {
                         LOGIC.IS_THING_IN_DA_ROBOT = false;
                     }
                     EXEC_FRONT_FLIP = false;
@@ -278,7 +278,7 @@ public class INTAKE_FSM {
                 break;
             case STATE_3:
                 if(time.milliseconds() > 20) {
-                    if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 2) {
+                    if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 3) {
                         LOGIC.IS_THING_IN_DA_ROBOT = false;
                     }
                     EXEC_BACK_FLIP = false;

@@ -23,9 +23,9 @@ public class LinearSlides {
     public double TOP_SLIDE_TICKS = 420-20;
     private final double MID_SLIDE_TICKS = 238;
     private final double OUT_A_BIT_SLIDE_TICKS = 100;
-    private final double BOTTOM_SLIDE_TICKS = 222;
+    private final double BOTTOM_SLIDE_TICKS = 240;
     private final double SHARED_SLIDE_TICKS = 300;
-    private final double GRAB_SLIDE_TICKS = 15;
+    private final double GRAB_SLIDE_TICKS = 10;
     private final double WIGGLE_DOWN_POWER = -.01;
 
     public boolean START_ENSURE_GRAB_POSITION = false;

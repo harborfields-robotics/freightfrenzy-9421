@@ -18,7 +18,7 @@ public class Grabber {
 
     //start positions, duh
     private final double initPos0 = 1;
-    private final double initPos1 = .026;
+    private final double initPos1 = .032;
 
     //how much each servo has to move in order to grab
     private final double grabOffset0 = -.15;
@@ -161,7 +161,6 @@ public class Grabber {
 
     public void goTop() {
         if(position.equals("start")) {
-            g1.setPosition(initPos1);
             moveByAngle(TOP_ANG, "top");
         }
         if(position.equals("middle")) {
@@ -174,7 +173,6 @@ public class Grabber {
 
     public void goBottom() {
         if(position.equals("start")) {
-            g1.setPosition(initPos1);
             moveByAngle(BOTTOM_ANG, "bottom");
         }
         if(position.equals("top")) {
@@ -186,7 +184,6 @@ public class Grabber {
     }
     public void goMiddle() {
         if(position.equals("start")) {
-            g1.setPosition(initPos1);
             moveByAngle(MID_ANG, "middle");
         }
         if(position.equals("top")) {
