@@ -32,8 +32,8 @@ public class CYCLE_RED_CV extends LinearOpMode {
     double STUCK_INTAKE_TIMEOUT = 2000;
 
     Pose2d startPose = new Pose2d(19, -64, Math.toRadians(180));
-    Pose2d depositPose = new Pose2d(-3.5, -69, Math.toRadians(180));
-    Pose2d bottomDepositPose = new Pose2d(-.5, -69, Math.toRadians(180));
+    Pose2d depositPose = new Pose2d(-4.5, -69, Math.toRadians(180));
+    Pose2d bottomDepositPose = new Pose2d(-1.5, -69, Math.toRadians(180));
     Pose2d warehousePose = new Pose2d(36, -69, Math.toRadians(180));
     Pose2d intakePose = new Pose2d(ADJUSTABLE_INTAKE_X, -62, Math.toRadians(180));
     Vector2d intakeVector = new Vector2d(ADJUSTABLE_INTAKE_X, -62);
@@ -49,11 +49,13 @@ public class CYCLE_RED_CV extends LinearOpMode {
         ADJUSTABLE_INTAKE_X += AMOUNT_INCREASE_INTAKE_X;
         intakeVector = new Vector2d(ADJUSTABLE_INTAKE_X, -62);
         intakePose = new Pose2d(ADJUSTABLE_INTAKE_X, -62, Math.toRadians(180));
-        DEPOSIT_TO_WAREHOUSE = Oscar.drive.trajectorySequenceBuilder(START_TO_DEPOSIT.end())
+        DEPOSIT_TO_WAREHOUSE = Oscar.drive.trajectorySequenceBuilder(depositPose)
                 .lineToLinearHeading(warehousePose)
-                .splineToConstantHeading(intakeVector, Math.toRadians(180))
+                .splineToConstantHeading(intakeVector, Math.toRadians(180),
+                        SampleMecanumDrive.getVelocityConstraint(70, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
-        WAREHOUSE_TO_DEPOSIT = Oscar.drive.trajectorySequenceBuilder(DEPOSIT_TO_WAREHOUSE.end())
+        WAREHOUSE_TO_DEPOSIT = Oscar.drive.trajectorySequenceBuilder(intakePose)
                 .splineToConstantHeading(warehouseVector, Math.toRadians(180))
                 .lineToLinearHeading(depositPose)
                 .build();
@@ -115,8 +117,6 @@ public class CYCLE_RED_CV extends LinearOpMode {
 
         boolean ENSURE_ONE_DEPOSIT = false;
 
-        boolean WAIT_FOR_PRELOAD_FINISH = true;
-
         double STOP_CYCLING_TIMEOUT = 26.5;
 
         Oscar.flippers.moveUp("front");
@@ -160,7 +160,9 @@ public class CYCLE_RED_CV extends LinearOpMode {
 
         waitForStart();
 
+        if(position == BarcodePositionDetector.BarcodePosition.LEFT)
         Oscar.drive.followTrajectoryAsync(START_TO_DEPOSIT_BOTTOM);
+        else
         time.reset();
         RUNTIME.reset();
 
@@ -200,9 +202,7 @@ public class CYCLE_RED_CV extends LinearOpMode {
                             ENSURE_ONE_DEPOSIT = true;
                         }
                         else if(deposit_fsm.THE_THING_CAN_BE_DROPPED_NOW) {
-                            if(position == BarcodePositionDetector.BarcodePosition.RIGHT) {
-                                Oscar.drive.followTrajectorySequenceAsync(DEPOSIT_TO_WAREHOUSE);
-                            }
+                            Oscar.drive.followTrajectorySequenceAsync(DEPOSIT_TO_WAREHOUSE);
                             deposit_fsm.DROP_THE_THING_NOW = true;
                             ENSURE_ONE_DEPOSIT = false;
                             state = STATE.BACKWARD;
@@ -211,14 +211,6 @@ public class CYCLE_RED_CV extends LinearOpMode {
                     }
                     break;
                 case BACKWARD:
-                    if(time.milliseconds() > 500 && WAIT_FOR_PRELOAD_FINISH && position == BarcodePositionDetector.BarcodePosition.LEFT) {
-                        Oscar.drive.followTrajectorySequenceAsync(DEPOSIT_TO_WAREHOUSE);
-                        WAIT_FOR_PRELOAD_FINISH = false;
-                    }
-                    if(time.milliseconds() > 500 && WAIT_FOR_PRELOAD_FINISH && position == BarcodePositionDetector.BarcodePosition.MIDDLE) {
-                        Oscar.drive.followTrajectorySequenceAsync(DEPOSIT_TO_WAREHOUSE);
-                        WAIT_FOR_PRELOAD_FINISH = false;
-                    }
                     if((((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 3 || Oscar.drive.getPoseEstimate().getX() >= ADJUSTABLE_INTAKE_X || !Oscar.drive.isBusy()) && position != BarcodePositionDetector.BarcodePosition.LEFT) {
                         state = STATE.INTAKE;
                         Oscar.drive.breakFollowing();
@@ -226,7 +218,6 @@ public class CYCLE_RED_CV extends LinearOpMode {
                     }
                     if(time.milliseconds() > 500 && position == BarcodePositionDetector.BarcodePosition.LEFT && (((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 3 || !Oscar.drive.isBusy())) {
                         Oscar.drive.followTrajectorySequenceAsync(DEPOSIT_TO_WAREHOUSE);
-                        WAIT_FOR_PRELOAD_FINISH = false;
                     }
                     Oscar.intake.backIn();
                     break;
@@ -282,6 +273,7 @@ public class CYCLE_RED_CV extends LinearOpMode {
             deposit_fsm.doDepositBottomAsync();
             intake_fsm.handleEvents(deposit_fsm.isAnyBusy());
             Oscar.drive.update();
+            telemetry.update();
         }
     }
 }

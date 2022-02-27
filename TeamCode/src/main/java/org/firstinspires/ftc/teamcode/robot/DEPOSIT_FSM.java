@@ -320,12 +320,12 @@ public class DEPOSIT_FSM {
                 }
                 break;
             case STATE_6:
-                if(time.milliseconds() > 500) {
+                if(time.milliseconds() > 700) {
                     reset();
                     Oscar.grabber.moveByAngle(90,"start");
                     mid_deposit_state = MID_DEPOSIT_STATE.INIT;
                 }
-                else if(time.milliseconds() < 650) {
+                else if(time.milliseconds() < 500) {
                     Oscar.slides.slidesOutABit();
                 }
                 else {
