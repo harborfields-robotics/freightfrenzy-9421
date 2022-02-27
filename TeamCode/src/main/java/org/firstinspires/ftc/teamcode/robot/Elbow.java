@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Elbow {
     public Servo e2;
@@ -14,7 +16,7 @@ public class Elbow {
     private final double TOP_OFFSET = .65;
     private final double MID_OFFSET = .8;
     private final double BOTTOM_OFFSET = .9;
-    private final double GRAB_POS_OFFSET = .242;
+    private final double GRAB_POS_OFFSET = .225;
 
 
     private final double startE2 = curE2 + START_OFFSET;
@@ -32,6 +34,51 @@ public class Elbow {
     private final double grabPosE2 = curE2 + GRAB_POS_OFFSET;
     private final double grabPosE3 = curE3 - GRAB_POS_OFFSET;
 
+    public boolean START_STOP_WIGGLE = false;
+    private double WIGGLE_FREQUENCY = 100;
+    private ElapsedTime time = new ElapsedTime();
+
+    enum WIGGLE_STATE {
+        OFF,
+        UP,
+        DOWN
+    }
+
+    WIGGLE_STATE wiggle_state = WIGGLE_STATE.OFF;
+
+    public void doWiggleAsync () {
+        switch (wiggle_state) {
+            case OFF:
+                if(START_STOP_WIGGLE) {
+                    wiggle_state = WIGGLE_STATE.DOWN;
+                    time.reset();
+                }
+                break;
+            case UP:
+                moveStart();
+                if(time.milliseconds() > WIGGLE_FREQUENCY) {
+                    wiggle_state = WIGGLE_STATE.DOWN;
+                    time.reset();
+                }
+                if(!START_STOP_WIGGLE) {
+                    wiggle_state = WIGGLE_STATE.OFF;
+                    goToGrabPos();
+                }
+                break;
+            case DOWN:
+                goToGrabPos();
+                if(time.milliseconds() > WIGGLE_FREQUENCY) {
+                    wiggle_state = WIGGLE_STATE.UP;
+                    time.reset();
+                }
+                if(!START_STOP_WIGGLE) {
+                    wiggle_state = WIGGLE_STATE.OFF;
+                    goToGrabPos();
+                }
+                break;
+        }
+
+    }
 
     public Elbow(HardwareMap ahwMap) {
         e2 = ahwMap.get(Servo.class, "Elbow 2");
@@ -39,7 +86,11 @@ public class Elbow {
 
     }
 
-
+    public void moveRelative(double deltaTicks) {
+        curE2 += deltaTicks;
+        curE3 -= deltaTicks;
+        updatePositions();
+    }
 
     private void updatePositions() {
         e2.setPosition(curE2);
@@ -47,7 +98,6 @@ public class Elbow {
     }
 
     public void moveStart() {
-        goToGrabPos();
         curE2 = startE2;
         curE3 = startE3;
         updatePositions();

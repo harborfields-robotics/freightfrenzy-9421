@@ -23,14 +23,12 @@ public class LinearSlides {
     public double TOP_SLIDE_TICKS = 420-20;
     private final double MID_SLIDE_TICKS = 238;
     private final double OUT_A_BIT_SLIDE_TICKS = 100;
-    private final double BOTTOM_SLIDE_TICKS = 270;
+    private final double BOTTOM_SLIDE_TICKS = 250;
     private final double SHARED_SLIDE_TICKS = 300;
     private final double GRAB_SLIDE_TICKS = 15;
-    private final double WIGGLE_DOWN_POWER = -.4;
-    private final double WIGGLE_UP_POWER = .4;
-    private final double WIGGLE_FREQUENCY = 50;
+    private final double WIGGLE_DOWN_POWER = -.01;
 
-    public boolean START_STOP_WIGGLE = false;
+    public boolean START_ENSURE_GRAB_POSITION = false;
 
     private WIGGLE_STATE wiggle_state = WIGGLE_STATE.OFF;
     private ElapsedTime time = new ElapsedTime();
@@ -51,35 +49,18 @@ public class LinearSlides {
         DOWN
     }
 
-    public void doWiggleAsync () {
-        telemetry.addData("SLIDES WIGGLE STATE: ", wiggle_state);
+    public void doEnsureGrabPositionAsync() {
         switch (wiggle_state) {
             case OFF:
-                if(START_STOP_WIGGLE) {
+                if(START_ENSURE_GRAB_POSITION) {
                     wiggle_state = WIGGLE_STATE.DOWN;
                     slideMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     time.reset();
                 }
                 break;
-            case UP:
-                slideMotor1.setPower(WIGGLE_UP_POWER);
-                if(time.milliseconds() > WIGGLE_FREQUENCY) {
-                    wiggle_state = WIGGLE_STATE.DOWN;
-                    time.reset();
-                }
-                if(!START_STOP_WIGGLE) {
-                    wiggle_state = WIGGLE_STATE.OFF;
-                    slideMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    slidesGrab();
-                }
-                break;
             case DOWN:
                 slideMotor1.setPower(WIGGLE_DOWN_POWER);
-                if(time.milliseconds() > WIGGLE_FREQUENCY) {
-                    wiggle_state = WIGGLE_STATE.UP;
-                    time.reset();
-                }
-                if(!START_STOP_WIGGLE) {
+                if(isItInThreshold(GRAB_SLIDE_TICKS)) {
                     wiggle_state = WIGGLE_STATE.OFF;
                     slideMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     slidesGrab();
@@ -214,7 +195,6 @@ public class LinearSlides {
     public void slidesShared(){
         currentPosition = SHARED_SLIDE_TICKS;
         slideMotor1.setTargetPosition((int)currentPosition);
-        slideMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         if(isItInThreshold(currentPosition)){
             slideMotor1.setPower(0);
 
@@ -285,6 +265,15 @@ public class LinearSlides {
         slidesGrab();
     }
 
+    private ElapsedTime resetEncoderTimer = new ElapsedTime();
+
+    public void resetEncoderIfEndstopClicked() {
+        if(resetEncoderTimer.milliseconds() > 500 && !endstop.getState()) {
+            resetEncoderTimer.reset();
+            resetEncoder();
+        }
+    }
+
     public void slidesHomeAsync() {
         //if not clicked
         if(endstop.getState()) {
@@ -299,6 +288,7 @@ public class LinearSlides {
     }
 
     public void slidesHold() {
+        slideMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slideMotor1.setPower(0);
     }
 

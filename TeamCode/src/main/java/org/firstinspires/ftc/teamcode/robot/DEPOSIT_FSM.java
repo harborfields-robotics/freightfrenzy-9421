@@ -204,6 +204,7 @@ public class DEPOSIT_FSM {
                 }
                 else {
                     Oscar.slides.slidesGrab();
+//                    Oscar.slides.resetEncoderIfEndstopClicked();
                 }
                 break;
             case STATE_6:
@@ -213,6 +214,7 @@ public class DEPOSIT_FSM {
                 }
                 else {
                     Oscar.slides.slidesGrab();
+//                    Oscar.slides.resetEncoderIfEndstopClicked();
                 }
                 break;
             default:
@@ -268,7 +270,14 @@ public class DEPOSIT_FSM {
                     time.reset();
                 }
                 else {
-                    Oscar.slides.slidesMid();
+                    if(gamepad1.right_bumper && time.milliseconds() > 15){
+                        Oscar.elbow.moveRelative(-.005);
+                        time.reset();
+                    }
+                    if(gamepad1.left_bumper && time.milliseconds() > 15){
+                        Oscar.elbow.moveRelative(.005);
+                        time.reset();
+                    }
                 }
                 if(time.milliseconds() > 800) {
                     THE_THING_CAN_BE_DROPPED_NOW = true;
@@ -287,15 +296,16 @@ public class DEPOSIT_FSM {
                 }
                 break;
             case STATE_4:
-                if(time.milliseconds() > 580) {
+                if(time.milliseconds() > 650) {
                     mid_deposit_state = MID_DEPOSIT_STATE.STATE_5;
                     time.reset();
                 }
                 else {
-                    Oscar.slides.slidesHold();
-                    Oscar.elbow.goToGrabPos();
                     Oscar.grabber.closeGrabExtra();
                     Oscar.slides.slidesOutABit();
+                }
+                if(time.milliseconds() > 500) {
+                    Oscar.elbow.goToGrabPos();
                 }
                 break;
             case STATE_5:
@@ -310,7 +320,7 @@ public class DEPOSIT_FSM {
                 }
                 break;
             case STATE_6:
-                if(time.milliseconds() > 750) {
+                if(time.milliseconds() > 500) {
                     reset();
                     Oscar.grabber.moveByAngle(90,"start");
                     mid_deposit_state = MID_DEPOSIT_STATE.INIT;
@@ -320,6 +330,7 @@ public class DEPOSIT_FSM {
                 }
                 else {
                     Oscar.slides.slidesGrab();
+//                    Oscar.slides.resetEncoderIfEndstopClicked();
                 }
                 break;
             default:
@@ -400,6 +411,7 @@ public class DEPOSIT_FSM {
                     time.reset();
                 }
                 else {
+                    Oscar.elbow.moveRelative(-.2);
                     Oscar.slides.slidesOutABit();
                 }
                 break;
@@ -428,6 +440,7 @@ public class DEPOSIT_FSM {
                 }
                 else {
                     Oscar.slides.slidesGrab();
+//                    Oscar.slides.resetEncoderIfEndstopClicked();
                 }
                 break;
             default:
@@ -503,6 +516,7 @@ public class DEPOSIT_FSM {
                 }
                 else {
                     Oscar.slides.slidesGrab();
+//                    Oscar.slides.resetEncoderIfEndstopClicked();
                 }
                 break;
             default:

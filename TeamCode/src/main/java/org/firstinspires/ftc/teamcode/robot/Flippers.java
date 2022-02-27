@@ -13,10 +13,10 @@ public class Flippers {
     private double downPosition0 = .43;
     private double downPosition1 = .95;
     private double wigglePosition0 = .7;
-    private double wigglePosition1 = .42;
+    private double wigglePosition1 = .68;
 
-    private double upPosition0 = .84;
-    private double upPosition1 = .59;
+    private double upPosition0 = .92;
+    private double upPosition1 = .46;
 
 
     public Flippers(HardwareMap ahwMap) {

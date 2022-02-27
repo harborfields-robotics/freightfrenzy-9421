@@ -31,7 +31,7 @@ public class CYCLE_RED_CV extends LinearOpMode {
 
     Pose2d startPose = new Pose2d(19, -64, Math.toRadians(180));
     Pose2d depositPose = new Pose2d(-3.5, -69, Math.toRadians(180));
-    Pose2d bottomDepositPose = new Pose2d(-1, -69, Math.toRadians(180));
+    Pose2d bottomDepositPose = new Pose2d(-2.5, -69, Math.toRadians(180));
     Pose2d warehousePose = new Pose2d(36, -69, Math.toRadians(180));
     Pose2d intakePose = new Pose2d(ADJUSTABLE_INTAKE_X, -62, Math.toRadians(180));
     Vector2d intakeVector = new Vector2d(ADJUSTABLE_INTAKE_X, -62);
@@ -108,6 +108,8 @@ public class CYCLE_RED_CV extends LinearOpMode {
         ElapsedTime RUNTIME = new ElapsedTime();
 
         boolean ENSURE_ONE_DEPOSIT = false;
+
+        boolean BOTTOM_DEPOSIT_RELEASE = true;
 
         double STOP_CYCLING_TIMEOUT = 26.5;
 
@@ -192,26 +194,35 @@ public class CYCLE_RED_CV extends LinearOpMode {
                             ENSURE_ONE_DEPOSIT = true;
                         }
                         else if(deposit_fsm.THE_THING_CAN_BE_DROPPED_NOW) {
+                            if(position != BarcodePositionDetector.BarcodePosition.LEFT) {
+                                Oscar.drive.followTrajectorySequenceAsync(DEPOSIT_TO_WAREHOUSE);
+                            }
                             deposit_fsm.DROP_THE_THING_NOW = true;
                             ENSURE_ONE_DEPOSIT = false;
-                            Oscar.drive.followTrajectorySequenceAsync(DEPOSIT_TO_WAREHOUSE);
                             state = STATE.BACKWARD;
                             time.reset();
                         }
                     }
                     break;
                 case BACKWARD:
-                    if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 1.5 || !Oscar.drive.isBusy()) {
+                    if(time.milliseconds() > 500 && BOTTOM_DEPOSIT_RELEASE && position == BarcodePositionDetector.BarcodePosition.LEFT) {
+                        Oscar.drive.followTrajectorySequenceAsync(DEPOSIT_TO_WAREHOUSE);
+                        BOTTOM_DEPOSIT_RELEASE = false;
+                    }
+                    if((((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 2 || Oscar.drive.getPoseEstimate().getX() >= ADJUSTABLE_INTAKE_X || !Oscar.drive.isBusy()) && position != BarcodePositionDetector.BarcodePosition.LEFT) {
                         state = STATE.INTAKE;
+                        Oscar.drive.breakFollowing();
                         time.reset();
                     }
-                    else {
-                        Oscar.intake.backIn();
+                    if(time.milliseconds() > 500 && position == BarcodePositionDetector.BarcodePosition.LEFT && (((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 2 || !Oscar.drive.isBusy())) {
+                        Oscar.drive.followTrajectorySequenceAsync(DEPOSIT_TO_WAREHOUSE);
+                        BOTTOM_DEPOSIT_RELEASE = false;
                     }
+                    Oscar.intake.backIn();
                     break;
                 case INTAKE:
                     Oscar.drive.setWeightedDrivePower(new Pose2d(-.4,0,0));
-                    if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 1.5) {
+                    if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 2) {
                         intake_fsm.SET_EXEC_BACK_FLIP(true);
                         Oscar.drive.setWeightedDrivePower(new Pose2d(0,0,0));
                         Oscar.drive.setPoseEstimate(new Pose2d(Oscar.drive.getPoseEstimate().getX(), Oscar.drive.getPoseEstimate().getY() + AMOUNT_ITERATE_Y, Oscar.drive.getPoseEstimate().getHeading()));
@@ -222,24 +233,24 @@ public class CYCLE_RED_CV extends LinearOpMode {
                         }
                         else state = STATE.IDLE;
                     }
-                    else if(time.milliseconds() > STUCK_INTAKE_TIMEOUT) {
+                    else if(time.milliseconds() > STUCK_INTAKE_TIMEOUT || ((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 9) {
                         state = STATE.RESTART_INTAKE;
                         time.reset();
                     }
                     break;
                 case RESTART_INTAKE:
-                    if(Oscar.drive.getPoseEstimate().getX() < 52) {
+                    if(Oscar.drive.getPoseEstimate().getX() < ADJUSTABLE_INTAKE_X) {
                         state = STATE.INTAKE;
                         Oscar.intake.backIn();
                         time.reset();
                     }
                     else{
-                        Oscar.intake.backOut();
+                        Oscar.intake.backIn();
                         Oscar.drive.setWeightedDrivePower(new Pose2d(.4,0,0));
                     }
                     break;
                 case FORWARD:
-                    if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) > 1.5 && Oscar.drive.getPoseEstimate().getX() < 18 && !ENSURE_ONE_DEPOSIT) {
+                    if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) > 2 && Oscar.drive.getPoseEstimate().getX() < 18 && !ENSURE_ONE_DEPOSIT) {
                         deposit_fsm.startDeposittop = true;
                         ENSURE_ONE_DEPOSIT = true;
                     }
@@ -259,7 +270,7 @@ public class CYCLE_RED_CV extends LinearOpMode {
             deposit_fsm.doDepositTopAsync();
             deposit_fsm.doDepositMiddleAsync();
             deposit_fsm.doDepositBottomAsync();
-            intake_fsm.doFlipBackAsync();
+            intake_fsm.handleEvents(deposit_fsm.isAnyBusy());
             Oscar.drive.update();
         }
     }

@@ -78,8 +78,13 @@ public class TeleopODO extends LinearOpMode {
             deposit_fsm.doDepositMiddleAsync();
             deposit_fsm.doDepositBottomAsync();
             deposit_fsm.doDepositSharedAsync();
+//            Oscar.slides.resetEncoderIfEndstopClicked();
 
-            intake_fsm.handleEvents();
+            if(!deposit_fsm.isAnyBusy() && !intake_fsm.isBackBusy() && !intake_fsm.isFrontBusy()) {
+                Oscar.slides.slidesGrab();
+            }
+
+            intake_fsm.handleEvents(deposit_fsm.isAnyBusy());
 
             if(Oscar.slides.getMotorPosition() <= 200 && !intake_fsm.isBackBusy() && !intake_fsm.isFrontBusy()) {
                 if (gamepad2.left_trigger > .1 || gamepad1.left_trigger > .1) Oscar.intake.reverse();

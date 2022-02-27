@@ -258,7 +258,7 @@ public class CYCLE_6_RED extends LinearOpMode {
             deposit_fsm.doDepositTopAsync();
             deposit_fsm.doDepositMiddleAsync();
             deposit_fsm.doDepositBottomAsync();
-            intake_fsm.doFlipBackAsync();
+            intake_fsm.handleEvents(deposit_fsm.isAnyBusy());
             Oscar.drive.update();
         }
     }

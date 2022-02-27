@@ -38,13 +38,10 @@ public class INTAKE_FSM {
     private boolean EXEC_BACK_FLIP = false;
     private boolean EXEC_FRONT_FLIP = false;
 
-    private boolean IS_THE_THING_BEING_GRABBED = false;
     private boolean FRONT_DETECTED = false;
     private boolean BACK_DETECTED = false;
     private boolean FRONT_PRIORITY = false;
     private boolean BACK_PRIORITY = false;
-
-    private boolean ENSURE_ONE_GRAB_RUMBLE = false;
 
     public INTAKE_FSM(Hardware hardware, Telemetry telemetry, Gamepad c1, Gamepad c2) {
         this.Oscar = hardware;
@@ -57,12 +54,10 @@ public class INTAKE_FSM {
     private final ElapsedTime wiggleTime = new ElapsedTime();
 
     private Gamepad.RumbleEffect flipRumble = new Gamepad.RumbleEffect.Builder()
-            .addStep(1.0, 0.0, 500)  //  Rumble left motor 100% for 500 mSec
+            .addStep(1.0, 0.0, 200)  //  Rumble left motor 100% for 300 mSec
+            .addStep(0.0, 1.0, 200)  //  Rumble left motor 100% for 300 mSec
             .build();
 
-    private Gamepad.RumbleEffect grabbedRumble = new Gamepad.RumbleEffect.Builder()
-            .addStep(0.0, 1.0, 500)  //  Rumble right motor 100% for 500 mSec
-            .build();
 
 
     public boolean isBackBusy() {return backBusy;}
@@ -79,16 +74,26 @@ public class INTAKE_FSM {
     public void SET_EXEC_BACK_FLIP(boolean EXEC) {EXEC_BACK_FLIP = EXEC;}
     public void SET_EXEC_FRONT_FLIP(boolean EXEC) {EXEC_FRONT_FLIP = EXEC;}
 
-    public void handleEvents() {
+    public void handleEvents(boolean isDepositBusy) {
         FRONT_DETECTED = ((DistanceSensor) Oscar.colorFront).getDistance(DistanceUnit.CM) < 2;
         BACK_DETECTED = ((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 2;
+        if(!frontBusy && !backBusy) {
+            Oscar.flippers.moveDown("front");
+            Oscar.flippers.moveDown("back");
+        }
         if(FRONT_DETECTED) {
             FRONT_PRIORITY = !BACK_PRIORITY;
-            EXEC_FRONT_FLIP = true;
+            EXEC_FRONT_FLIP = FRONT_PRIORITY;
+            if(FRONT_PRIORITY) {
+                Oscar.flippers.moveUp("back");
+            }
         }
         if(BACK_DETECTED) {
             BACK_PRIORITY = !FRONT_PRIORITY;
-            EXEC_BACK_FLIP = true;
+            EXEC_BACK_FLIP = BACK_PRIORITY;
+            if(BACK_PRIORITY) {
+                Oscar.flippers.moveUp("front");
+            }
         }
         if(FRONT_DETECTED && BACK_DETECTED) {
             if(FRONT_PRIORITY) {
@@ -101,15 +106,6 @@ public class INTAKE_FSM {
         if(!FRONT_DETECTED && !BACK_DETECTED) {
             FRONT_PRIORITY = false;
             BACK_PRIORITY = false;
-            Oscar.grabber.closeGrab();
-            if(ENSURE_ONE_GRAB_RUMBLE) {
-                ENSURE_ONE_GRAB_RUMBLE = false;
-                gamepad1.runRumbleEffect(grabbedRumble);
-            }
-        }
-        else {
-            ENSURE_ONE_GRAB_RUMBLE = true;
-            Oscar.grabber.openGrab();
         }
         doFlipBackAsync();
         doFlipFrontAsync();
@@ -141,7 +137,8 @@ public class INTAKE_FSM {
             case STATE_01:
                 if(time.milliseconds() > 10) {
                     front_state = FRONT_STATE.STATE_0;
-                    Oscar.slides.START_STOP_WIGGLE = true;
+                    Oscar.slides.START_ENSURE_GRAB_POSITION = true;
+                    Oscar.elbow.START_STOP_WIGGLE = true;
                 }
                 else {
                     Oscar.intake.frontOut();
@@ -151,7 +148,8 @@ public class INTAKE_FSM {
                 if(time.milliseconds() > 1200) {
                     front_state = FRONT_STATE.STATE_2;
                     Oscar.flippers.moveUp("front");
-                    Oscar.slides.START_STOP_WIGGLE = false;
+                    Oscar.slides.START_ENSURE_GRAB_POSITION = false;
+                    Oscar.elbow.START_STOP_WIGGLE = false;
                     time.reset();
                 }
                 if(wiggleTime.milliseconds() > 200) {
@@ -201,7 +199,8 @@ public class INTAKE_FSM {
                 front_state = FRONT_STATE.INIT;
                 break;
         }
-        Oscar.slides.doWiggleAsync();
+        Oscar.slides.doEnsureGrabPositionAsync();
+        Oscar.elbow.doWiggleAsync();
     }
 
     public void doFlipBackAsync() {
@@ -230,7 +229,8 @@ public class INTAKE_FSM {
             case STATE_01:
                 if(time.milliseconds() > 10) {
                     back_state = BACK_STATE.STATE_0;
-                    Oscar.slides.START_STOP_WIGGLE = true;
+                    Oscar.slides.START_ENSURE_GRAB_POSITION = true;
+                    Oscar.elbow.START_STOP_WIGGLE = true;
                 }
                 else {
                     Oscar.intake.backOut();
@@ -240,7 +240,8 @@ public class INTAKE_FSM {
                 if(time.milliseconds() > 1200) {
                     back_state = BACK_STATE.STATE_2;
                     Oscar.flippers.moveUp("back");
-                    Oscar.slides.START_STOP_WIGGLE = false;
+                    Oscar.slides.START_ENSURE_GRAB_POSITION = false;
+                    Oscar.elbow.START_STOP_WIGGLE = false;
                     time.reset();
                 }
                 if(wiggleTime.milliseconds() > 200) {
@@ -290,6 +291,7 @@ public class INTAKE_FSM {
                 back_state = BACK_STATE.INIT;
                 break;
         }
-        Oscar.slides.doWiggleAsync();
+        Oscar.slides.doEnsureGrabPositionAsync();
+        Oscar.elbow.doWiggleAsync();
     }
 }
