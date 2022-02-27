@@ -137,7 +137,7 @@ public class INTAKE_FSM {
             case STATE_01:
                 if(time.milliseconds() > 10) {
                     front_state = FRONT_STATE.STATE_0;
-                    Oscar.slides.START_ENSURE_GRAB_POSITION = true;
+//                    Oscar.slides.START_ENSURE_GRAB_POSITION = true;
                     Oscar.elbow.START_STOP_WIGGLE = true;
                 }
                 else {
@@ -148,7 +148,7 @@ public class INTAKE_FSM {
                 if(time.milliseconds() > 1200) {
                     front_state = FRONT_STATE.STATE_2;
                     Oscar.flippers.moveUp("front");
-                    Oscar.slides.START_ENSURE_GRAB_POSITION = false;
+//                    Oscar.slides.START_ENSURE_GRAB_POSITION = false;
                     Oscar.elbow.START_STOP_WIGGLE = false;
                     time.reset();
                 }
@@ -199,7 +199,7 @@ public class INTAKE_FSM {
                 front_state = FRONT_STATE.INIT;
                 break;
         }
-        Oscar.slides.doEnsureGrabPositionAsync();
+//        Oscar.slides.doEnsureGrabPositionAsync();
         Oscar.elbow.doWiggleAsync();
     }
 
@@ -229,7 +229,7 @@ public class INTAKE_FSM {
             case STATE_01:
                 if(time.milliseconds() > 10) {
                     back_state = BACK_STATE.STATE_0;
-                    Oscar.slides.START_ENSURE_GRAB_POSITION = true;
+//                    Oscar.slides.START_ENSURE_GRAB_POSITION = true;
                     Oscar.elbow.START_STOP_WIGGLE = true;
                 }
                 else {
@@ -240,7 +240,7 @@ public class INTAKE_FSM {
                 if(time.milliseconds() > 1200) {
                     back_state = BACK_STATE.STATE_2;
                     Oscar.flippers.moveUp("back");
-                    Oscar.slides.START_ENSURE_GRAB_POSITION = false;
+//                    Oscar.slides.START_ENSURE_GRAB_POSITION = false;
                     Oscar.elbow.START_STOP_WIGGLE = false;
                     time.reset();
                 }
@@ -291,7 +291,7 @@ public class INTAKE_FSM {
                 back_state = BACK_STATE.INIT;
                 break;
         }
-        Oscar.slides.doEnsureGrabPositionAsync();
+//        Oscar.slides.doEnsureGrabPositionAsync();
         Oscar.elbow.doWiggleAsync();
     }
 }

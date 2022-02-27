@@ -398,6 +398,7 @@ public class DEPOSIT_FSM {
                     bottom_deposit_state = BOTTOM_DEPOSIT_STATE.STATE_4;
                     bottomDeposited = true;
                     time.reset();
+                    Oscar.grabber.closeGrabExtra();
                 }
                 else {
                     Oscar.slides.slidesHold();
@@ -408,6 +409,8 @@ public class DEPOSIT_FSM {
             case STATE_4:
                 if(time.milliseconds() > 300) {
                     bottom_deposit_state = BOTTOM_DEPOSIT_STATE.STATE_5;
+                    Oscar.grabber.goStart();
+                    Oscar.grabber.moveByAngle(-90, "start");
                     time.reset();
                 }
                 else {
@@ -418,14 +421,9 @@ public class DEPOSIT_FSM {
             case STATE_5:
                 if(time.milliseconds() > 800) {
                     bottom_deposit_state = BOTTOM_DEPOSIT_STATE.STATE_6;
-                    Oscar.grabber.goStart();
                     time.reset();
                 }
                 else {
-                    if(time.milliseconds() > 500) {
-                        Oscar.grabber.goStart();
-                    }
-                    Oscar.grabber.closeGrabExtra();
                     Oscar.elbow.goToGrabPos();
                     Oscar.slides.slidesOutABit();
                 }
@@ -434,6 +432,7 @@ public class DEPOSIT_FSM {
                 if(time.milliseconds() > 750) {
                     reset();
                     bottom_deposit_state = BOTTOM_DEPOSIT_STATE.INIT;
+                    Oscar.grabber.moveByAngle(90, "start");
                 }
                 else if(time.milliseconds() < 400) {
                     Oscar.slides.slidesOutABit();
