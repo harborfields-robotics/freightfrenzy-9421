@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.robot;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 
@@ -22,6 +23,7 @@ public class Hardware {
     public Flippers flippers = null;
     public NormalizedColorSensor colorFront;
     public NormalizedColorSensor colorBack;
+    public CAPPER cap;
 
     public BarcodeUtil cvUtil;
 
@@ -43,6 +45,7 @@ public class Hardware {
         elbow = new Elbow(hwMap);
         slides = new LinearSlides(hwMap, telemetry);
         flippers = new Flippers(hwMap);
+
 
         cvUtil = new BarcodeUtil(hwMap, "Webcam1", telemetry);
 

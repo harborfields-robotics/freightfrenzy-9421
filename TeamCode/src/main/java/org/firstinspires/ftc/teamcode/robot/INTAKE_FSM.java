@@ -77,6 +77,15 @@ public class INTAKE_FSM {
     public void handleEvents(boolean isDepositBusy) {
         FRONT_DETECTED = ((DistanceSensor) Oscar.colorFront).getDistance(DistanceUnit.CM) < 3;
         BACK_DETECTED = ((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 3;
+
+        if(Oscar.intake.autoDeJam()){
+            Oscar.intake.backOut();
+            Oscar.intake.frontOut();
+
+        }
+
+
+
         if(!frontBusy && !backBusy) {
             Oscar.flippers.moveDown("front");
             Oscar.flippers.moveDown("back");
@@ -117,10 +126,15 @@ public class INTAKE_FSM {
             case SPIT:
                 EXEC_FRONT_FLIP = false;
                 Oscar.intake.frontOut();
-                Oscar.flippers.moveDown("front");
-                if(!BACK_DETECTED) {
+                if(!Oscar.intake.STALLED){
                     front_state = FRONT_STATE.INIT;
                 }
+                Oscar.flippers.moveDown("front");
+//                if(!BACK_DETECTED) {
+//                    front_state = FRONT_STATE.INIT;
+//                }
+//
+
                 break;
             case INIT:
                 if(((gamepad2.dpad_up || gamepad1.dpad_up) && !backBusy) || EXEC_FRONT_FLIP) {
@@ -210,9 +224,13 @@ public class INTAKE_FSM {
                 EXEC_BACK_FLIP = false;
                 Oscar.intake.backOut();
                 Oscar.flippers.moveDown("back");
-                if(!FRONT_DETECTED) {
-                    back_state = BACK_STATE.INIT;
+                if(!Oscar.intake.STALLED){
+                    front_state = FRONT_STATE.INIT;
                 }
+                
+//                if(!FRONT_DETECTED) {
+//                    back_state = BACK_STATE.INIT;
+//                }
                 break;
             case INIT:
                 if(EXEC_BACK_FLIP) {
