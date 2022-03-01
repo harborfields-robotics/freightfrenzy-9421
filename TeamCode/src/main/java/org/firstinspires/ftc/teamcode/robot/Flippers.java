@@ -15,7 +15,7 @@ public class Flippers {
     private double wigglePosition0 = .7;
     private double wigglePosition1 = .68;
 
-    private double upPosition0 = .92;
+    private double upPosition0 = .85;
     private double upPosition1 = .46;
 
 

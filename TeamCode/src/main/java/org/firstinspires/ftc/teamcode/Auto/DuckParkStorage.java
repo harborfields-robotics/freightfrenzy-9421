@@ -3,17 +3,19 @@ package org.firstinspires.ftc.teamcode.Auto;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.robot.Hardware;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Autonomous
+//@Disabled
 public class DuckParkStorage extends LinearOpMode {
 
     private FtcDashboard dashboard;
     public static Pose2d startPR = new Pose2d(-39.1, -64, Math.toRadians(180));
-    public static Pose2d DuckRed = new Pose2d(-57.2, -53.7, Math.toRadians(130));
+    public static Pose2d DuckRed = new Pose2d(-60.3,-55.5, Math.toRadians(110));
     public static Pose2d StoragePark = new Pose2d(-58.7, -34.7, Math.toRadians((90)));
     public static Pose2d MoveRight1 = new Pose2d(-55.0, -53.7, Math.toRadians(130));
 

@@ -75,8 +75,8 @@ public class INTAKE_FSM {
     public void SET_EXEC_FRONT_FLIP(boolean EXEC) {EXEC_FRONT_FLIP = EXEC;}
 
     public void handleEvents(boolean isDepositBusy) {
-        FRONT_DETECTED = ((DistanceSensor) Oscar.colorFront).getDistance(DistanceUnit.CM) < 3;
-        BACK_DETECTED = ((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 3;
+        FRONT_DETECTED = ((DistanceSensor) Oscar.colorFront).getDistance(DistanceUnit.CM) < 2;
+        BACK_DETECTED = ((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 2;
         if(!frontBusy && !backBusy) {
             Oscar.flippers.moveDown("front");
             Oscar.flippers.moveDown("back");
@@ -145,7 +145,7 @@ public class INTAKE_FSM {
                 }
                 break;
             case STATE_0:
-                if(time.milliseconds() > 1200) {
+                if(time.milliseconds() > 800) {
                     front_state = FRONT_STATE.STATE_2;
                     Oscar.flippers.moveUp("front");
 //                    Oscar.slides.START_ENSURE_GRAB_POSITION = false;
@@ -187,7 +187,7 @@ public class INTAKE_FSM {
             case STATE_3:
                 if(time.milliseconds() > 20) {
                     front_state = FRONT_STATE.INIT;
-                    if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 3) {
+                    if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 2) {
                         LOGIC.IS_THING_IN_DA_ROBOT = false;
                     }
                     EXEC_FRONT_FLIP = false;
@@ -237,7 +237,7 @@ public class INTAKE_FSM {
                 }
                 break;
             case STATE_0:
-                if(time.milliseconds() > 1200) {
+                if(time.milliseconds() > 800) {
                     back_state = BACK_STATE.STATE_2;
                     Oscar.flippers.moveUp("back");
 //                    Oscar.slides.START_ENSURE_GRAB_POSITION = false;
@@ -278,7 +278,7 @@ public class INTAKE_FSM {
                 break;
             case STATE_3:
                 if(time.milliseconds() > 20) {
-                    if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 3) {
+                    if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 2) {
                         LOGIC.IS_THING_IN_DA_ROBOT = false;
                     }
                     EXEC_BACK_FLIP = false;

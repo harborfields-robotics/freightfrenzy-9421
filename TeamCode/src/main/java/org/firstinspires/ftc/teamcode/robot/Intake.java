@@ -2,10 +2,9 @@ package org.firstinspires.ftc.teamcode.robot;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.util.Encoder;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 public class Intake {
     private DcMotorEx intakeFront;
@@ -101,4 +100,5 @@ public class Intake {
     public void frontOut() {
         intakeBack.setPower(-INTAKE_POWER);
     }
+    public double getCurrent() {return(intakeBack.getCurrent(CurrentUnit.AMPS));}
 }
