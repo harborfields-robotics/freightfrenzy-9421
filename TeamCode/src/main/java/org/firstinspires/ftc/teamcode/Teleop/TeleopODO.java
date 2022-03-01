@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 //hardware
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.robot.CAPPER;
 import org.firstinspires.ftc.teamcode.robot.DEPOSIT_FSM;
 import org.firstinspires.ftc.teamcode.robot.Hardware;
 import org.firstinspires.ftc.teamcode.robot.INTAKE_FSM;
@@ -51,6 +52,8 @@ public class TeleopODO extends LinearOpMode {
         DEPOSIT_FSM deposit_fsm = new DEPOSIT_FSM(Oscar, telemetry, gamepad1, gamepad2);
         INTAKE_FSM intake_fsm = new INTAKE_FSM(Oscar, telemetry, gamepad1, gamepad2);
 
+        CAPPER cap = new CAPPER(hardwareMap ,telemetry, gamepad2);
+
         controller2.addEventListener("left_bumper", ButtonState.PRESSED, () -> {
             Oscar.slides.slidesHome();
         });
@@ -87,6 +90,10 @@ public class TeleopODO extends LinearOpMode {
             deposit_fsm.doDepositMiddleAsync();
             deposit_fsm.doDepositBottomAsync();
             deposit_fsm.doDepositSharedAsync();
+
+            cap.pitchAsync();
+            cap.yawSurgeAsync();
+
 //            Oscar.slides.resetEncoderIfEndstopClicked();
 
             if(!deposit_fsm.isAnyBusy() && !intake_fsm.isBackBusy() && !intake_fsm.isFrontBusy()) {

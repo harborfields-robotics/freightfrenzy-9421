@@ -2,9 +2,11 @@ package org.firstinspires.ftc.teamcode.robot;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.teamcode.util.Encoder;
 
 public class Intake {
     private DcMotorEx intakeFront;
@@ -20,6 +22,10 @@ public class Intake {
     //intake powers are kinda self explanatory
     public static final double INTAKE_POWER = 1;
     public static final double INTAKE_POWER_SLOW = 1;
+    public static final double THRESHOLD = .48;
+
+    public boolean STALLED;
+    public boolean backStalled;
 
 
     public void doStopVerticalAsync() {
@@ -87,7 +93,23 @@ public class Intake {
     public void off(){
         intakeFront.setPower(0);
         intakeBack.setPower(0);
+
     }
+
+    public boolean autoDeJam(){
+        if (intakeFront.getCurrent(CurrentUnit.AMPS) > THRESHOLD){
+            STALLED = true;
+
+        }
+        if(intakeBack.getCurrent(CurrentUnit.AMPS) > THRESHOLD){
+            STALLED = true;
+
+        }
+        return STALLED;
+
+    }
+
+
     public void backIn() {
         intakeFront.setPower(INTAKE_POWER);
     }
