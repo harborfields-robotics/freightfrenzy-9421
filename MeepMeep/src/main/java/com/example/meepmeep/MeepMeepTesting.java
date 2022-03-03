@@ -20,18 +20,18 @@ public class MeepMeepTesting {
 
         // Declare our first bot
         Pose2d splineCV = new Pose2d(4.1,-55.2,Math.toRadians(210));
-        Pose2d splineTest = new Pose2d(8.6,-58.2, Math.toRadians(210));
+        Pose2d splineTest = new Pose2d(8.6,58.2, Math.toRadians(130));
         Pose2d RevertTest = new Pose2d(4.1,-63.2, Math.toRadians(180));
         Pose2d DuckRedCycle = new Pose2d(-57.2,-53.7, Math.toRadians(130));
         Pose2d StoragePark = new Pose2d(-58.7, -34.7, Math.toRadians((90)));
         Pose2d MoveRight1 = new Pose2d(-55.0, -53.7, Math.toRadians(130));
-        Pose2d depositPose = new Pose2d(21.4, -69, Math.toRadians(180));
+        Pose2d depositPose = new Pose2d(21.4, 64, Math.toRadians(-180));
         Pose2d bottomDepositPose = new Pose2d(-1, -69, Math.toRadians(180));
-        Pose2d warehousePose = new Pose2d(36, -69, Math.toRadians(180));
-        Pose2d warehouseReturnPose = new Pose2d(28,-69,Math.toRadians(180));
+        Pose2d warehousePose = new Pose2d(36, 64, Math.toRadians(-180));
+        Pose2d warehouseReturnPose = new Pose2d(28,69,Math.toRadians(-180));
         Pose2d intakePose = new Pose2d(34, -62, Math.toRadians(180));
-        Vector2d intakeVector = new Vector2d(34, -69);
-        Vector2d warehouseVector = new Vector2d(36, -69);
+        Vector2d intakeVector = new Vector2d(34, 64);
+        Vector2d warehouseVector = new Vector2d(36, 64);
 
         Vector2d WarehouseSpline = new Vector2d(7.8,-52.8);
 
@@ -42,7 +42,7 @@ public class MeepMeepTesting {
                 .setColorScheme(new ColorSchemeBlueDark())
                 .setConstraints(140.63964888286645, 52.48291908330528, Math.toRadians(180), Math.toRadians(180), 12.6)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(19, -69, Math.toRadians(180)))
+                        drive.trajectorySequenceBuilder(new Pose2d(7.4, 64, Math.toRadians(180)))
                                 .splineToLinearHeading(depositPose,Math.toRadians(180))
                                 //.lineToLinearHeading(bottomDepositPose)
                                 .splineToLinearHeading(warehousePose,Math.toRadians(180))
@@ -59,31 +59,33 @@ public class MeepMeepTesting {
 
 
 
-//        // Declare out second bot
-//        RoadRunnerBotEntity mySecondBot = new DefaultBotBuilder(meepMeep)
-//                // We set this bot to be red
-//                .setColorScheme(new ColorSchemeRedDark())
-//                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 12.6)
-//                .followTrajectorySequence(drive ->
-//                        drive.trajectorySequenceBuilder(new Pose2d(30, 30, Math.toRadians(180)))
-//                                .forward(30)
-//                                .turn(Math.toRadians(90))
-//                                .forward(30)
-//                                .turn(Math.toRadians(90))
-//                                .forward(30)
-//                                .turn(Math.toRadians(90))
-//                                .forward(30)
-//                                .turn(Math.toRadians(90))
-//                                .build()
-//                );
+        // Declare out second bot
+        RoadRunnerBotEntity mySecondBot = new DefaultBotBuilder(meepMeep)
+                // We set this bot to be red
+                .setColorScheme(new ColorSchemeRedDark())
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 12.6)
+                .followTrajectorySequence(drive ->
+                        drive.trajectorySequenceBuilder(new Pose2d(7.4, 64, Math.toRadians(180)))
+                                .splineToLinearHeading(depositPose,Math.toRadians(180))
+                                //.lineToLinearHeading(bottomDepositPose)
+                                .splineToLinearHeading(warehousePose,Math.toRadians(180))
+                                .splineToConstantHeading(intakeVector, Math.toRadians(180))
+                                .splineToLinearHeading(warehousePose,Math.toRadians(180))
+                                .splineToConstantHeading(intakeVector, Math.toRadians(180))
+                                .splineToConstantHeading(warehouseVector, Math.toRadians(180))
+                                .splineToLinearHeading(depositPose,Math.toRadians(180))
+                                .splineToLinearHeading(splineTest,Math.toRadians(210))
+                                .splineToLinearHeading(warehouseReturnPose,Math.toRadians(180))
+                                .build()
+                );
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_FREIGHTFRENZY_ADI_DARK)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
 
                 // Add both of our declared bot entities
-                .addEntity(myFirstBot)
-                //.addEntity(mySecondBot)
+                //.addEntity(myFirstBot)
+                .addEntity(mySecondBot)
                 .start();
     }
 
