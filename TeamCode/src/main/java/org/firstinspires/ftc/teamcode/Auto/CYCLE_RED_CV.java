@@ -29,18 +29,18 @@ public class CYCLE_RED_CV extends LinearOpMode {
     double AMOUNT_INCREASE_INTAKE_X = 3;
 
     //Milliseconds
-    double STUCK_INTAKE_TIMEOUT = 2000;
+    double STUCK_INTAKE_TIMEOUT = 4000;
 
-    double INTAKE_VELOCITY = 40;
-    double INTAKE_DRIVE_POWER = .25;
+    double INTAKE_VELOCITY = 25;
+    double INTAKE_DRIVE_POWER = .2;
 
     Pose2d startPose = new Pose2d(19, -64, Math.toRadians(180));
-    Pose2d depositPose = new Pose2d(-4.5, -69, Math.toRadians(180));
-    Pose2d bottomDepositPose = new Pose2d(0, -69, Math.toRadians(180));
-    Pose2d warehousePose = new Pose2d(36, -69, Math.toRadians(180));
-    Pose2d intakePose = new Pose2d(ADJUSTABLE_INTAKE_X, -62, Math.toRadians(180));
-    Vector2d intakeVector = new Vector2d(ADJUSTABLE_INTAKE_X, -62);
-    Vector2d warehouseVector = new Vector2d(36, -69);
+    Pose2d depositPose = new Pose2d(-4.5, -65, Math.toRadians(180));
+    Pose2d bottomDepositPose = new Pose2d(0, -65, Math.toRadians(180));
+    Pose2d warehousePose = new Pose2d(36, -65, Math.toRadians(180));
+    Pose2d intakePose = new Pose2d(ADJUSTABLE_INTAKE_X, -64, Math.toRadians(180));
+    Vector2d intakeVector = new Vector2d(ADJUSTABLE_INTAKE_X, -64);
+    Vector2d warehouseVector = new Vector2d(36, -65);
 
     Trajectory START_TO_DEPOSIT;
     TrajectorySequence DEPOSIT_TO_WAREHOUSE;

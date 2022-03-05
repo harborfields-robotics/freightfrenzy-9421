@@ -251,7 +251,7 @@ public class INTAKE_FSM {
                     Oscar.elbow.START_STOP_WIGGLE = true;
                 }
                 else {
-                    Oscar.intake.backOut();
+                    Oscar.intake.backIn();
                 }
                 break;
             case STATE_0:
