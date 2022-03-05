@@ -18,6 +18,14 @@ public class CAPPER {
     private final Gamepad gamepad2;
     private final Telemetry telemetry;
 
+
+    private double k = 1.1;
+
+    private static final double YAW_MAX = .0010;
+    private static final double PITCH_MAX = .0010;
+    private static final double SURGE_MAX = 1;
+
+
     //starting positions
     private final double INITPOSUPDOW = .5;
     private final double INITPOSLR = .5;
@@ -26,30 +34,32 @@ public class CAPPER {
     private double CURUPDOWN = .5;
     private double CURLR = .5;
 
+
     private final double INITINOUT = .5;
 
-    private ElapsedTime time = new ElapsedTime();
+    private ElapsedTime timePitch = new ElapsedTime();
 
-    public CAPPER (HardwareMap ahwMap, Telemetry telemetry, Gamepad c1){
-        UPDOWN = ahwMap.get(Servo.class, "UPDOWN");
-        LR = ahwMap.get(Servo.class, "LR");
-        INOUT = ahwMap.get(CRServo.class,"INOUT");
+    private ElapsedTime timeYaw = new ElapsedTime();
+    private ElapsedTime timeSurge = new ElapsedTime();
+
+    public CAPPER(HardwareMap ahwMap, Telemetry telemetry, Gamepad c1) {
+        UPDOWN = ahwMap.get(Servo.class, "Pitch");
+        LR = ahwMap.get(Servo.class, "Yaw");
+        INOUT = ahwMap.get(CRServo.class, "Surge");
         this.telemetry = telemetry;
         gamepad2 = c1;
 
         UPDOWN.setPosition(INITPOSUPDOW);
         LR.setPosition(INITPOSLR);
         INOUT.setPower(0);
-
-
-
-
     }
+
 
     private void LRupdatePositions() {
         LR.setPosition(CURLR);
 
     }
+
     private void UPDOWNupdatePositions() {
         UPDOWN.setPosition(CURUPDOWN);
 
@@ -61,61 +71,73 @@ public class CAPPER {
         LRupdatePositions();
     }
 
-    public void UPDOWNmoveRelative(double deltaTicks){
+    public void UPDOWNmoveRelative(double deltaTicks) {
         CURUPDOWN += deltaTicks;
 
         UPDOWNupdatePositions();
     }
 
+    private void pitchAsync() {
+        double pitchVal = gamepad2.right_stick_y;
+        if (timePitch.milliseconds() > 4 ) {
+            double pitchMovement = (pitchVal < -.1 || pitchVal > .1) ? (pitchVal * PITCH_MAX) : 0;
+            telemetry.addData("Pitch Value ", pitchMovement);
+            if (pitchMovement > 1 ){
+                pitchMovement = 1;
+            }
 
-    public void CapOut (){
-        INOUT.setPower(1);
-    }
 
-    public void CapIn(){
-        INOUT.setPower(-1);
-    }
-
-    public void CapOff(){
-        INOUT.setPower(0);
-    }
-
-    public void pitchAsync(){
-        if(gamepad2.left_stick_y > .2 && time.milliseconds() > 15){
-            UPDOWNmoveRelative(.001);
-            time.reset();
-        }
-        if(gamepad2.left_stick_y < -.2 && time.milliseconds() > 15){
-            UPDOWNmoveRelative(-.001);
-            time.reset();
+            UPDOWNmoveRelative(pitchMovement);
+            timePitch.reset();
         }
     }
 
-    public void yawSurgeAsync(){
-        if (gamepad2.right_stick_x > .2 && time.milliseconds() > 15){
-            LRmoveRelative(.001);
-            time.reset();
-        }
-        if(gamepad2.right_stick_x < -.2 && time.milliseconds() > 15){
-            LRmoveRelative(.001);
-            time.reset();
+    private void YawAsync() {
+        if (timeYaw.milliseconds() > 4) {
+            double yawVal = -gamepad2.right_stick_x;
+            double movement = (yawVal < -.1 || yawVal > .1) ? (yawVal * YAW_MAX) : 0;
+            telemetry.addData("Pitch Movement", movement);
+            if (movement > 1){
+                movement = 1;
+            }
+
+            LRmoveRelative(movement);
+            timeYaw.reset();
         }
 
-        if(gamepad2.right_stick_y > .2 ){
-            CapOut();
-        }
-        else if (gamepad2.right_stick_y < -.2){
-            CapIn();
-        }
-        else{
-            CapOff();
-        }
+    }
+
+    private void SurgeAsync() {
+
+            double val = gamepad2.left_stick_y;
+            double speed;
+
+            if (val < -.1){
+                speed = -1;
+            }
+
+            else if (val > .1){
+                speed = 1;
+            }
+
+            else {
+                speed = 0;
+            }
+            telemetry.addData("In/out speed", speed);
+
+            INOUT.setPower(speed);
+
+    }
+
+    public void CapperHandleEvents(){
+        YawAsync();
+        SurgeAsync();
+        pitchAsync();
     }
 
 
-
-
-    //while button on dpad is pressed slowly increment the angle at which it facing(up and down)
+}
+    //slowly increment the angle at which it facing(up and down)
     //while button on dpad is pressed slowly reverse the increment
     //while button is pressed move the angle to the right
     //while button is pressed move the angle to the left
@@ -127,4 +149,4 @@ public class CAPPER {
 
 
 
-}
+

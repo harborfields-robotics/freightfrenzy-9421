@@ -64,6 +64,7 @@ public class TeleopODO extends LinearOpMode {
         Oscar.grabber.moveByAngle(-90, "start");
         Oscar.flippers.moveDown("front");
         Oscar.flippers.moveDown("back");
+        Oscar.slides.slidesOutABit();
         Thread.sleep(1800);
         Oscar.flippers.moveDown("front");
         Oscar.flippers.moveDown("back");
@@ -91,8 +92,7 @@ public class TeleopODO extends LinearOpMode {
             deposit_fsm.doDepositBottomAsync();
             deposit_fsm.doDepositSharedAsync();
 
-            cap.pitchAsync();
-            cap.yawSurgeAsync();
+            cap.CapperHandleEvents();
 
 //            Oscar.slides.resetEncoderIfEndstopClicked();
 
@@ -103,8 +103,8 @@ public class TeleopODO extends LinearOpMode {
             intake_fsm.handleEvents(deposit_fsm.isAnyBusy());
 
             if(Oscar.slides.getMotorPosition() <= 200 && !intake_fsm.isBackBusy() && !intake_fsm.isFrontBusy()) {
-                if (gamepad2.left_trigger > .1 || gamepad1.left_trigger > .1) Oscar.intake.reverse();
-                else if (gamepad2.right_trigger > .1 || gamepad1.right_trigger > .1) Oscar.intake.forward();
+                if (gamepad2.left_trigger > .2 || gamepad1.left_trigger > .2) Oscar.intake.reverse();
+                else if (gamepad2.right_trigger > .2 || gamepad1.right_trigger > .2) Oscar.intake.forward();
                 else Oscar.intake.off();
             }
 

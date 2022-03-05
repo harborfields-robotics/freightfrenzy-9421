@@ -78,11 +78,11 @@ public class INTAKE_FSM {
         FRONT_DETECTED = ((DistanceSensor) Oscar.colorFront).getDistance(DistanceUnit.CM) < 3;
         BACK_DETECTED = ((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 3;
 
-        if(Oscar.intake.autoDeJam()){
-            Oscar.intake.backOut();
-            Oscar.intake.frontOut();
-
-        }
+//        if(Oscar.intake.autoDeJam()){
+//            Oscar.intake.backOut();
+//            Oscar.intake.frontOut();
+//
+//        }
 
 
 

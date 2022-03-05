@@ -138,6 +138,7 @@ public class CYCLE_RED_CV extends LinearOpMode {
         BarcodePositionDetector.BarcodePosition barcodePosition;
 
         while (!isStopRequested() && !opModeIsActive()) {
+
             barcodePosition = Oscar.cvUtil.getBarcodePosition();
             telemetry.addData("Barcode position", barcodePosition);
             if(barcodePosition == BarcodePositionDetector.BarcodePosition.LEFT){
