@@ -44,7 +44,7 @@ public class LINEAR_AUTO extends LinearOpMode {
         waitForStart();
 
         Oscar.drive.followTrajectory(START_TO_DEPOSIT);
-        deposit_linear.DROP_THING_ON_TOP();
+        deposit_linear.DROP_DA_THING_ON_TOP();
         Oscar.intake.forward();
         Oscar.drive.followTrajectory(DEPOSIT_TO_WAREHOUSE);
 //        while (!Oscar.drive.isBusy()) {
@@ -62,6 +62,6 @@ public class LINEAR_AUTO extends LinearOpMode {
 //        }
         Oscar.intake.reverse();
         Oscar.drive.followTrajectory(WAREHOUSE_TO_DEPOSIT);
-        deposit_linear.DROP_THING_ON_TOP();
+        deposit_linear.DROP_DA_THING_ON_TOP();
     }
 }

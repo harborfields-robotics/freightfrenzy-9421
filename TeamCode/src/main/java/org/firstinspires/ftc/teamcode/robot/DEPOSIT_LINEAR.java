@@ -10,7 +10,7 @@ public class DEPOSIT_LINEAR {
     public DEPOSIT_LINEAR(Hardware hardware, Telemetry telemetry, Gamepad g1, Gamepad g2) {
         deposit_fsm = new DEPOSIT_FSM(hardware, telemetry, g1, g2);
     }
-    public void DROP_THING_ON_TOP() {
+    public void DROP_DA_THING_ON_TOP() {
         deposit_fsm.startDeposittop = true;
         deposit_fsm.doDepositTopAsync();
         while(deposit_fsm.isAnyBusy()) {
@@ -20,7 +20,7 @@ public class DEPOSIT_LINEAR {
             }
         }
     }
-    public void DROP_THING_ON_MIDDLE() {
+    public void DROP_DA_THING_ON_MIDDLE() {
         deposit_fsm.startDepositmid = true;
         deposit_fsm.doDepositMiddleAsync();
         while(deposit_fsm.isAnyBusy()) {
@@ -30,7 +30,7 @@ public class DEPOSIT_LINEAR {
             }
         }
     }
-    public void DROP_THING_ON_BOTTOM() {
+    public void DROP_DA_THING_ON_BOTTOM() {
         deposit_fsm.startDepositbot = true;
         deposit_fsm.doDepositBottomAsync();
         while(deposit_fsm.isAnyBusy()) {

@@ -25,6 +25,11 @@ public class MeepMeepTesting {
         Pose2d DuckRedCycle = new Pose2d(-57.2,-53.7, Math.toRadians(130));
         Pose2d StoragePark = new Pose2d(-58.7, -34.7, Math.toRadians((90)));
         Pose2d MoveRight1 = new Pose2d(-55.0, -53.7, Math.toRadians(130));
+        Pose2d startPR = new Pose2d(-39.1, -64, Math.toRadians(180));
+        Pose2d returnToPos = new Pose2d(-39.1, -69, Math.toRadians(180));
+
+
+        Pose2d RedDuckPreload = new Pose2d(-37.2, -55,Math.toRadians(150));
 
         Vector2d WarehouseSpline = new Vector2d(48,-55.8);
 
@@ -47,30 +52,26 @@ public class MeepMeepTesting {
 
 
 //        // Declare out second bot
-//        RoadRunnerBotEntity mySecondBot = new DefaultBotBuilder(meepMeep)
-//                // We set this bot to be red
-//                .setColorScheme(new ColorSchemeRedDark())
-//                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 12.6)
-//                .followTrajectorySequence(drive ->
-//                        drive.trajectorySequenceBuilder(new Pose2d(30, 30, Math.toRadians(180)))
-//                                .forward(30)
-//                                .turn(Math.toRadians(90))
-//                                .forward(30)
-//                                .turn(Math.toRadians(90))
-//                                .forward(30)
-//                                .turn(Math.toRadians(90))
-//                                .forward(30)
-//                                .turn(Math.toRadians(90))
-//                                .build()
-//                );
+        RoadRunnerBotEntity mySecondBot = new DefaultBotBuilder(meepMeep)
+                // We set this bot to be red
+                .setColorScheme(new ColorSchemeRedDark())
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 12.6)
+                .followTrajectorySequence(drive ->
+                        drive.trajectorySequenceBuilder(startPR)
+                                .splineToLinearHeading(RedDuckPreload,Math.toRadians(150))
+                                .splineToLinearHeading(DuckRedCycle,Math.toRadians(110))
+                                .splineToLinearHeading(returnToPos,Math.toRadians(180))
+
+                                .build()
+                );
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_FREIGHTFRENZY_ADI_DARK)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
 
                 // Add both of our declared bot entities
-                .addEntity(myFirstBot)
-                //.addEntity(mySecondBot)
+                //.addEntity(myFirstBot)
+                .addEntity(mySecondBot)
                 .start();
     }
 

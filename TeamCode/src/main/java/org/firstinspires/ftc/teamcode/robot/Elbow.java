@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.robot;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Elbow {
     public Servo e2;
@@ -31,6 +32,51 @@ public class Elbow {
 
     private final double grabPosE2 = curE2 + GRAB_POS_OFFSET;
     private final double grabPosE3 = curE3 - GRAB_POS_OFFSET;
+    public boolean START_STOP_WIGGLE = false;
+    private double WIGGLE_FREQUENCY = 100;
+    private ElapsedTime time = new ElapsedTime();
+
+    enum WIGGLE_STATE {
+        OFF,
+        UP,
+        DOWN
+    }
+
+    WIGGLE_STATE wiggle_state = WIGGLE_STATE.OFF;
+
+    public void doWiggleAsync () {
+        switch (wiggle_state) {
+            case OFF:
+                if(START_STOP_WIGGLE) {
+                    wiggle_state = WIGGLE_STATE.DOWN;
+                    time.reset();
+                }
+                break;
+            case UP:
+                moveStart();
+                if(time.milliseconds() > WIGGLE_FREQUENCY) {
+                    wiggle_state = WIGGLE_STATE.DOWN;
+                    time.reset();
+                }
+                if(!START_STOP_WIGGLE) {
+                    wiggle_state = WIGGLE_STATE.OFF;
+                    goToGrabPos();
+                }
+                break;
+            case DOWN:
+                goToGrabPos();
+                if(time.milliseconds() > WIGGLE_FREQUENCY) {
+                    wiggle_state = WIGGLE_STATE.UP;
+                    time.reset();
+                }
+                if(!START_STOP_WIGGLE) {
+                    wiggle_state = WIGGLE_STATE.OFF;
+                    goToGrabPos();
+                }
+                break;
+        }
+
+    }
 
 
     public Elbow(HardwareMap ahwMap) {
