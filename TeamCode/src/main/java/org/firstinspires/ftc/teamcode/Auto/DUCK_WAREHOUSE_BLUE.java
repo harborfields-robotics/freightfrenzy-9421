@@ -17,8 +17,8 @@ public class DUCK_WAREHOUSE_BLUE extends LinearOpMode {
     public static Pose2d startPR = new Pose2d(-39.1, 64, Math.toRadians(0));
     public static Pose2d DuckRed = new Pose2d(-57.2,53.7, Math.toRadians(30));
     public static Pose2d returnToPos = new Pose2d(-39.1, 64, Math.toRadians(0));
-    public static Pose2d driveToWarehouse = new Pose2d(44.8,-69,Math.toRadians(180));
-    public static Pose2d RedCyclePreload = new Pose2d(-37.2, -55,Math.toRadians(150));
+    public static Pose2d driveToWarehouse = new Pose2d(44.8,64,Math.toRadians(180));
+    public static Pose2d RedCyclePreload = new Pose2d(-37.2, 55,Math.toRadians(150));
     public static Pose2d StoragePark = new Pose2d(-58.7, 34.7, Math.toRadians((90)));
     //Hardware Oscar = new Hardware(hardwareMap, telemetry);
     //test 2
