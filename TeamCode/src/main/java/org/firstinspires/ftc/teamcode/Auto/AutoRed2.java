@@ -17,7 +17,6 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import dashboard.RobotConstants;
 
     @Config
-    @Disabled
     @Autonomous(group = "drive")
     public class AutoRed2 extends LinearOpMode {
         private FtcDashboard dashboard;
