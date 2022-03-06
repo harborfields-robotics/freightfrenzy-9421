@@ -23,10 +23,10 @@ public class MeepMeepTesting {
         Pose2d splineTest = new Pose2d(4.1,-55.2, Math.toRadians(210));
         Pose2d RevertTest = new Pose2d(4.1,-63.2, Math.toRadians(180));
         Pose2d DuckRedCycle = new Pose2d(-57.2,53.7, Math.toRadians(30));
-        Pose2d StoragePark = new Pose2d(-58.7, -34.7, Math.toRadians((90)));
+        Pose2d StoragePark = new Pose2d(-58.7, 34.7, Math.toRadians((90)));
         Pose2d MoveRight1 = new Pose2d(-55.0, -53.7, Math.toRadians(130));
         Pose2d startPR = new Pose2d(-39.1, 64, Math.toRadians(0));
-        Pose2d returnToPos = new Pose2d(-39.1, 69, Math.toRadians(0));
+        Pose2d returnToPos = new Pose2d(-39.1, 64, Math.toRadians(0));
 
 
         Pose2d RedDuckPreload = new Pose2d(-37.2, 55,Math.toRadians(30));
@@ -61,6 +61,7 @@ public class MeepMeepTesting {
                                 .splineToLinearHeading(RedDuckPreload,Math.toRadians(30))
                                 .splineToLinearHeading(DuckRedCycle,Math.toRadians(30))
                                 .splineToLinearHeading(returnToPos,Math.toRadians(0))
+                                .splineToConstantHeading()
 
                                 .build()
                 );
