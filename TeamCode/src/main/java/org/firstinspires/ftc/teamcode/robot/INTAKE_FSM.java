@@ -68,6 +68,23 @@ public class INTAKE_FSM {
     public void SET_EXEC_BACK_FLIP(boolean EXEC) {EXEC_BACK_FLIP = EXEC;}
     public void SET_EXEC_FRONT_FLIP(boolean EXEC) {EXEC_FRONT_FLIP = EXEC;}
 
+    public void handleEvents(boolean isDepositBusy, boolean disableBack, boolean disableFront) {
+        if(!isDepositBusy) {
+            if(!disableBack) {
+                doFlipBackAsync();
+            }
+            if(!disableFront) {
+                doFlipFrontAsync();
+            }
+        }
+    }
+
+    public void forceDownBack() {
+        back_state = BACK_STATE.INIT;
+        EXEC_BACK_FLIP = false;
+        Oscar.flippers.moveDown("back");
+    }
+
     public void doFlipFrontAsync() {
         telemetry.addData("FRONT FLIPPER STATE: ", front_state);
         switch(front_state) {
@@ -92,7 +109,7 @@ public class INTAKE_FSM {
                 }
                 break;
             case STATE_0:
-                if(time.milliseconds() > 1200) {
+                if(time.milliseconds() > 800) {
                     front_state = FRONT_STATE.STATE_2;
                     Oscar.flippers.moveUp("front");
                     Oscar.slides.START_STOP_WIGGLE = false;
@@ -198,7 +215,7 @@ public class INTAKE_FSM {
                 }
                 break;
             case STATE_2:
-                if(time.milliseconds() > 1200) {
+                if(time.milliseconds() > 800) {
                     back_state = BACK_STATE.STATE_3;
                     Oscar.flippers.moveDown("back");
                     time.reset();
