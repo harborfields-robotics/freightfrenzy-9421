@@ -2,12 +2,14 @@ package org.firstinspires.ftc.teamcode.Teleop;
 
 import org.firstinspires.ftc.teamcode.robot.Hardware;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.Arrays;
 
+@Disabled
 @TeleOp(name ="Simple Teleop No ODO")
 public class TeleopnoOdo extends OpMode {
 

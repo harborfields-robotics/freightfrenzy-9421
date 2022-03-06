@@ -71,8 +71,6 @@ public class DEPOSIT_FSM {
     public boolean startDepositmid = false;
     public boolean startDepositbot = false;
 
-    private double TORQUE_SERVO_DELAY = 250;
-
     public boolean DROP_THE_THING_NOW = false;
 
     public boolean THE_THING_CAN_BE_DROPPED_NOW = false;
@@ -112,7 +110,7 @@ public class DEPOSIT_FSM {
     }
 
     public void doDepositTopAsync() {
-        telemetry.addData("DEPOSIT STATE: ", deposit_state);
+//        telemetry.addData("DEPOSIT STATE: ", deposit_state);
         switch(deposit_state) {
             case INIT:
                 if((gamepad2.triangle || gamepad1.triangle || startDeposittop) && !midBusy && !bottomBusy && !sharedBusy) {
@@ -130,19 +128,20 @@ public class DEPOSIT_FSM {
             case STATE_0:
                 if(time.milliseconds() > 150) {
                     deposit_state = DEPOSIT_STATE.STATE_1;
-                    Oscar.grabber.goTop();
                     time.reset();
                 }
                 else {
                     Oscar.slides.slidesTop();
                     Oscar.grabber.closeGrab();
                     Oscar.grabber.goStart();
+                    Oscar.elbow.moveStart();
                 }
                 break;
             case STATE_1:
                 if(Oscar.slides.getMotorPosition() > 300) {
                     Oscar.slides.slidesTop();
                     Oscar.elbow.moveTop();
+                    Oscar.grabber.goTop();
                     deposit_state = DEPOSIT_STATE.STATE_2;
                     time.reset();
                     Oscar.slides.RESET_ADJUSTABLE_TOP_TICKS();
@@ -173,7 +172,7 @@ public class DEPOSIT_FSM {
                         Oscar.slides.GO_TO_ADJUSTABLE_TOP_POSITION();
                     }
                 }
-                if(time.milliseconds() > 450 + TORQUE_SERVO_DELAY) {
+                if(time.milliseconds() > 450) {
                     THE_THING_CAN_BE_DROPPED_NOW = true;
                 }
                 break;
@@ -192,7 +191,6 @@ public class DEPOSIT_FSM {
             case STATE_4:
                 if(time.milliseconds() > 150) {
                     deposit_state = DEPOSIT_STATE.STATE_5;
-                    Oscar.grabber.goStart();
                     time.reset();
                 }
                 else {
@@ -204,6 +202,7 @@ public class DEPOSIT_FSM {
             case STATE_5:
                 if(Oscar.slides.getMotorPosition() < 380) {
                     deposit_state = DEPOSIT_STATE.STATE_6;
+                    Oscar.grabber.goStart();
                     time.reset();
                 }
                 else {
@@ -227,7 +226,7 @@ public class DEPOSIT_FSM {
         }
     }
     public void doDepositMiddleAsync() {
-        telemetry.addData("DEPOSIT STATE (MIDDLE): ", mid_deposit_state);
+//        telemetry.addData("DEPOSIT STATE (MIDDLE): ", mid_deposit_state);
         switch(mid_deposit_state) {
             case INIT:
                 if((gamepad2.square || startDepositmid || gamepad1.circle) && !topBusy && !bottomBusy) {
@@ -283,7 +282,7 @@ public class DEPOSIT_FSM {
                         time.reset();
                     }
                 }
-                if(time.milliseconds() > 800 + TORQUE_SERVO_DELAY) {
+                if(time.milliseconds() > 800) {
                     THE_THING_CAN_BE_DROPPED_NOW = true;
                 }
                 break;
@@ -343,7 +342,7 @@ public class DEPOSIT_FSM {
         }
     }
     public void doDepositBottomAsync() {
-        telemetry.addData("DEPOSIT STATE (BOTTOM): ", bottom_deposit_state);
+//        telemetry.addData("DEPOSIT STATE (BOTTOM): ", bottom_deposit_state);
         switch(bottom_deposit_state) {
             case INIT:
                 if ((startDepositbot) && !topBusy && !midBusy) {
@@ -389,7 +388,7 @@ public class DEPOSIT_FSM {
                 } else {
                     Oscar.slides.slidesBottom();
                 }
-                if (time.milliseconds() > 1000 + TORQUE_SERVO_DELAY) {
+                if (time.milliseconds() > 1000) {
                     THE_THING_CAN_BE_DROPPED_NOW = true;
                 }
                 break;
@@ -453,7 +452,7 @@ public class DEPOSIT_FSM {
         }
     }
     public void doDepositSharedAsync() {
-        telemetry.addData("Shared State: ", shared_deposit_state);
+//        telemetry.addData("Shared State: ", shared_deposit_state);
         switch (shared_deposit_state) {
             case INIT:
                 if(gamepad1.dpad_right || gamepad2.dpad_right) {

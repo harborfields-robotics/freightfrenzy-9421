@@ -26,6 +26,9 @@ public class TeleopODO extends LinearOpMode {
 
     private FtcDashboard dashboard;
 
+    private INTAKE_FSM intake_fsm;
+    private DEPOSIT_FSM deposit_fsm;
+
     enum CONTROLLER_MODE {
         SHARED,
         REGULAR,
@@ -49,8 +52,8 @@ public class TeleopODO extends LinearOpMode {
 
         controller1.addEventListener("dpad_left", ButtonState.HELD, () -> LOGIC.IS_THING_IN_DA_ROBOT = false);
 
-        DEPOSIT_FSM deposit_fsm = new DEPOSIT_FSM(Oscar, telemetry, gamepad1, gamepad2);
-        INTAKE_FSM intake_fsm = new INTAKE_FSM(Oscar, telemetry, gamepad1, gamepad2);
+        deposit_fsm = new DEPOSIT_FSM(Oscar, telemetry, gamepad1, gamepad2);
+        intake_fsm = new INTAKE_FSM(Oscar, telemetry, gamepad1, gamepad2);
 
         CAPPER cap = new CAPPER(hardwareMap ,telemetry, gamepad2);
 
@@ -100,16 +103,13 @@ public class TeleopODO extends LinearOpMode {
                 Oscar.slides.slidesGrab();
             }
 
-            intake_fsm.handleEvents(deposit_fsm.isAnyBusy());
+            intake_fsm.handleEvents(deposit_fsm.isAnyBusy(), false, false);
 
             if(Oscar.slides.getMotorPosition() <= 200 && !intake_fsm.isBackBusy() && !intake_fsm.isFrontBusy()) {
                 if (gamepad2.left_trigger > .2 || gamepad1.left_trigger > .2) Oscar.intake.reverse();
                 else if (gamepad2.right_trigger > .2 || gamepad1.right_trigger > .2) Oscar.intake.forward();
                 else Oscar.intake.off();
             }
-
-            telemetry.addData("IS THING IN DA ROBOT? ", LOGIC.IS_THING_IN_DA_ROBOT);
-            telemetry.addData("IS THE ENCODER OK", Oscar.slides.getMotorPosition());
 
             switch (controller_mode) {
                 case SHARED:

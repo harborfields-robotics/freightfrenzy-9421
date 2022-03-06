@@ -20,7 +20,7 @@ public class Intake {
 
 
     //intake powers are kinda self explanatory
-    public static final double INTAKE_POWER = .7;
+    public static final double INTAKE_POWER = .8;
     public static final double INTAKE_POWER_SLOW = 1;
     public static final double THRESHOLD = .48;
 

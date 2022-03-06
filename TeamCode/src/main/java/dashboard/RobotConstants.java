@@ -18,6 +18,11 @@ public class RobotConstants {
     public static double STARTY = -48;
     public static double HEADING = 180;
 
+    public static double DISTANCE_THRESHOLD_FOR_FLIP = 2;
+
+    public static double PULSE_FREQUENCY_ON = 200;
+    public static double PULSE_FREQUENCY_OFF = 100;
+
     public static double CYCLEX;
     public static double CYCLEY;
 }

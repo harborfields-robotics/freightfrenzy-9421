@@ -284,7 +284,7 @@ public class CYCLE_BLUE_CV extends LinearOpMode {
             deposit_fsm.doDepositTopAsync();
             deposit_fsm.doDepositMiddleAsync();
             deposit_fsm.doDepositBottomAsync();
-            intake_fsm.handleEvents(deposit_fsm.isAnyBusy());
+            intake_fsm.handleEvents(deposit_fsm.isAnyBusy(), false, true);
             Oscar.drive.update();
         }
     }

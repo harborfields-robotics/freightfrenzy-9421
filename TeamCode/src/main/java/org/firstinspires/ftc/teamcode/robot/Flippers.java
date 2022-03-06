@@ -10,8 +10,8 @@ public class Flippers {
     private Servo f0;
     private Servo f1;
 
-    private double downPosition0 = .38;
-    private double downPosition1 = .96;
+    private double downPosition0 = .34;
+    private double downPosition1 = 1;
     private double wigglePosition0 = .7;
     private double wigglePosition1 = .68;
 

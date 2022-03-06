@@ -18,6 +18,8 @@ import org.firstinspires.ftc.teamcode.robot.Hardware;
 import org.firstinspires.ftc.teamcode.robot.INTAKE_FSM;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
+import dashboard.RobotConstants;
+
 @Config
 @Autonomous(group = "advanced")
 public class CYCLE_RED_CV extends LinearOpMode {
@@ -25,21 +27,21 @@ public class CYCLE_RED_CV extends LinearOpMode {
 
     double AMOUNT_ITERATE_Y = 2.8;
 
-    double ADJUSTABLE_INTAKE_X = 40;
+    double ADJUSTABLE_INTAKE_X = 44;
     double AMOUNT_INCREASE_INTAKE_X = 3;
 
     //Milliseconds
-    double STUCK_INTAKE_TIMEOUT = 4000;
+    double STUCK_INTAKE_TIMEOUT = 2000;
 
-    double INTAKE_VELOCITY = 25;
-    double INTAKE_DRIVE_POWER = .2;
+    double INTAKE_VELOCITY = 20;
+    double INTAKE_DRIVE_POWER = .16;
 
     Pose2d startPose = new Pose2d(19, -64, Math.toRadians(180));
-    Pose2d depositPose = new Pose2d(-4.5, -65, Math.toRadians(180));
-    Pose2d bottomDepositPose = new Pose2d(0, -65, Math.toRadians(180));
+    Pose2d depositPose = new Pose2d(-5.5, -65, Math.toRadians(180));
+    Pose2d bottomDepositPose = new Pose2d(-2.2, -65, Math.toRadians(180));
     Pose2d warehousePose = new Pose2d(36, -65, Math.toRadians(180));
-    Pose2d intakePose = new Pose2d(ADJUSTABLE_INTAKE_X, -64, Math.toRadians(180));
-    Vector2d intakeVector = new Vector2d(ADJUSTABLE_INTAKE_X, -64);
+    Pose2d intakePose = new Pose2d(ADJUSTABLE_INTAKE_X, -60, Math.toRadians(180));
+    Vector2d intakeVector = new Vector2d(ADJUSTABLE_INTAKE_X, -60);
     Vector2d warehouseVector = new Vector2d(36, -65);
 
     Trajectory START_TO_DEPOSIT;
@@ -50,8 +52,8 @@ public class CYCLE_RED_CV extends LinearOpMode {
 
     private void iterateIntakeX() {
         ADJUSTABLE_INTAKE_X += AMOUNT_INCREASE_INTAKE_X;
-        intakeVector = new Vector2d(ADJUSTABLE_INTAKE_X, -62);
-        intakePose = new Pose2d(ADJUSTABLE_INTAKE_X, -62, Math.toRadians(180));
+        intakeVector = new Vector2d(ADJUSTABLE_INTAKE_X, -60);
+        intakePose = new Pose2d(ADJUSTABLE_INTAKE_X, -60, Math.toRadians(180));
         DEPOSIT_TO_WAREHOUSE = Oscar.drive.trajectorySequenceBuilder(depositPose)
                 .lineToLinearHeading(warehousePose)
                 .splineToConstantHeading(intakeVector, Math.toRadians(180),
@@ -140,7 +142,7 @@ public class CYCLE_RED_CV extends LinearOpMode {
         while (!isStopRequested() && !opModeIsActive()) {
 
             barcodePosition = Oscar.cvUtil.getBarcodePosition();
-            telemetry.addData("Barcode position", barcodePosition);
+            telemetry.addData("BARCODE POSITION: ", barcodePosition);
             if(barcodePosition == BarcodePositionDetector.BarcodePosition.LEFT){
                 counterBottom++;
             }
@@ -180,7 +182,9 @@ public class CYCLE_RED_CV extends LinearOpMode {
 
         while(isStarted() && !isStopRequested()) {
             Oscar.intake.frontOut();
-            telemetry.addData("STATE: ", state);
+            telemetry.addData("AUTO STATE: ", state);
+            telemetry.addData("BACK DISTANCE: ", ((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM));
+            telemetry.addData("FRONT DISTANCE: ", ((DistanceSensor) Oscar.colorFront).getDistance(DistanceUnit.CM));
             telemetry.update();
             switch (state) {
                 case INIT:
@@ -225,7 +229,7 @@ public class CYCLE_RED_CV extends LinearOpMode {
                     }
                     break;
                 case BACKWARD:
-                    if((((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 2 || Oscar.drive.getPoseEstimate().getX() >= ADJUSTABLE_INTAKE_X || !Oscar.drive.isBusy())) {
+                    if((((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < RobotConstants.DISTANCE_THRESHOLD_FOR_FLIP || Oscar.drive.getPoseEstimate().getX() >= ADJUSTABLE_INTAKE_X || !Oscar.drive.isBusy())) {
                         state = STATE.INTAKE;
                         Oscar.drive.breakFollowing();
                         time.reset();
@@ -238,8 +242,8 @@ public class CYCLE_RED_CV extends LinearOpMode {
                     }
                     break;
                 case INTAKE:
-                    Oscar.drive.setWeightedDrivePower(new Pose2d(-INTAKE_DRIVE_POWER,.2,0));
-                    if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 2) {
+                    Oscar.drive.setWeightedDrivePower(new Pose2d(-INTAKE_DRIVE_POWER,0, .05));
+                    if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < RobotConstants.DISTANCE_THRESHOLD_FOR_FLIP) {
                         intake_fsm.SET_EXEC_BACK_FLIP(true);
                         Oscar.drive.setWeightedDrivePower(new Pose2d(0,0,0));
                         Oscar.drive.setPoseEstimate(new Pose2d(Oscar.drive.getPoseEstimate().getX(), Oscar.drive.getPoseEstimate().getY() + AMOUNT_ITERATE_Y, Oscar.drive.getPoseEstimate().getHeading()));
@@ -263,11 +267,11 @@ public class CYCLE_RED_CV extends LinearOpMode {
                     }
                     else{
                         Oscar.intake.backOut();
-                        Oscar.drive.setWeightedDrivePower(new Pose2d(2*INTAKE_DRIVE_POWER,-.2,0));
+                        Oscar.drive.setWeightedDrivePower(new Pose2d(2*INTAKE_DRIVE_POWER,0,-.05));
                     }
                     break;
                 case FORWARD:
-                    if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) > 2 && Oscar.drive.getPoseEstimate().getX() < 18 && !ENSURE_ONE_DEPOSIT) {
+                    if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) > RobotConstants.DISTANCE_THRESHOLD_FOR_FLIP && Oscar.drive.getPoseEstimate().getX() < 18 && !ENSURE_ONE_DEPOSIT) {
                         deposit_fsm.startDeposittop = true;
                         ENSURE_ONE_DEPOSIT = true;
                     }
@@ -287,7 +291,7 @@ public class CYCLE_RED_CV extends LinearOpMode {
             deposit_fsm.doDepositTopAsync();
             deposit_fsm.doDepositMiddleAsync();
             deposit_fsm.doDepositBottomAsync();
-            intake_fsm.handleEvents(deposit_fsm.isAnyBusy());
+            intake_fsm.handleEvents(deposit_fsm.isAnyBusy(), true, false);
             Oscar.drive.update();
         }
     }
