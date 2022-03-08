@@ -28,8 +28,8 @@ public class Intake {
     }
 
     public Intake(HardwareMap ahwMap){
-        intakeFront = ahwMap.get(DcMotorEx.class, "intakeFront");
-        intakeBack = ahwMap.get(DcMotorEx.class, "intakeBack");
+        intakeBack = ahwMap.get(DcMotorEx.class, "intakeFront");
+        intakeFront = ahwMap.get(DcMotorEx.class, "intakeBack");
 
 //        encoderFront = new Encoder(ahwMap.get(DcMotorEx.class, "encoderFront"));
 //        encoderBack = new Encoder(ahwMap.get(DcMotorEx.class, "encoderBack"));

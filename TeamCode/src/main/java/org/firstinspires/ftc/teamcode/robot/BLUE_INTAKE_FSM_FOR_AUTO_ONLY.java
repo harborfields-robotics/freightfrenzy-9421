@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-public class INTAKE_FSM {
+public class BLUE_INTAKE_FSM_FOR_AUTO_ONLY {
     enum BACK_STATE {
         INIT,
         STATE_0,
@@ -28,7 +28,7 @@ public class INTAKE_FSM {
     }
     private BACK_STATE back_state = BACK_STATE.INIT;
     private FRONT_STATE front_state = FRONT_STATE.INIT;
-    private final Hardware Oscar;
+    private final BLUE_HARDWARE_FOR_AUTO_ONLY Oscar;
     private final Gamepad gamepad1;
     private final Gamepad gamepad2;
     private boolean frontBusy = false;
@@ -38,13 +38,13 @@ public class INTAKE_FSM {
     private boolean EXEC_BACK_FLIP = false;
     private boolean EXEC_FRONT_FLIP = false;
 
-    public INTAKE_FSM(Hardware hardware, Telemetry telemetry, Gamepad c1, Gamepad c2) {
+    public BLUE_INTAKE_FSM_FOR_AUTO_ONLY(BLUE_HARDWARE_FOR_AUTO_ONLY hardware, Telemetry telemetry, Gamepad c1, Gamepad c2) {
         this.Oscar = hardware;
         this.telemetry = telemetry;
         gamepad1 = c1;
         gamepad2 = c2;
     }
-    public INTAKE_FSM(Hardware hardware, Telemetry telemetry) {
+    public BLUE_INTAKE_FSM_FOR_AUTO_ONLY(BLUE_HARDWARE_FOR_AUTO_ONLY hardware, Telemetry telemetry) {
         this.Oscar = hardware;
         this.telemetry = telemetry;
         gamepad1 = null;
@@ -108,7 +108,7 @@ public class INTAKE_FSM {
                 }
                 break;
             case STATE_01:
-                if(time.milliseconds() > 10) {
+                if(time.milliseconds() > 500) {
                     front_state = FRONT_STATE.STATE_0;
                     Oscar.elbow.START_STOP_WIGGLE = true;
                 }
@@ -188,7 +188,7 @@ public class INTAKE_FSM {
                 }
                 break;
             case STATE_01:
-                if(time.milliseconds() > 10) {
+                if(time.milliseconds() > 500) {
                     back_state = BACK_STATE.STATE_0;
                     Oscar.elbow.START_STOP_WIGGLE = true;
                 }

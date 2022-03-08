@@ -11,11 +11,11 @@ public class Elbow {
     private double curE2 = 0;
     private double curE3 = 1;
 
-    private final double START_OFFSET = .26;
+    private final double START_OFFSET = .23;
     private final double TOP_OFFSET = .65;
     private final double MID_OFFSET = .8;
     private final double BOTTOM_OFFSET = .9;
-    private final double GRAB_POS_OFFSET = .2;
+    private final double GRAB_POS_OFFSET = .20;
 
 
     private final double startE2 = curE2 + START_OFFSET;
@@ -85,7 +85,11 @@ public class Elbow {
 
     }
 
-
+    public void moveRelative(double deltaTicks) {
+        curE2 += deltaTicks;
+        curE3 -= deltaTicks;
+        updatePositions();
+    }
 
     private void updatePositions() {
         e2.setPosition(curE2);
@@ -93,7 +97,6 @@ public class Elbow {
     }
 
     public void moveStart() {
-        goToGrabPos();
         curE2 = startE2;
         curE3 = startE3;
         updatePositions();

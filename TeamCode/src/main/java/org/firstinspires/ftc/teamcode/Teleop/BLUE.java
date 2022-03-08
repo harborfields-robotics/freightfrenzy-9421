@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.robot.controllers.ControllerState;
 //
 @Config
 @TeleOp(group = "drive")
-public class TeleopODO extends LinearOpMode {
+public class BLUE extends LinearOpMode {
 
     private FtcDashboard dashboard;
 
@@ -44,7 +44,7 @@ public class TeleopODO extends LinearOpMode {
         ControllerState controller1 = new ControllerState(gamepad1);
         ControllerState controller2 = new ControllerState(gamepad2);
 
-        controller1.addEventListener("x", ButtonState.HELD, () -> Oscar.grabber.carousellOn());
+        controller1.addEventListener("x", ButtonState.HELD, () -> Oscar.grabber.carousellReverse());
         controller1.addEventListener("x", ButtonState.OFF, () -> Oscar.grabber.carousellOff());
 
         controller2.addEventListener("dpad_down", ButtonState.HELD, () -> intake_fsm.forceDownBack());
@@ -83,6 +83,8 @@ public class TeleopODO extends LinearOpMode {
 
         while (opModeIsActive()) {
 
+            telemetry.addData("DISTANCE: ", ((DistanceSensor) Oscar.colorFront).getDistance(DistanceUnit.CM));
+
             telemetry.update();
 
             controller1.updateControllerState();
@@ -108,7 +110,7 @@ public class TeleopODO extends LinearOpMode {
 //                gamepad2.runRumbleEffect(customRumbleEffect);
             }
 
-            intake_fsm.handleEvents(deposit_fsm.isAnyBusy(), false, true);
+            intake_fsm.handleEvents(deposit_fsm.isAnyBusy(), false, false);
 
             if(!deposit_fsm.isAnyBusy() && !intake_fsm.isBackBusy() && !intake_fsm.isFrontBusy()) {
                 Oscar.slides.slidesGrab();
@@ -140,7 +142,7 @@ public class TeleopODO extends LinearOpMode {
                 Oscar.drive.setWeightedDrivePower(new Pose2d(-gamepad1.left_stick_x * 1,gamepad1.left_stick_y * 1,-gamepad1.right_stick_x * .5));
             }
             else if(controller_mode == CONTROLLER_MODE.REGULAR) {
-                Oscar.drive.setWeightedDrivePower(new Pose2d(-gamepad1.left_stick_y * 1,-gamepad1.left_stick_x * 1,-gamepad1.right_stick_x * .5));
+                Oscar.drive.setWeightedDrivePower(new Pose2d(gamepad1.left_stick_y * 1,gamepad1.left_stick_x * 1,-gamepad1.right_stick_x * .5));
             }
 
         }

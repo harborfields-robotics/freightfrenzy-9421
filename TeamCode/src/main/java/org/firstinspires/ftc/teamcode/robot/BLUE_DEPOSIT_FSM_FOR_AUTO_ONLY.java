@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class DEPOSIT_FSM {
+public class BLUE_DEPOSIT_FSM_FOR_AUTO_ONLY {
     enum DEPOSIT_STATE {
         INIT,
         STATE_0,
@@ -55,7 +55,7 @@ public class DEPOSIT_FSM {
     private MID_DEPOSIT_STATE mid_deposit_state = MID_DEPOSIT_STATE.INIT;
     private BOTTOM_DEPOSIT_STATE bottom_deposit_state = BOTTOM_DEPOSIT_STATE.INIT;
     private SHARED_DEPOSIT_STATE shared_deposit_state = SHARED_DEPOSIT_STATE.INIT;
-    private final Hardware Oscar;
+    private final BLUE_HARDWARE_FOR_AUTO_ONLY Oscar;
     private final Gamepad gamepad1;
     private final Gamepad gamepad2;
     private boolean topBusy = false;
@@ -83,13 +83,13 @@ public class DEPOSIT_FSM {
     }
     public boolean isAnyBusy() {return(midBusy || bottomBusy || topBusy || sharedBusy);}
 
-    public DEPOSIT_FSM(Hardware hardware, Telemetry telemetry, Gamepad c1, Gamepad c2) {
+    public BLUE_DEPOSIT_FSM_FOR_AUTO_ONLY(BLUE_HARDWARE_FOR_AUTO_ONLY hardware, Telemetry telemetry, Gamepad c1, Gamepad c2) {
         this.Oscar = hardware;
         this.telemetry = telemetry;
         gamepad1 = c1;
         gamepad2 = c2;
     }
-    public DEPOSIT_FSM(Hardware hardware, Telemetry telemetry){
+    public BLUE_DEPOSIT_FSM_FOR_AUTO_ONLY(BLUE_HARDWARE_FOR_AUTO_ONLY hardware, Telemetry telemetry){
         this.Oscar = hardware;
         this.telemetry = telemetry;
 
@@ -169,7 +169,7 @@ public class DEPOSIT_FSM {
                         Oscar.slides.GO_TO_ADJUSTABLE_TOP_POSITION();
                     }
                 }
-                if(time.milliseconds() > 550) {
+                if(time.milliseconds() > 450) {
                     THE_THING_CAN_BE_DROPPED_NOW = true;
                 }
                 break;
