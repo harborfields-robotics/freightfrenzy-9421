@@ -48,8 +48,8 @@ public class BarcodePositionDetector extends OpenCvPipeline {
         Scalar highHSV;
 
         if( type.equalsIgnoreCase( "duck" ) ) {
-            lowHSV = new Scalar(0, 0, 168 );//25, 25, 35    20, 100, 10
-            highHSV = new Scalar(172 , 111, 255 );
+            lowHSV = new Scalar(0, 0, 167 );//25, 25, 35    20, 100, 10
+            highHSV = new Scalar(172 , 110, 255 );
         } else {
             lowHSV = new Scalar( 40, 50, 70 );
             highHSV = new Scalar( 65, 255, 255 );
@@ -87,7 +87,7 @@ public class BarcodePositionDetector extends OpenCvPipeline {
         }
         Imgproc.cvtColor( mat, mat, Imgproc.COLOR_GRAY2RGB );
 
-        Scalar elementColor = new Scalar( 3, 0, 255 );
+        Scalar elementColor = new Scalar( 0, 0, 255 );
         Scalar notElement = new Scalar( 0, 255, 0 );
 
         Imgproc.rectangle( mat, LEFT_ROI, barcodePosition == BarcodePosition.LEFT ? notElement : elementColor );
