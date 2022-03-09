@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.robot.Hardware;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Autonomous
-public class DUCK_WAREHOUSE_BLUE extends LinearOpMode {
+public class BLUE_DUCK_WAREHOUSE extends LinearOpMode {
 
     private FtcDashboard dashboard;
     public static Pose2d startPR = new Pose2d(-39.1, 64, Math.toRadians(0));

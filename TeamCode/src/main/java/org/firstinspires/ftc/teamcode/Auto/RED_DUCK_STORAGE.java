@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.robot.Hardware;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Autonomous
-public class DuckParkStorage extends LinearOpMode {
+public class RED_DUCK_STORAGE extends LinearOpMode {
 
     private FtcDashboard dashboard;
     public static Pose2d startPR = new Pose2d(-39.1, -64, Math.toRadians(180));

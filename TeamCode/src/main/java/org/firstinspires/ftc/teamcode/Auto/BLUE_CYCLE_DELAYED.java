@@ -18,27 +18,33 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Config
 @Autonomous(group = "advanced")
-public class CYCLE_RED_CV extends LinearOpMode {
+public class BLUE_CYCLE_DELAYED extends LinearOpMode {
     Hardware Oscar;
 
-    double AMOUNT_ITERATE_Y = 2;
+    //SECONDS, NOT MILLISECONDS
+    double START_DO_THINGS_DELAY = 15;
+
+    double AMOUNT_ITERATE_Y = 1.2;
 
     double ADJUSTABLE_INTAKE_X = 48;
     double AMOUNT_INCREASE_INTAKE_X = 1.8;
 
-    double ADJUSTABLE_INTAKE_Y = -62;
-    double AMOUNT_INCREASE_INTAKE_Y = 1;
+    double ADJUSTABLE_INTAKE_Y = 62;
+    double AMOUNT_INCREASE_INTAKE_Y = -3;
+
+    double WALL_PUSH = 65;
 
     //Milliseconds
     double STUCK_INTAKE_TIMEOUT = 2000;
 
-    Pose2d startPose = new Pose2d(19, -64, Math.toRadians(180));
-    Pose2d depositPose = new Pose2d(-5.5, -65, Math.toRadians(180));
-    Pose2d bottomDepositPose = new Pose2d(-1.5, -67.5, Math.toRadians(180));
-    Pose2d warehousePose = new Pose2d(32, -65, Math.toRadians(180));
-    Pose2d intakePose = new Pose2d(ADJUSTABLE_INTAKE_X, ADJUSTABLE_INTAKE_Y, Math.toRadians(180));
+    Pose2d startPose = new Pose2d(12, 63, Math.toRadians(0));
+    Pose2d depositPose = new Pose2d(-7.5, WALL_PUSH, Math.toRadians(0));
+    Vector2d depositVector = new Vector2d(depositPose.getX(), depositPose.getY());
+    Pose2d bottomDepositPose = new Pose2d(-1.5, 67.5, Math.toRadians(0));
+    Pose2d warehousePose = new Pose2d(38, WALL_PUSH, Math.toRadians(0));
+    Pose2d intakePose = new Pose2d(ADJUSTABLE_INTAKE_X, ADJUSTABLE_INTAKE_Y, Math.toRadians(0));
     Vector2d intakeVector = new Vector2d(ADJUSTABLE_INTAKE_X, ADJUSTABLE_INTAKE_Y);
-    Vector2d warehouseVector = new Vector2d(32, -65);
+    Vector2d warehouseVector = new Vector2d(38, WALL_PUSH);
 
     Trajectory START_TO_DEPOSIT;
     TrajectorySequence DEPOSIT_TO_WAREHOUSE;
@@ -50,13 +56,15 @@ public class CYCLE_RED_CV extends LinearOpMode {
         ADJUSTABLE_INTAKE_X += AMOUNT_INCREASE_INTAKE_X;
         ADJUSTABLE_INTAKE_Y += AMOUNT_INCREASE_INTAKE_Y;
         intakeVector = new Vector2d(ADJUSTABLE_INTAKE_X, ADJUSTABLE_INTAKE_Y);
-        intakePose = new Pose2d(ADJUSTABLE_INTAKE_X, ADJUSTABLE_INTAKE_Y, Math.toRadians(180));
-        DEPOSIT_TO_WAREHOUSE = Oscar.drive.trajectorySequenceBuilder(START_TO_DEPOSIT.end())
+        intakePose = new Pose2d(ADJUSTABLE_INTAKE_X, ADJUSTABLE_INTAKE_Y, Math.toRadians(0));
+        DEPOSIT_TO_WAREHOUSE = Oscar.drive.trajectorySequenceBuilder(depositPose)
+//                .setReversed(true)
                 .lineToLinearHeading(warehousePose)
-                .splineToConstantHeading(intakeVector, Math.toRadians(180))
+                .splineToConstantHeading(intakeVector, Math.toRadians(0))
                 .build();
         WAREHOUSE_TO_DEPOSIT = Oscar.drive.trajectorySequenceBuilder(DEPOSIT_TO_WAREHOUSE.end())
-                .splineToConstantHeading(warehouseVector, Math.toRadians(180))
+//                .setReversed(true)
+                .splineToConstantHeading(warehouseVector, Math.toRadians(0))
                 .lineToLinearHeading(depositPose)
                 .build();
     }
@@ -81,21 +89,23 @@ public class CYCLE_RED_CV extends LinearOpMode {
         INTAKE_FSM intake_fsm = new INTAKE_FSM(Oscar, telemetry, gamepad1, gamepad2);
 
         START_TO_DEPOSIT = Oscar.drive.trajectoryBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-7.5, -65, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-8.2, 64, Math.toRadians(0)))
                 .build();
         START_TO_DEPOSIT_BOTTOM = Oscar.drive.trajectoryBuilder(startPose)
                 .lineToLinearHeading(bottomDepositPose)
                 .build();
         DEPOSIT_BOTTOM_TO_WAREHOUSE = Oscar.drive.trajectoryBuilder(bottomDepositPose)
                 .lineToLinearHeading(warehousePose)
-                .splineToConstantHeading(intakeVector, Math.toRadians(180))
+                .splineToConstantHeading(intakeVector, Math.toRadians(0))
                 .build();
         DEPOSIT_TO_WAREHOUSE = Oscar.drive.trajectorySequenceBuilder(START_TO_DEPOSIT.end())
+//                .setReversed(true)
                 .lineToLinearHeading(warehousePose)
-                .splineToConstantHeading(intakeVector, Math.toRadians(180))
+                .splineToConstantHeading(intakeVector, Math.toRadians(0))
                 .build();
         WAREHOUSE_TO_DEPOSIT = Oscar.drive.trajectorySequenceBuilder(DEPOSIT_TO_WAREHOUSE.end())
-                .splineToConstantHeading(warehouseVector, Math.toRadians(180))
+//                .setReversed(true)
+                .splineToConstantHeading(warehouseVector, Math.toRadians(0))
                 .lineToLinearHeading(depositPose)
                 .build();
 
@@ -104,7 +114,10 @@ public class CYCLE_RED_CV extends LinearOpMode {
         Oscar.elbow.goToGrabPos();
         Oscar.grabber.goStart();
         Oscar.grabber.openGrab();
+        Oscar.slides.slidesOutABit();
+        Thread.sleep(500);
         Oscar.slides.slidesHome();
+
 
         STATE state = STATE.INIT;
 
@@ -118,8 +131,8 @@ public class CYCLE_RED_CV extends LinearOpMode {
 
         double STOP_CYCLING_TIMEOUT = 26.5;
 
-        Oscar.flippers.moveUp("front");
-        Oscar.flippers.moveDown("back");
+        Oscar.flippers.moveDown("front");
+        Oscar.flippers.moveUp("back");
 
         int counterTop = 0;
         int counterBottom = 0;
@@ -131,13 +144,13 @@ public class CYCLE_RED_CV extends LinearOpMode {
 
         while (!isStopRequested() && !opModeIsActive()) {
             barcodePosition = Oscar.cvUtil.getBarcodePosition();
-            if(barcodePosition == BarcodePositionDetector.BarcodePosition.LEFT){
+            if(barcodePosition == BarcodePositionDetector.BarcodePosition.RIGHT){
                 counterBottom++;
             }
             else if( barcodePosition == BarcodePositionDetector.BarcodePosition.MIDDLE){
                 counterMid++;
             }
-            else if( barcodePosition == BarcodePositionDetector.BarcodePosition.RIGHT){
+            else if( barcodePosition == BarcodePositionDetector.BarcodePosition.LEFT){
                 counterTop++;
             }
 
@@ -158,11 +171,16 @@ public class CYCLE_RED_CV extends LinearOpMode {
 
         waitForStart();
 
-        Oscar.drive.followTrajectoryAsync(START_TO_DEPOSIT_BOTTOM);
+        Thread.sleep((long) (START_DO_THINGS_DELAY * 1000));
+
+        Oscar.drive.followTrajectoryAsync(START_TO_DEPOSIT);
         time.reset();
         RUNTIME.reset();
 
         while(isStarted() && !isStopRequested()) {
+            telemetry.addData("STATE: ", state);
+            telemetry.addData("DISTNACE: ", ((DistanceSensor) Oscar.colorFront).getDistance(DistanceUnit.CM));
+            telemetry.update();
             switch (state) {
                 case INIT:
                     if(position == BarcodePositionDetector.BarcodePosition.LEFT) {
@@ -206,24 +224,24 @@ public class CYCLE_RED_CV extends LinearOpMode {
                     }
                     break;
                 case BACKWARD:
-                    if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 1.5 || !Oscar.drive.isBusy()) {
+                    if(((DistanceSensor) Oscar.colorFront).getDistance(DistanceUnit.CM) < 1.5 || !Oscar.drive.isBusy()) {
                         state = STATE.INTAKE;
                         time.reset();
                     }
                     else {
-                        Oscar.intake.backIn();
+                        Oscar.intake.frontIn();
                     }
                     break;
                 case INTAKE:
-                    Oscar.drive.setWeightedDrivePower(new Pose2d(-.4,0,0));
-                    if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 1.5) {
-                        intake_fsm.SET_EXEC_BACK_FLIP(true);
+                    Oscar.drive.setWeightedDrivePower(new Pose2d(.4,0,0));
+                    if(((DistanceSensor) Oscar.colorFront).getDistance(DistanceUnit.CM) < 1.5) {
+                        intake_fsm.SET_EXEC_FRONT_FLIP(true);
                         Oscar.drive.setWeightedDrivePower(new Pose2d(0,0,0));
-                        Oscar.drive.setPoseEstimate(new Pose2d(Oscar.drive.getPoseEstimate().getX(), Oscar.drive.getPoseEstimate().getY() + AMOUNT_ITERATE_Y, Oscar.drive.getPoseEstimate().getHeading()));
+                        Oscar.drive.setPoseEstimate(new Pose2d(Oscar.drive.getPoseEstimate().getX(), Oscar.drive.getPoseEstimate().getY() - AMOUNT_ITERATE_Y, Oscar.drive.getPoseEstimate().getHeading()));
                         if(RUNTIME.seconds() < STOP_CYCLING_TIMEOUT) {
-                                Oscar.drive.followTrajectorySequenceAsync(WAREHOUSE_TO_DEPOSIT);
-                                state = STATE.FORWARD;
-                                time.reset();
+                            Oscar.drive.followTrajectorySequenceAsync(WAREHOUSE_TO_DEPOSIT);
+                            state = STATE.FORWARD;
+                            time.reset();
                         }
                         else state = STATE.IDLE;
                     }
@@ -235,18 +253,18 @@ public class CYCLE_RED_CV extends LinearOpMode {
                 case RESTART_INTAKE:
                     if(Oscar.drive.getPoseEstimate().getX() < 52) {
                         state = STATE.INTAKE;
-                        Oscar.intake.backIn();
+                        Oscar.intake.frontIn();
                         time.reset();
                     }
                     else{
                         Oscar.intake.backOut();
-                        Oscar.drive.setWeightedDrivePower(new Pose2d(.4,0,0));
+                        Oscar.drive.setWeightedDrivePower(new Pose2d(-.4,0,0));
                     }
                     break;
                 case FORWARD:
                     if(Oscar.drive.getPoseEstimate().getX() < 10) {
-                        intake_fsm.forceDownBack();
-                        Oscar.intake.backOut();
+                        intake_fsm.forceDownFront();
+                        Oscar.intake.frontOut();
                         if(!ENSURE_ONE_DEPOSIT) {
                             forceFlipTime.reset();
                             ENSURE_ONE_DEPOSIT = true;
@@ -273,8 +291,7 @@ public class CYCLE_RED_CV extends LinearOpMode {
             deposit_fsm.doDepositTopAsync();
             deposit_fsm.doDepositMiddleAsync();
             deposit_fsm.doDepositBottomAsync();
-//            intake_fsm.doFlipBackAsync();
-            intake_fsm.handleEvents(deposit_fsm.isAnyBusy(), false, true);
+            intake_fsm.handleEvents(deposit_fsm.isAnyBusy(), true, false);
             Oscar.drive.update();
         }
     }

@@ -10,9 +10,6 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.robot.BLUE_DEPOSIT_FSM_FOR_AUTO_ONLY;
-import org.firstinspires.ftc.teamcode.robot.BLUE_HARDWARE_FOR_AUTO_ONLY;
-import org.firstinspires.ftc.teamcode.robot.BLUE_INTAKE_FSM_FOR_AUTO_ONLY;
 import org.firstinspires.ftc.teamcode.robot.CV.BarcodePositionDetector;
 import org.firstinspires.ftc.teamcode.robot.DEPOSIT_FSM;
 import org.firstinspires.ftc.teamcode.robot.Hardware;
@@ -21,7 +18,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Config
 @Autonomous(group = "advanced")
-public class CYCLE_BLUE_CV extends LinearOpMode {
+public class BLUE_CYCLE_INSTANT extends LinearOpMode {
     Hardware Oscar;
 
     double AMOUNT_ITERATE_Y = 1.2;
@@ -32,17 +29,19 @@ public class CYCLE_BLUE_CV extends LinearOpMode {
     double ADJUSTABLE_INTAKE_Y = 62;
     double AMOUNT_INCREASE_INTAKE_Y = -3;
 
+    double WALL_PUSH = 65;
+
     //Milliseconds
     double STUCK_INTAKE_TIMEOUT = 2000;
 
-    Pose2d startPose = new Pose2d(12, 64, Math.toRadians(0));
-    Pose2d depositPose = new Pose2d(-7.5, 64, Math.toRadians(0));
+    Pose2d startPose = new Pose2d(12, 63, Math.toRadians(0));
+    Pose2d depositPose = new Pose2d(-7.5, WALL_PUSH, Math.toRadians(0));
     Vector2d depositVector = new Vector2d(depositPose.getX(), depositPose.getY());
     Pose2d bottomDepositPose = new Pose2d(-1.5, 67.5, Math.toRadians(0));
-    Pose2d warehousePose = new Pose2d(32, 64, Math.toRadians(0));
+    Pose2d warehousePose = new Pose2d(38, WALL_PUSH, Math.toRadians(0));
     Pose2d intakePose = new Pose2d(ADJUSTABLE_INTAKE_X, ADJUSTABLE_INTAKE_Y, Math.toRadians(0));
     Vector2d intakeVector = new Vector2d(ADJUSTABLE_INTAKE_X, ADJUSTABLE_INTAKE_Y);
-    Vector2d warehouseVector = new Vector2d(32, 64);
+    Vector2d warehouseVector = new Vector2d(38, WALL_PUSH);
 
     Trajectory START_TO_DEPOSIT;
     TrajectorySequence DEPOSIT_TO_WAREHOUSE;
@@ -62,8 +61,8 @@ public class CYCLE_BLUE_CV extends LinearOpMode {
                 .build();
         WAREHOUSE_TO_DEPOSIT = Oscar.drive.trajectorySequenceBuilder(DEPOSIT_TO_WAREHOUSE.end())
 //                .setReversed(true)
-                .lineToLinearHeading(warehousePose)
-                .splineToConstantHeading(depositVector, Math.toRadians(0))
+                .splineToConstantHeading(warehouseVector, Math.toRadians(0))
+                .lineToLinearHeading(depositPose)
                 .build();
     }
 
@@ -103,8 +102,8 @@ public class CYCLE_BLUE_CV extends LinearOpMode {
                 .build();
         WAREHOUSE_TO_DEPOSIT = Oscar.drive.trajectorySequenceBuilder(DEPOSIT_TO_WAREHOUSE.end())
 //                .setReversed(true)
-                .lineToLinearHeading(warehousePose)
-                .splineToConstantHeading(depositVector, Math.toRadians(0))
+                .splineToConstantHeading(warehouseVector, Math.toRadians(0))
+                .lineToLinearHeading(depositPose)
                 .build();
 
         Oscar.drive.setPoseEstimate(startPose);

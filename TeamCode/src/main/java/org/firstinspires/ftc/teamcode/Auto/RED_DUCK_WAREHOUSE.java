@@ -18,7 +18,7 @@ import dashboard.RobotConstants;
 
     @Config
     @Autonomous(group = "drive")
-    public class AutoRed2 extends LinearOpMode {
+    public class RED_DUCK_WAREHOUSE extends LinearOpMode {
         private FtcDashboard dashboard;
         public static Pose2d startPR = new Pose2d(-39.1, -64, Math.toRadians(180));
         public static Pose2d DuckRed = new Pose2d(-60.3,-56.5, Math.toRadians(110));
