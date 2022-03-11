@@ -38,7 +38,7 @@ public class BLUE_CYCLE_DELAYED extends LinearOpMode {
     double STUCK_INTAKE_TIMEOUT = 2000;
 
     Pose2d startPose = new Pose2d(12, 63, Math.toRadians(0));
-    Pose2d depositPose = new Pose2d(-7.5, WALL_PUSH, Math.toRadians(0));
+    Pose2d depositPose = new Pose2d(-15, WALL_PUSH, Math.toRadians(0));
     Vector2d depositVector = new Vector2d(depositPose.getX(), depositPose.getY());
     Pose2d bottomDepositPose = new Pose2d(-1.5, 67.5, Math.toRadians(0));
     Pose2d warehousePose = new Pose2d(38, WALL_PUSH, Math.toRadians(0));
@@ -129,7 +129,7 @@ public class BLUE_CYCLE_DELAYED extends LinearOpMode {
 
         boolean FORCE_FLIP_TIMEOUT = false;
 
-        double STOP_CYCLING_TIMEOUT = 26.5;
+        double STOP_CYCLING_TIMEOUT = 24;
 
         Oscar.flippers.moveDown("front");
         Oscar.flippers.moveUp("back");

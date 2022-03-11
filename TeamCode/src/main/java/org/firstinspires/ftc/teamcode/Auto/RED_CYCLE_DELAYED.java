@@ -36,7 +36,7 @@ public class RED_CYCLE_DELAYED extends LinearOpMode {
     double STUCK_INTAKE_TIMEOUT = 2000;
 
     Pose2d startPose = new Pose2d(19, -64, Math.toRadians(180));
-    Pose2d depositPose = new Pose2d(-5.5, -65, Math.toRadians(180));
+    Pose2d depositPose = new Pose2d(-10, -65, Math.toRadians(180));
     Pose2d bottomDepositPose = new Pose2d(-1.5, -67.5, Math.toRadians(180));
     Pose2d warehousePose = new Pose2d(32, -65, Math.toRadians(180));
     Pose2d intakePose = new Pose2d(ADJUSTABLE_INTAKE_X, ADJUSTABLE_INTAKE_Y, Math.toRadians(180));

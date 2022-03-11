@@ -137,10 +137,10 @@ public class RED extends LinearOpMode {
 
 
             if(controller_mode == CONTROLLER_MODE.SHARED) {
-                Oscar.drive.setWeightedDrivePower(new Pose2d(gamepad1.left_stick_x * 1,-gamepad1.left_stick_y * 1,-gamepad1.right_stick_x * .5));
+                Oscar.drive.setWeightedDrivePower(new Pose2d(-gamepad1.left_stick_x * 1,gamepad1.left_stick_y * 1,-gamepad1.right_stick_x * .5));
             }
             else if(controller_mode == CONTROLLER_MODE.REGULAR) {
-                Oscar.drive.setWeightedDrivePower(new Pose2d(-gamepad1.left_stick_y * 1,-gamepad1.left_stick_x * 1,-gamepad1.right_stick_x * .5));
+                Oscar.drive.setWeightedDrivePower(new Pose2d(gamepad1.left_stick_y * 1,gamepad1.left_stick_x * 1,-gamepad1.right_stick_x * .5));
             }
 
         }

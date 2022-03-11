@@ -33,8 +33,6 @@ public class BarcodePositionDetector extends OpenCvPipeline {
             new Point( 250, 70 ),
             new Point( 320, 160 ) );
 
-
-
     static double PERCENT_COLOR_THRESHOLD = 0.02;
 
     public BarcodePositionDetector( Telemetry t ) {
@@ -43,13 +41,13 @@ public class BarcodePositionDetector extends OpenCvPipeline {
 
     public Mat processFrame( Mat input, String type ) {
         //chNgwe
-        Imgproc.cvtColor( input, mat,  Imgproc.COLOR_BGR2HSV);
+        Imgproc.cvtColor( input, mat,  Imgproc.COLOR_RGB2HSV_FULL);
         Scalar lowHSV;
         Scalar highHSV;
 
         if( type.equalsIgnoreCase( "duck" ) ) {
-            lowHSV = new Scalar(0, 0, 167 );//25, 25, 35    20, 100, 10
-            highHSV = new Scalar(172 , 110, 255 );
+            lowHSV = new Scalar(20, 100, 100 );//25, 25, 35
+            highHSV = new Scalar( 30, 255, 255 );
         } else {
             lowHSV = new Scalar( 40, 50, 70 );
             highHSV = new Scalar( 65, 255, 255 );
@@ -85,9 +83,9 @@ public class BarcodePositionDetector extends OpenCvPipeline {
             barcodePosition = BarcodePosition.NOT_FOUND;
             telemetry.addData( "Location", type + " not found" );
         }
-        Imgproc.cvtColor( mat, mat, Imgproc.COLOR_BGR2HSV);
+        Imgproc.cvtColor( mat, mat, Imgproc.COLOR_GRAY2RGB );
 
-        Scalar elementColor = new Scalar( 0, 0, 255 );
+        Scalar elementColor = new Scalar( 30, 140, 172 );
         Scalar notElement = new Scalar( 0, 255, 0 );
 
         Imgproc.rectangle( mat, LEFT_ROI, barcodePosition == BarcodePosition.LEFT ? notElement : elementColor );
@@ -103,13 +101,10 @@ public class BarcodePositionDetector extends OpenCvPipeline {
         Mat duckImage = processFrame( input, "duck" );
         double eleValue = Core.sumElems( elementImage ).val[0] / (elementImage.rows( ) * elementImage.cols( )) / 255;
         double duckValue = Core.sumElems( duckImage ).val[0] / (duckImage.rows( ) * duckImage.cols( )) / 255;
-
         if( eleValue < duckValue )
             return duckImage;
         return elementImage;
     }
-
-
 
     public BarcodePosition getBarcodePosition( ) {
         return barcodePosition;
