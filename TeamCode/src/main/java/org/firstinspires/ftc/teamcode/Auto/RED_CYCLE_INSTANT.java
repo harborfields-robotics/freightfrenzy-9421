@@ -33,21 +33,21 @@ public class RED_CYCLE_INSTANT extends LinearOpMode {
     double STUCK_INTAKE_TIMEOUT = 2000;
 
     Pose2d startPose = new Pose2d(19, -64, Math.toRadians(180));
-    Pose2d depositPose = new Pose2d(-10, -65, Math.toRadians(180));
+    Pose2d depositPose = new Pose2d(-6.5, -65, Math.toRadians(180));
     Pose2d bottomDepositPose = new Pose2d(-1.5, -67.5, Math.toRadians(180));
-    Pose2d warehousePose = new Pose2d(32, -65, Math.toRadians(180));
+    Pose2d warehousePose = new Pose2d(38, -65, Math.toRadians(180));
     Pose2d intakePose = new Pose2d(ADJUSTABLE_INTAKE_X, ADJUSTABLE_INTAKE_Y, Math.toRadians(180));
     Vector2d intakeVector = new Vector2d(ADJUSTABLE_INTAKE_X, ADJUSTABLE_INTAKE_Y);
-    Vector2d warehouseVector = new Vector2d(32, -65);
+    Vector2d warehouseVector = new Vector2d(38, -65);
 
-    Pose2d sidePark = new Pose2d(54.-39.1,Math.toRadians(90));
+//    Pose2d sidePark = new Pose2d(54.-39.1,Math.toRadians(90));
 
     Trajectory START_TO_DEPOSIT;
     TrajectorySequence DEPOSIT_TO_WAREHOUSE;
     TrajectorySequence WAREHOUSE_TO_DEPOSIT;
     Trajectory START_TO_DEPOSIT_BOTTOM;
     Trajectory DEPOSIT_BOTTOM_TO_WAREHOUSE;
-    TrajectorySequence TIMEOUT_SIDE_PARK;
+//    TrajectorySequence TIMEOUT_SIDE_PARK;
 
     private void iterateIntakeX() {
         ADJUSTABLE_INTAKE_X += AMOUNT_INCREASE_INTAKE_X;
@@ -84,7 +84,7 @@ public class RED_CYCLE_INSTANT extends LinearOpMode {
         INTAKE_FSM intake_fsm = new INTAKE_FSM(Oscar, telemetry, gamepad1, gamepad2);
 
         START_TO_DEPOSIT = Oscar.drive.trajectoryBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-7.5, -65, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-9, -65, Math.toRadians(180)))
                 .build();
         START_TO_DEPOSIT_BOTTOM = Oscar.drive.trajectoryBuilder(startPose)
                 .lineToLinearHeading(bottomDepositPose)
@@ -103,15 +103,17 @@ public class RED_CYCLE_INSTANT extends LinearOpMode {
                 .build();
 
 
-        TIMEOUT_SIDE_PARK = Oscar.drive.trajectorySequenceBuilder(DEPOSIT_TO_WAREHOUSE.end())
-                .splineToLinearHeading(sidePark,Math.toRadians(90))
-                .build();
+//        TIMEOUT_SIDE_PARK = Oscar.drive.trajectorySequenceBuilder(DEPOSIT_TO_WAREHOUSE.end())
+//                .splineToLinearHeading(sidePark,Math.toRadians(90))
+//                .build();
 
         Oscar.drive.setPoseEstimate(startPose);
 
         Oscar.elbow.goToGrabPos();
         Oscar.grabber.goStart();
         Oscar.grabber.openGrab();
+        Oscar.slides.slidesOutABit();
+        Thread.sleep(500);
         Oscar.slides.slidesHome();
 
         STATE state = STATE.INIT;
@@ -235,7 +237,6 @@ public class RED_CYCLE_INSTANT extends LinearOpMode {
                         }
                         else {
                             state = STATE.IDLE;
-                            Oscar.drive.followTrajectorySequenceAsync(TIMEOUT_SIDE_PARK);
                         }
                     }
                     else if(time.milliseconds() > STUCK_INTAKE_TIMEOUT) {

@@ -36,12 +36,12 @@ public class RED_CYCLE_DELAYED extends LinearOpMode {
     double STUCK_INTAKE_TIMEOUT = 2000;
 
     Pose2d startPose = new Pose2d(19, -64, Math.toRadians(180));
-    Pose2d depositPose = new Pose2d(-10, -65, Math.toRadians(180));
+    Pose2d depositPose = new Pose2d(-6.5, -65, Math.toRadians(180));
     Pose2d bottomDepositPose = new Pose2d(-1.5, -67.5, Math.toRadians(180));
-    Pose2d warehousePose = new Pose2d(32, -65, Math.toRadians(180));
+    Pose2d warehousePose = new Pose2d(38, -65, Math.toRadians(180));
     Pose2d intakePose = new Pose2d(ADJUSTABLE_INTAKE_X, ADJUSTABLE_INTAKE_Y, Math.toRadians(180));
     Vector2d intakeVector = new Vector2d(ADJUSTABLE_INTAKE_X, ADJUSTABLE_INTAKE_Y);
-    Vector2d warehouseVector = new Vector2d(32, -65);
+    Vector2d warehouseVector = new Vector2d(38, -65);
 
     Trajectory START_TO_DEPOSIT;
     TrajectorySequence DEPOSIT_TO_WAREHOUSE;
@@ -107,6 +107,8 @@ public class RED_CYCLE_DELAYED extends LinearOpMode {
         Oscar.elbow.goToGrabPos();
         Oscar.grabber.goStart();
         Oscar.grabber.openGrab();
+        Oscar.slides.slidesOutABit();
+        Thread.sleep(500);
         Oscar.slides.slidesHome();
 
         STATE state = STATE.INIT;

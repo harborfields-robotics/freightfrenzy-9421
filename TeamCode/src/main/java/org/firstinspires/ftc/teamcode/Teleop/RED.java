@@ -108,7 +108,7 @@ public class RED extends LinearOpMode {
 //                gamepad2.runRumbleEffect(customRumbleEffect);
             }
 
-            intake_fsm.handleEvents(deposit_fsm.isAnyBusy(), false, true);
+            intake_fsm.handleEvents(deposit_fsm.isAnyBusy(), false, false);
 
             if(!deposit_fsm.isAnyBusy() && !intake_fsm.isBackBusy() && !intake_fsm.isFrontBusy()) {
                 Oscar.slides.slidesGrab();

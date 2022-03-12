@@ -24,7 +24,7 @@ import dashboard.RobotConstants;
         public static Pose2d DuckRed = new Pose2d(-60.3,-56.5, Math.toRadians(110));
         public static Pose2d returnToPos = new Pose2d(-39.1, -69, Math.toRadians(180));
         public static Pose2d driveToWarehouse = new Pose2d(44.8,-69,Math.toRadians(180));
-        public static Pose2d RedCyclePreload = new Pose2d(-37.2, -55,Math.toRadians(150));
+        public static Pose2d RedCyclePreload = new Pose2d(-37.2, -56.5,Math.toRadians(150));
         //Hardware Oscar = new Hardware(hardwareMap, telemetry);
         //test 2
 
@@ -62,6 +62,7 @@ import dashboard.RobotConstants;
             int counterTop = 0;
             int counterBottom = 0;
             int counterMid = 0;
+            Oscar.slides.slidesHome();
 
 
             BarcodePositionDetector.BarcodePosition barcodePosition;
@@ -98,7 +99,7 @@ import dashboard.RobotConstants;
             Thread.sleep(1000);
 
             if(position == BarcodePositionDetector.BarcodePosition.LEFT){
-                deposit_linear.DROP_DA_THING_ON_BOTTOM();
+                deposit_linear.DROP_DA_THING_ON_TOP();
             }
             if(position == BarcodePositionDetector.BarcodePosition.MIDDLE){
                 deposit_linear.DROP_DA_THING_ON_MIDDLE();

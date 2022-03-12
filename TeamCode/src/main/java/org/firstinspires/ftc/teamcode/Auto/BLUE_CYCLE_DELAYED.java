@@ -38,7 +38,7 @@ public class BLUE_CYCLE_DELAYED extends LinearOpMode {
     double STUCK_INTAKE_TIMEOUT = 2000;
 
     Pose2d startPose = new Pose2d(12, 63, Math.toRadians(0));
-    Pose2d depositPose = new Pose2d(-15, WALL_PUSH, Math.toRadians(0));
+    Pose2d depositPose = new Pose2d(-14, WALL_PUSH, Math.toRadians(0));
     Vector2d depositVector = new Vector2d(depositPose.getX(), depositPose.getY());
     Pose2d bottomDepositPose = new Pose2d(-1.5, 67.5, Math.toRadians(0));
     Pose2d warehousePose = new Pose2d(38, WALL_PUSH, Math.toRadians(0));
