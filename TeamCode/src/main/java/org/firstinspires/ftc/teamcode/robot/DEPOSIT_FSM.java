@@ -155,18 +155,13 @@ public class DEPOSIT_FSM {
                     time.reset();
                 }
                 else {
-                    if(gamepad2.right_bumper && time.milliseconds() > 5){
-                        Oscar.slides.CHANGE_ADJUSTABLE_TOP_TICKS(3);
-                        Oscar.slides.GO_TO_ADJUSTABLE_TOP_POSITION();
+                    if(gamepad2.right_bumper && time.milliseconds() > 15){
+                        Oscar.elbow.moveRelative(-.005);
                         time.reset();
                     }
-                    if(gamepad2.left_bumper && time.milliseconds() > 5){
-                        Oscar.slides.CHANGE_ADJUSTABLE_TOP_TICKS(-3);
-                        Oscar.slides.GO_TO_ADJUSTABLE_TOP_POSITION();
+                    if(gamepad2.left_bumper && time.milliseconds() > 15){
+                        Oscar.elbow.moveRelative(.005);
                         time.reset();
-                    }
-                    else {
-                        Oscar.slides.GO_TO_ADJUSTABLE_TOP_POSITION();
                     }
                 }
                 if(time.milliseconds() > 550) {

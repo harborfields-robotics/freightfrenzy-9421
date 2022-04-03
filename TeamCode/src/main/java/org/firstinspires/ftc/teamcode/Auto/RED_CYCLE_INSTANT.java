@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.robot.CAPPER;
 import org.firstinspires.ftc.teamcode.robot.CV.BarcodePositionDetector;
 import org.firstinspires.ftc.teamcode.robot.DEPOSIT_FSM;
 import org.firstinspires.ftc.teamcode.robot.Hardware;
@@ -21,24 +22,24 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 public class RED_CYCLE_INSTANT extends LinearOpMode {
     Hardware Oscar;
 
-    double AMOUNT_ITERATE_Y = 2;
+    double AMOUNT_ITERATE_Y = 2.3;
 
-    double ADJUSTABLE_INTAKE_X = 48;
-    double AMOUNT_INCREASE_INTAKE_X = 1.8;
+    double ADJUSTABLE_INTAKE_X = 52;
+    double AMOUNT_INCREASE_INTAKE_X = 1.2;
 
-    double ADJUSTABLE_INTAKE_Y = -62;
-    double AMOUNT_INCREASE_INTAKE_Y = 1;
+    double ADJUSTABLE_INTAKE_Y = -67;
+    double AMOUNT_INCREASE_INTAKE_Y = 4;
 
     //Milliseconds
     double STUCK_INTAKE_TIMEOUT = 2000;
 
     Pose2d startPose = new Pose2d(19, -64, Math.toRadians(180));
-    Pose2d depositPose = new Pose2d(-6.5, -65, Math.toRadians(180));
+    Pose2d depositPose = new Pose2d(-4, -66, Math.toRadians(180));
     Pose2d bottomDepositPose = new Pose2d(-1.5, -67.5, Math.toRadians(180));
-    Pose2d warehousePose = new Pose2d(38, -65, Math.toRadians(180));
+    Pose2d warehousePose = new Pose2d(45, -66, Math.toRadians(180));
     Pose2d intakePose = new Pose2d(ADJUSTABLE_INTAKE_X, ADJUSTABLE_INTAKE_Y, Math.toRadians(180));
     Vector2d intakeVector = new Vector2d(ADJUSTABLE_INTAKE_X, ADJUSTABLE_INTAKE_Y);
-    Vector2d warehouseVector = new Vector2d(38, -65);
+    Vector2d warehouseVector = new Vector2d(45, -66);
 
 //    Pose2d sidePark = new Pose2d(54.-39.1,Math.toRadians(90));
 
@@ -84,7 +85,7 @@ public class RED_CYCLE_INSTANT extends LinearOpMode {
         INTAKE_FSM intake_fsm = new INTAKE_FSM(Oscar, telemetry, gamepad1, gamepad2);
 
         START_TO_DEPOSIT = Oscar.drive.trajectoryBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-9, -65, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-12, -65, Math.toRadians(180)))
                 .build();
         START_TO_DEPOSIT_BOTTOM = Oscar.drive.trajectoryBuilder(startPose)
                 .lineToLinearHeading(bottomDepositPose)
@@ -141,6 +142,15 @@ public class RED_CYCLE_INSTANT extends LinearOpMode {
 
         while (!isStopRequested() && !opModeIsActive()) {
             barcodePosition = Oscar.cvUtil.getBarcodePosition();
+            telemetry.addData("Barcode position", barcodePosition);
+            telemetry.update();
+        }
+
+        waitForStart();
+
+        time.reset();
+        while (time.milliseconds() < 200) {
+            barcodePosition = Oscar.cvUtil.getBarcodePosition();
             if(barcodePosition == BarcodePositionDetector.BarcodePosition.LEFT){
                 counterBottom++;
             }
@@ -165,8 +175,6 @@ public class RED_CYCLE_INSTANT extends LinearOpMode {
             telemetry.addData("Barcode position", position);
             telemetry.update();
         }
-
-        waitForStart();
 
         Oscar.drive.followTrajectoryAsync(START_TO_DEPOSIT_BOTTOM);
         time.reset();
@@ -220,12 +228,16 @@ public class RED_CYCLE_INSTANT extends LinearOpMode {
                         state = STATE.INTAKE;
                         time.reset();
                     }
+                    if(Oscar.drive.getPoseEstimate().getX() >= ADJUSTABLE_INTAKE_X - 2) {
+                        state = STATE.INTAKE;
+                        time.reset();
+                    }
                     else {
                         Oscar.intake.backIn();
                     }
                     break;
                 case INTAKE:
-                    Oscar.drive.setWeightedDrivePower(new Pose2d(-.4,0,0));
+                    Oscar.drive.setWeightedDrivePower(new Pose2d(-.6,0,0));
                     if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 1.5) {
                         intake_fsm.SET_EXEC_BACK_FLIP(true);
                         Oscar.drive.setWeightedDrivePower(new Pose2d(0,0,0));
@@ -252,11 +264,11 @@ public class RED_CYCLE_INSTANT extends LinearOpMode {
                     }
                     else{
                         Oscar.intake.backOut();
-                        Oscar.drive.setWeightedDrivePower(new Pose2d(.4,0,0));
+                        Oscar.drive.setWeightedDrivePower(new Pose2d(.6,0,0));
                     }
                     break;
                 case FORWARD:
-                    if(Oscar.drive.getPoseEstimate().getX() < 10) {
+                    if(Oscar.drive.getPoseEstimate().getX() < 20) {
                         intake_fsm.forceDownBack();
                         Oscar.intake.backOut();
                         if(!ENSURE_ONE_DEPOSIT) {
@@ -264,7 +276,7 @@ public class RED_CYCLE_INSTANT extends LinearOpMode {
                             ENSURE_ONE_DEPOSIT = true;
                             FORCE_FLIP_TIMEOUT = false;
                         }
-                        if(forceFlipTime.milliseconds() > 300 && !FORCE_FLIP_TIMEOUT) {
+                        if(forceFlipTime.milliseconds() > 50 && !FORCE_FLIP_TIMEOUT) {
                             deposit_fsm.startDeposittop = true;
                             FORCE_FLIP_TIMEOUT = true;
                         }

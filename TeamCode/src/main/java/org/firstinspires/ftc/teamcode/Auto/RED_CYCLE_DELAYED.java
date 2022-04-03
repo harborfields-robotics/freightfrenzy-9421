@@ -24,13 +24,13 @@ public class RED_CYCLE_DELAYED extends LinearOpMode {
     //SECONDS, NOT MILLISECONDS
     double START_DO_THINGS_DELAY = 15;
 
-    double AMOUNT_ITERATE_Y = 2;
+    double AMOUNT_ITERATE_Y = 3;
 
     double ADJUSTABLE_INTAKE_X = 48;
-    double AMOUNT_INCREASE_INTAKE_X = 1.8;
+    double AMOUNT_INCREASE_INTAKE_X = 2.8;
 
     double ADJUSTABLE_INTAKE_Y = -62;
-    double AMOUNT_INCREASE_INTAKE_Y = 1;
+    double AMOUNT_INCREASE_INTAKE_Y = 2.8;
 
     //Milliseconds
     double STUCK_INTAKE_TIMEOUT = 2000;
@@ -84,7 +84,7 @@ public class RED_CYCLE_DELAYED extends LinearOpMode {
         INTAKE_FSM intake_fsm = new INTAKE_FSM(Oscar, telemetry, gamepad1, gamepad2);
 
         START_TO_DEPOSIT = Oscar.drive.trajectoryBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-7.5, -65, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-12, -65, Math.toRadians(180)))
                 .build();
         START_TO_DEPOSIT_BOTTOM = Oscar.drive.trajectoryBuilder(startPose)
                 .lineToLinearHeading(bottomDepositPose)
@@ -136,6 +136,15 @@ public class RED_CYCLE_DELAYED extends LinearOpMode {
 
         while (!isStopRequested() && !opModeIsActive()) {
             barcodePosition = Oscar.cvUtil.getBarcodePosition();
+            telemetry.addData("Barcode position", barcodePosition);
+            telemetry.update();
+        }
+
+        waitForStart();
+
+        time.reset();
+        while (time.milliseconds() < 200) {
+            barcodePosition = Oscar.cvUtil.getBarcodePosition();
             if(barcodePosition == BarcodePositionDetector.BarcodePosition.LEFT){
                 counterBottom++;
             }
@@ -160,8 +169,6 @@ public class RED_CYCLE_DELAYED extends LinearOpMode {
             telemetry.addData("Barcode position", position);
             telemetry.update();
         }
-
-        waitForStart();
 
         Thread.sleep((long) (START_DO_THINGS_DELAY * 1000));
 
@@ -217,12 +224,16 @@ public class RED_CYCLE_DELAYED extends LinearOpMode {
                         state = STATE.INTAKE;
                         time.reset();
                     }
+                    if(Oscar.drive.getPoseEstimate().getX() >= ADJUSTABLE_INTAKE_X - 2) {
+                        state = STATE.INTAKE;
+                        time.reset();
+                    }
                     else {
                         Oscar.intake.backIn();
                     }
                     break;
                 case INTAKE:
-                    Oscar.drive.setWeightedDrivePower(new Pose2d(-.4,0,0));
+                    Oscar.drive.setWeightedDrivePower(new Pose2d(-.6,0,0));
                     if(((DistanceSensor) Oscar.colorBack).getDistance(DistanceUnit.CM) < 1.5) {
                         intake_fsm.SET_EXEC_BACK_FLIP(true);
                         Oscar.drive.setWeightedDrivePower(new Pose2d(0,0,0));
@@ -247,11 +258,11 @@ public class RED_CYCLE_DELAYED extends LinearOpMode {
                     }
                     else{
                         Oscar.intake.backOut();
-                        Oscar.drive.setWeightedDrivePower(new Pose2d(.4,0,0));
+                        Oscar.drive.setWeightedDrivePower(new Pose2d(.6,0,0));
                     }
                     break;
                 case FORWARD:
-                    if(Oscar.drive.getPoseEstimate().getX() < 10) {
+                    if(Oscar.drive.getPoseEstimate().getX() < 32) {
                         intake_fsm.forceDownBack();
                         Oscar.intake.backOut();
                         if(!ENSURE_ONE_DEPOSIT) {
@@ -259,7 +270,7 @@ public class RED_CYCLE_DELAYED extends LinearOpMode {
                             ENSURE_ONE_DEPOSIT = true;
                             FORCE_FLIP_TIMEOUT = false;
                         }
-                        if(forceFlipTime.milliseconds() > 300 && !FORCE_FLIP_TIMEOUT) {
+                        if(forceFlipTime.milliseconds() > 50 && !FORCE_FLIP_TIMEOUT) {
                             deposit_fsm.startDeposittop = true;
                             FORCE_FLIP_TIMEOUT = true;
                         }

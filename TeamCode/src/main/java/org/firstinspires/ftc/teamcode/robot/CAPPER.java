@@ -79,7 +79,7 @@ public class CAPPER {
     private void pitchAsync() {
         double pitchVal = gamepad2.right_stick_y;
         if (timePitch.milliseconds() > 2 ) {
-            double pitchMovement = (pitchVal < -.1 || pitchVal > .1) ? (pitchVal * PITCH_MAX) : 0;
+            double pitchMovement = (pitchVal < -.2 || pitchVal > .2) ? (pitchVal * PITCH_MAX) : 0;
             telemetry.addData("Pitch Value ", pitchMovement);
             if (pitchMovement > 1 ){
                 pitchMovement = 1;
@@ -97,7 +97,7 @@ public class CAPPER {
     private void YawAsync() {
         if (timeYaw.milliseconds() > 2) {
             double yawVal = -gamepad2.right_stick_x;
-            double movement = (yawVal < -.1 || yawVal > .1) ? (yawVal * YAW_MAX) : 0;
+            double movement = (yawVal < -.2 || yawVal > .2) ? (yawVal * YAW_MAX) : 0;
             telemetry.addData("Pitch Movement", movement);
             if (movement > 1){
                 movement = 1;

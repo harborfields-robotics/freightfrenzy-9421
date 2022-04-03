@@ -144,13 +144,22 @@ public class BLUE_CYCLE_DELAYED extends LinearOpMode {
 
         while (!isStopRequested() && !opModeIsActive()) {
             barcodePosition = Oscar.cvUtil.getBarcodePosition();
-            if(barcodePosition == BarcodePositionDetector.BarcodePosition.RIGHT){
+            telemetry.addData("Barcode position", barcodePosition);
+            telemetry.update();
+        }
+
+        waitForStart();
+
+        time.reset();
+        while (time.milliseconds() < 200) {
+            barcodePosition = Oscar.cvUtil.getBarcodePosition();
+            if(barcodePosition == BarcodePositionDetector.BarcodePosition.LEFT){
                 counterBottom++;
             }
             else if( barcodePosition == BarcodePositionDetector.BarcodePosition.MIDDLE){
                 counterMid++;
             }
-            else if( barcodePosition == BarcodePositionDetector.BarcodePosition.LEFT){
+            else if( barcodePosition == BarcodePositionDetector.BarcodePosition.RIGHT){
                 counterTop++;
             }
 
@@ -168,8 +177,6 @@ public class BLUE_CYCLE_DELAYED extends LinearOpMode {
             telemetry.addData("Barcode position", position);
             telemetry.update();
         }
-
-        waitForStart();
 
         Thread.sleep((long) (START_DO_THINGS_DELAY * 1000));
 
@@ -262,7 +269,7 @@ public class BLUE_CYCLE_DELAYED extends LinearOpMode {
                     }
                     break;
                 case FORWARD:
-                    if(Oscar.drive.getPoseEstimate().getX() < 10) {
+                    if(Oscar.drive.getPoseEstimate().getX() < 24) {
                         intake_fsm.forceDownFront();
                         Oscar.intake.frontOut();
                         if(!ENSURE_ONE_DEPOSIT) {
@@ -270,7 +277,7 @@ public class BLUE_CYCLE_DELAYED extends LinearOpMode {
                             ENSURE_ONE_DEPOSIT = true;
                             FORCE_FLIP_TIMEOUT = false;
                         }
-                        if(forceFlipTime.milliseconds() > 300 && !FORCE_FLIP_TIMEOUT) {
+                        if(forceFlipTime.milliseconds() > 50 && !FORCE_FLIP_TIMEOUT) {
                             deposit_fsm.startDeposittop = true;
                             FORCE_FLIP_TIMEOUT = true;
                         }
