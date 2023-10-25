@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<Robot type="FirstInspires-FTC">
+    <LynxUsbDevice name="Control Hub Portal" serialNumber="(embedded)" parentModuleAddress="173">
+        <LynxModule name="Expansion Hub 3" port="3">
+            <goBILDA5202SeriesMotor name="FR" port="0" />
+            <goBILDA5202SeriesMotor name="FL" port="1" />
+            <goBILDA5202SeriesMotor name="BL" port="2" />
+            <goBILDA5202SeriesMotor name="BR" port="3" />
+            <ContinuousRotationServo name="carousell1" port="0" />
+            <Servo name="Flipper 0" port="1" />
+            <Servo name="Yaw" port="2" />
+            <Servo name="Pitch" port="3" />
+            <Servo name="Flipper 1" port="4" />
+            <ContinuousRotationServo name="carousell2" port="5" />
+            <RevColorSensorV3 name="color_back" port="0" bus="0" />
+            <RevColorSensorV3 name="color_front" port="0" bus="2" />
+        </LynxModule>
+        <LynxModule name="Control Hub" port="173">
+            <goBILDA5202SeriesMotor name="intakeBack" port="0" />
+            <goBILDA5202SeriesMotor name="intakeFront" port="1" />
+            <goBILDA5202SeriesMotor name="" port="2" />
+            <goBILDA5202SeriesMotor name="slideMotor1" port="3" />
+            <Servo name="grabber1" port="0" />
+            <Servo name="grabber2" port="1" />
+            <Servo name="Elbow 2" port="2" />
+            <Servo name="Elbow 3" port="3" />
+            <ContinuousRotationServo name="" port="4" />
+            <ContinuousRotationServo name="Surge" port="5" />
+            <DigitalDevice name="lift_limit_switch" port="0" />
+        </LynxModule>
+    </LynxUsbDevice>
+    <Webcam name="Webcam1" serialNumber="SN0001" />
+</Robot>

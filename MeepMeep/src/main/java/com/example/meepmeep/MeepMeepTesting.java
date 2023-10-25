@@ -57,12 +57,17 @@ public class MeepMeepTesting {
                 .setColorScheme(new ColorSchemeRedDark())
                 .setConstraints(140.63964888286645, 52.48291908330528, Math.toRadians(180), Math.toRadians(180), 12.6)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(48,62,Math.toRadians(0)))
-                                .lineToConstantHeading(new Vector2d(48, 63))
-                                .splineToConstantHeading(new Vector2d(32, 65), Math.toRadians(0))
-                                .lineToLinearHeading(new Pose2d(-12, 65, Math.toRadians(0)))
-                                .lineToLinearHeading(new Pose2d(32, 65,Math.toRadians(0)))
-                                .splineToConstantHeading(new Vector2d(48,62), Math.toRadians(0))
+                        drive.trajectorySequenceBuilder(new Pose2d(-33,-59,Math.toRadians(0)))
+                             //   .lineToConstantHeading(new Vector2d(-47, -52))
+                             //   .splineToConstantHeading(new Vector2d(32, 65), Math.toRadians(0))
+                                .lineToLinearHeading(new Pose2d(-47, -52, Math.toRadians(-45)))
+                                .waitSeconds(3)
+                                .lineToLinearHeading(new Pose2d(-59, -59,Math.toRadians(-45)))
+                                .turn(Math.toRadians(-45))
+                                .lineToLinearHeading(new Pose2d(-56, -60,Math.toRadians(-85)))
+                                .lineToLinearHeading(new Pose2d(-62, -61,Math.toRadians(-95)))
+
+                               // .splineToConstantHeading(new Vector2d(48,62), Math.toRadians(0))
                                 .build()
                 );
 
